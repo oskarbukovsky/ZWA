@@ -1,0 +1,64 @@
+body {
+	margin: 0;
+}
+
+#desktop {
+	width: 100vw;
+	height: calc(100vh - 48px);
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: flex-start;
+	align-content: flex-start;
+	align-items: flex-start;
+}
+
+#navbar {
+	width: 100vw;
+	height: 48px;
+}
+
+#desktop .icon {
+	flex: 0 1 auto;
+	align-self: flex-start;
+	width: 75px;
+	height: 100px;
+	margin: 0px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-flow: column;
+}
+
+figure.icon img {
+	width: 48px;
+	height: auto;
+	max-height: 48px;
+	margin-top: 4px;
+}
+
+figcaption {
+	width: 100%;
+	inline-size: 70px;
+	height: auto;
+	user-select: none;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	text-align: center;
+}
+
+figcaption[contenteditable="true"] {
+	overflow-wrap: break-word;
+	text-overflow: clip;
+	white-space: normal;
+	overflow: visible;
+}
+
+input {
+	background-color: green;
+    word-break: normal;
+}
+
+input:read-only {
+	background-color: red;
+}
