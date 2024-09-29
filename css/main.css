@@ -29,7 +29,10 @@
 } */
 
 body {
+	width: 100vw;
+	height: 100vh;
 	margin: 0;
+	font-size: 12px;
 	background: linear-gradient(rgb(35, 15, 214), transparent),
 		linear-gradient(to top left, rgb(123, 1, 128), transparent),
 		linear-gradient(to top right, rgb(28, 177, 65), transparent),
@@ -47,17 +50,17 @@ body {
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
-	font-size: 12px;
 }
 
-textarea {
-	font-family: "Segoe UI Variable Static Text", sans-serif;
-	font-variation-settings: "wght" 400, "opsz" 20;
+.working-area {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: calc(100vh - var(--navbar-height) - 1px);
 }
 
 #desktop {
-	width: 100vw;
-	height: calc(100vh - var(--navbar-height) - 1px);
 	display: flex;
 	flex-wrap: wrap;
 	flex-direction: column;
@@ -67,21 +70,6 @@ textarea {
 	overflow: auto;
 }
 
-#navbar {
-	width: 100vw;
-	height: var(--navbar-height);
-	background-color: rgba(6, 8, 32, var(--navbar-transparency));
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	border-top: 1px solid rgb(255, 255, 255);
-	/* margin-top: 2px; */
-}
-#navbar > div {
-	margin: 0px;
-	width: 44px;
-	height: var(--navbar-height);
-}
 #desktop .icon {
 	flex: 0 1 auto;
 	align-self: flex-start;
@@ -99,9 +87,10 @@ textarea {
 	background-color: #ececec32;
 }
 
-.icon:focus,
+/* .icon:focus,
 .icon:focus-visible,
-.icon:focus-within {
+.icon:focus-within  */
+.icon-selected {
 	border-radius: 3px;
 	background-color: #ececec56;
 }
@@ -127,7 +116,7 @@ textarea {
 	resize: none;
 	outline: none;
 	text-align: center;
-
+	font-family: "Segoe UI Variable Static Text", sans-serif;
 	overflow-wrap: break-word;
 	text-overflow: clip;
 	white-space: normal;
@@ -158,8 +147,103 @@ textarea:read-only {
 	color: rgba(255, 255, 255, 0.9);
 }
 
+#navbar {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100vw;
+	height: var(--navbar-height);
+	background-color: rgba(6, 8, 32, var(--navbar-transparency));
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	border-top: 1px solid rgb(255, 255, 255);
+	/* margin-top: 2px; */
+}
+#navbar > div {
+	margin: 0px;
+	width: 44px;
+	height: var(--navbar-height);
+	background: linear-gradient(
+		90deg,
+		rgba(255, 0, 0, 0.1) 0%,
+		rgba(0, 0, 255, 0.1) 100%
+	);
+}
+
+#navbar > .navbar-menu {
+	width: 56px;
+	background: rgba(255, 0, 0, 0.1);
+}
+
+#navbar > .navbar-search {
+	width: 42.5px;
+	background: rgba(0, 255, 0, 0.1);
+}
+
+#navbar > .navbar-spacer {
+	max-width: 100%;
+	background: rgba(255, 0, 255, 0.1);
+	flex-grow: 1;
+	width: min-content;
+}
+
+#navbar > .navbar-volume {
+	width: 30px;
+	background: rgba(0, 0, 255, 0.1);
+}
+
+#navbar > .navbar-time {
+	width: 97px;
+	background: rgba(0, 255, 0, 0.1);
+}
+
+#navbar > .navbar-minimize {
+	width: 12px;
+	background: rgba(255, 0, 0, 0.1);
+}
+
 .datetime {
 	color: #fff;
 	font-size: 11px;
 	user-select: none;
+}
+
+#windows {
+	z-index: -1;
+}
+
+.errors {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgb(104, 23, 23);
+	z-index: 999;
+	text-align: center;
+	align-content: center;
+	white-space: pre-wrap;
+}
+
+.hidden {
+	display: none;
+}
+
+@media only screen and (width <= 900px), (height <= 500px) {
+	.errors.hidden {
+		display: block;
+	}
+	.errors.hidden::before {
+		content: "Chyba";
+		color: #f00;
+		font-size: 32px;
+	}
+	.errors.hidden::after {
+		content: "Příliš malé rozlišení monitoru";
+		color: #efefefef;
+		font-size: 20px;
+		position: relative;
+		left: -0.4em;
+	}
 }
