@@ -6,20 +6,24 @@ class dbShape {
 }
 
 class desktopIcon {
-    constructor(icon, name, description, timeCreate, timeEdit, timeRead, position, target) {
-        this.icon = icon;
+    constructor(id, name, icon, description, timeCreate, timeEdit, timeRead, position, target, type, size) {
+        this.id = id;
         this.name = name;
+        this.icon = icon;
         this.description = description;
         this.timeCreate = timeCreate;
         this.timeEdit = timeEdit;
         this.timeRead = timeRead;
         this.position = position;
         this.target = target;
+        this.type = type
+        this.size = size;
     }
 }
 
 class navbarIcon {
-    constructor(icon, name, index, target) {
+    constructor(id, name, icon, index, target) {
+        this.id = id;
         this.icon = icon;
         this.name = name;
         this.index = index;

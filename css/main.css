@@ -1,32 +1,9 @@
 :root {
 	--navbar-transparency: 0.8;
 	--navbar-height: 47px;
+	--navbar-dev: 0.0;
+	/* --navbar-dev: 0.2; */
 }
-
-/* @font-face {
-	font-family: "Segoe UI Variable Small";
-	src: local("Segoe UI Variable Small"),
-		url("../fonts/SegoeUI-VF.ttf") format("truetype-variations");
-	font-variation-settings: "opsz" 1;
-	font-weight: 300 700;
-	font-style: normal;
-}
-@font-face {
-	font-family: "Segoe UI Variable Text";
-	src: local("Segoe UI Variable Text"),
-		url("../fonts/SegoeUI-VF.ttf") format("truetype-variations");
-	font-variation-settings: "opsz" 10.5;
-	font-weight: 300 700;
-	font-style: normal;
-}
-@font-face {
-	font-family: "Segoe UI Variable Display";
-	src: local("Segoe UI Variable Display"),
-		url("../fonts/SegoeUI-VF.ttf") format("truetype-variations");
-	font-variation-settings: "opsz" 36;
-	font-weight: 300 700;
-	font-style: normal;
-} */
 
 body {
 	width: 100vw;
@@ -46,7 +23,7 @@ body {
 			hsl(221deg 100% 50%) 100%
 		);
 	background-blend-mode: screen;
-	background-image: url("../imgs/wallpaper.jpg");
+	background-image: url("../imgs/defaults/wallpaper.jpg");
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
@@ -70,7 +47,7 @@ body {
 	overflow: auto;
 }
 
-#desktop .icon {
+#desktop > .icon {
 	flex: 0 1 auto;
 	align-self: flex-start;
 	width: 75px;
@@ -82,7 +59,7 @@ body {
 	flex-flow: column;
 }
 
-.icon:hover {
+#desktop > .icon:hover {
 	border-radius: 3px;
 	background-color: #ececec32;
 }
@@ -90,16 +67,26 @@ body {
 /* .icon:focus,
 .icon:focus-visible,
 .icon:focus-within  */
-.icon-selected {
+#desktop > .icon-selected {
 	border-radius: 3px;
 	background-color: #ececec56;
 }
 
-figure.icon img {
+#desktop > .icon img {
 	width: 48px;
 	height: auto;
 	max-height: 48px;
 	margin-top: 3px;
+}
+
+#desktop > .icon img:before {
+	background-image: url("../imgs/defaults/invalid.png");
+	position: relative;
+	width: 48px;
+	height: 48px;
+	content: " ";
+	display: block;
+	background-size: cover;
 }
 
 figcaption {
@@ -108,7 +95,7 @@ figcaption {
 	height: min-content;
 	padding: 0 2px;
 	position: relative;
-	margin-top: 6px;
+	margin-top: 4px;
 }
 
 textarea {
@@ -124,8 +111,7 @@ textarea {
 	border: 0;
 	margin: -2px;
 	padding: 2px;
-	/* background-color: #fff; */
-
+	font-size: 12px;
 	color: #000;
 }
 
@@ -153,12 +139,12 @@ textarea:read-only {
 	left: 0;
 	width: 100vw;
 	height: var(--navbar-height);
-	background-color: rgba(6, 8, 32, var(--navbar-transparency));
+	background-color: rgba(8, 41, 93, var(--navbar-transparency));
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	border-top: 1px solid rgb(255, 255, 255);
-	/* margin-top: 2px; */
+	box-shadow: 0px 3px 2px 3px
+		rgb(196 212 255 / calc(35% * (var(--navbar-transparency) * 3)));
 }
 #navbar > div {
 	margin: 0px;
@@ -166,41 +152,41 @@ textarea:read-only {
 	height: var(--navbar-height);
 	background: linear-gradient(
 		90deg,
-		rgba(255, 0, 0, 0.1) 0%,
-		rgba(0, 0, 255, 0.1) 100%
+		rgba(255, 0, 0, var(--navbar-dev)) 0%,
+		rgba(0, 0, 255, var(--navbar-dev)) 100%
 	);
 }
 
 #navbar > .navbar-menu {
 	width: 56px;
-	background: rgba(255, 0, 0, 0.1);
+	background: rgba(255, 0, 0, var(--navbar-dev));
 }
 
 #navbar > .navbar-search {
 	width: 42.5px;
-	background: rgba(0, 255, 0, 0.1);
+	background: rgba(0, 255, 0, var(--navbar-dev));
 }
 
 #navbar > .navbar-spacer {
 	max-width: 100%;
-	background: rgba(255, 0, 255, 0.1);
+	background: rgba(255, 0, 255, var(--navbar-dev));
 	flex-grow: 1;
 	width: min-content;
 }
 
 #navbar > .navbar-volume {
 	width: 30px;
-	background: rgba(0, 0, 255, 0.1);
+	background: rgba(0, 0, 255, var(--navbar-dev));
 }
 
 #navbar > .navbar-time {
 	width: 97px;
-	background: rgba(0, 255, 0, 0.1);
+	background: rgba(0, 255, 0, var(--navbar-dev));
 }
 
 #navbar > .navbar-minimize {
 	width: 12px;
-	background: rgba(255, 0, 0, 0.1);
+	background: rgba(255, 0, 0, var(--navbar-dev));
 }
 
 .datetime {
@@ -211,6 +197,33 @@ textarea:read-only {
 
 #windows {
 	z-index: -1;
+}
+
+#windows > .windows-app {
+	position: absolute;
+	top: 50px;
+	left: 250px;
+	min-width: 400px;
+	min-height: 300px;
+	background-color: rgb(25, 25, 25);
+	border: 1px solid rgb(55, 55, 55);
+	border-radius: 6px;
+}
+
+#windows > .windows-app.active {
+	border: 1px solid rgb(0, 99, 177);
+}
+
+#windows > .windows-app .padding {
+	width: 100%;
+	height: 23px;
+	background-color: rgb(28, 28, 28);
+}
+
+#windows > .windows-app .header {
+	width: 100%;
+	height: 23px;
+	background-color: rgb(32, 32, 32);
 }
 
 .errors {
@@ -230,7 +243,7 @@ textarea:read-only {
 	display: none;
 }
 
-@media only screen and (width <= 900px), (height <= 500px) {
+@media only screen and (width <= 800px), (height <= 500px) {
 	.errors.hidden {
 		display: block;
 	}

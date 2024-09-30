@@ -122,3 +122,38 @@ setInterval(function () {
 function cl() {
     console.log(...arguments);
 }
+
+function sleep(ms) {
+    return new Promise(resolve => {
+        setTimeout(resolve, ms)
+    });
+}
+
+function openDb() {
+    let localDatabaseRequest = indexedDB.open(dbName, 1);
+
+    localDatabaseRequest.onsuccess = function () {
+        localDatabase = this.result;
+        localDatabase.getStore = function (store, readonly_readwrite = "readwrite") {
+            return localDatabase.transaction(store, readonly_readwrite).objectStore(store);
+        };
+        // localDatabase.stores = new Map();
+        // [...localDatabase.objectStoreNames].forEach((el) => {
+        //     localDatabase.stores.set(el, localDatabase.transaction(el, "readwrite").objectStore(el));
+        // })
+    };
+
+    localDatabaseRequest.onerror = function (event) {
+        cl("Prohlížeč nepodporuje nebo je zakázaná IndexedDB\nVýjimečně může být strana v kódu stránky\n", event.target.error?.message);
+    };
+
+    localDatabaseRequest.onupgradeneeded = function (event) {
+        let dbStore;
+        dbStores.forEach((element) => {
+            dbStore = event.currentTarget.result.createObjectStore(element.name, { keyPath: "id", autoIncrement: false });
+            element.columns.forEach((column) => {
+                dbStore.createIndex(column, column, { unique: false });
+            });
+        });
+    };
+}
