@@ -2,6 +2,7 @@
 
 window.addEventListener("load", async () => {
     cl("| Document Ready");
+    // localDatabase.close();
     openDb();
     cl("| indexedDB Ready");
     await processData();
@@ -11,7 +12,7 @@ window.addEventListener("load", async () => {
 
 let localDatabase
 const dbName = "ZWA";
-const dbStores = [new dbShape("desktopIcons", Object.keys(new desktopIcon())), new dbShape("navbarIcons", Object.keys(new navbarIcon())), new dbShape("directoryHandlers", Object.keys(new directoryHandler())), new dbShape("fileHandlers", Object.keys(new fileHandler()))];
+const dbStores = [new dbShape("desktopIcons", Object.keys(new desktopIcon())), new dbShape("navbarIcons", Object.keys(new navbarIcon())), new dbShape("directoryHandlers", Object.keys(new directoryHandler())), new dbShape("fileHandlers", Object.keys(new fileHandler())), new dbShape("vNodes", Object.keys(new vNode()))];
 
 window.addEventListener("click", () => {
     deselectIcons();
@@ -50,19 +51,33 @@ document.querySelectorAll("#desktop > .icon").forEach((iconElement) => {
 });
 
 async function processData() {
-    cl("| Starting processing data");
-    await processDesktopIcons();
-    cl("| Desktop Icons processed")
-    return;
-}
-
-async function processDesktopIcons() {
     while (!localDatabase) {
         await sleep(20);
     }
-    desktopIcons.forEach(function (item) {
-        addDesktopIcon(item);
-    });
+    cl("| Processing data...");
+    processDesktopIcons();
+    cl("| Desktop Icons processed")
+    cl("| Processing vNodes...");
+    processVNodes();
+    cl("| vNodes processed")
+    return;
+}
+
+function processVNodes() {
+    vNodes.forEach( function (node) {
+        pushNodeToLocalDb(node);
+    })
+}
+
+function pushNodeToLocalDb(node) {
+    cl(" - Processing:", node);
+    localDatabase.getStore("vNodes", "readwrite").add(node)
+}
+
+function processDesktopIcons() {
+    // desktopIcons.forEach(function (item) {
+    //     addDesktopIcon(item);
+    // });
     return;
 }
 

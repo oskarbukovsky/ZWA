@@ -141,10 +141,16 @@ function openDb() {
         // [...localDatabase.objectStoreNames].forEach((el) => {
         //     localDatabase.stores.set(el, localDatabase.transaction(el, "readwrite").objectStore(el));
         // })
+        localDatabase.onclose = function (event) {
+            cl("! Spojení s databází bylo přerušeno", event);
+        }
+        localDatabase.onerror = function (event) {
+            cl("! Nastala chyba v databázi:", event.target?.error);
+        };
     };
 
     localDatabaseRequest.onerror = function (event) {
-        cl("Prohlížeč nepodporuje nebo je zakázaná IndexedDB\nVýjimečně může být strana v kódu stránky\n", event.target.error?.message);
+        cl("Prohlížeč pravděpodobně nepodporuje nebo je zakázaná IndexedDB", event.target.error?.message);
     };
 
     localDatabaseRequest.onupgradeneeded = function (event) {
@@ -156,4 +162,9 @@ function openDb() {
             });
         });
     };
+}
+
+
+function clearDb() {
+    // localStorage.
 }
