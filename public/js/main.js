@@ -64,7 +64,7 @@ async function processData() {
 }
 
 function processVNodes() {
-    vNodes.forEach( function (node) {
+    vNodes.forEach(function (node) {
         pushNodeToLocalDb(node);
     })
 }
@@ -75,9 +75,11 @@ function pushNodeToLocalDb(node) {
 }
 
 function processDesktopIcons() {
-    // desktopIcons.forEach(function (item) {
-    //     addDesktopIcon(item);
-    // });
+    if (desktopIcons) {
+        desktopIcons.forEach(function (item) {
+            addDesktopIcon(item);
+        });
+    }
     return;
 }
 
@@ -166,6 +168,7 @@ function addDesktopIcon(item) {
 
     let textarea = document.createElement("textarea");
     textarea.name = "icon-name";
+    textarea.cols = 11;
     textarea.readOnly = true;
     textarea.textContent = item.name;
     caption.appendChild(textarea);
