@@ -23,7 +23,7 @@ body {
 			hsl(221deg 100% 50%) 100%
 		);
 	background-blend-mode: screen;
-	background-image: url("../imgs/defaults/wallpaper.jpg");
+	background-image: url("../media/last.webp");
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
@@ -80,7 +80,7 @@ body {
 }
 
 #desktop > .icon img:before {
-	background-image: url("../imgs/defaults/invalid.png");
+	background-image: url("../media/defaults/invalid.png");
 	position: relative;
 	width: 48px;
 	height: 48px;
@@ -160,7 +160,7 @@ textarea:read-only {
 #navbar > .navbar-menu {
 	width: 56px;
 	background: rgba(255, 0, 0, var(--navbar-dev));
-	background-image: url("../imgs/defaults/main-menu.webp");
+	background-image: url("../media/defaults/main-menu.webp");
 	background-position: 65% 50%;
 	background-repeat: no-repeat;
 	background-size: 50%;

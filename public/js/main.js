@@ -129,22 +129,22 @@ function addDesktopIcon(item) {
     } else {
         switch (item.type) {
             case "trash":
-                icon.src = "../imgs/defaults/trash.png";
+                icon.src = "../media/defaults/trash.png";
                 break;
             case "link":
-                icon.src = "../imgs/defaults/link.png";
+                icon.src = "../media/defaults/link.png";
                 break;
             case "pdf":
-                icon.src = "../imgs/defaults/pdf.png";
+                icon.src = "../media/defaults/pdf.png";
                 break;
             case "folder":
-                icon.src = "../imgs/defaults/folder.png";
+                icon.src = "../media/defaults/folder.png";
                 break;
             case "text":
-                icon.src = "../imgs/defaults/text-document.png";
+                icon.src = "../media/defaults/text-document.png";
                 break;
             default:
-                icon.src = "../imgs/defaults/invalid.png";
+                icon.src = "../media/defaults/invalid.png";
         }
     }
     holder.appendChild(icon);
