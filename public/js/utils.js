@@ -129,6 +129,17 @@ function sleep(ms) {
     });
 }
 
+function deleteDb() {
+    return new Promise((resolve) => {
+        function success() {
+            cl("| Deleted database successfully");
+            resolve();
+        }
+        var req = indexedDB.deleteDatabase("ZWA");
+        req.onsuccess = success();
+    });
+}
+
 function openDb() {
     let localDatabaseRequest = indexedDB.open(dbName, 1);
 
@@ -138,7 +149,7 @@ function openDb() {
             return localDatabase.transaction(store, readonly_readwrite).objectStore(store);
         };
 
-        localDatabase.getColumn = async function (store, column, filter = null) {
+        localDatabase.getColumn = function (store, column, filter = null) {
             let dbStore = localDatabase.getStore(store);
             let dbIndex = dbStore.index(column);
             let result = [];
@@ -148,19 +159,21 @@ function openDb() {
                 function success(event) {
                     const cursor = event.target.result;
                     if (cursor) {
-                        console.log(" - item: ", cursor.value);
+                        // cl(" - item: ", cursor.value);
                         result.push(cursor.value)
                         cursor.continue();
                     } else {
-                        console.log("Entries all displayed.");
+                        // cl("Entries all displayed.");
                         return resolve(result);
                     }
                 }
-                if (filter === null) {
+                if (filter !== null) {
                     let dbRange = IDBKeyRange.only(filter);
                     let dbCursor = dbIndex.openCursor(dbRange).onsuccess = (event) => success(event);
+                    // cl(dbCursor);
                 } else {
                     let dbCursor = dbIndex.openCursor().onsuccess = (event) => success(event);
+                    // cl(dbCursor);
                 }
             });
         }
@@ -198,6 +211,7 @@ function openDb() {
             currentStore.columns.forEach((column) => {
                 dbStore.createIndex(column, column, { unique: false });
             });
+            // dbStore.createIndex("test", ['type','colour','ageRange'], { unique: false });
         });
     };
 }

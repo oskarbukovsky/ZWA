@@ -61,20 +61,22 @@
 const userIdentifier = new user("bukovja4", "50eced28-c925-4948-80eb-e4fabe83a41b", null, 47, 0.8);
 
 const vNodes = [new vNode(
-    0,
+    "10f03bee-a841-44d1-97f4-ba3ae8af4073",
     "root",
+    null,
     Date.now() - 1000,
     Date.now(),
     0,
     "50eced28-c925-4948-80eb-e4fabe83a41b",
     new vPermission(false),
-    "V:",
+    userIdentifier.username,
     "Základní složka",
     undefined,
-    [null, 1, 2, 3, 4]
+    []
 ), new vNode(
-    1,
+    "dc7a8dc1-6656-4671-863b-7df885d61388",
     "trash",
+    "10f03bee-a841-44d1-97f4-ba3ae8af4073",
     Date.now() - 1000,
     Date.now(),
     0,
@@ -83,10 +85,11 @@ const vNodes = [new vNode(
     "Koš",
     "Obsahuje smazané soubory a složky",
     undefined,
-    [0]
+    []
 ), new vNode(
-    2,
+    "704d99cf-0e37-4797-8605-fa844f25efe5",
     "desktop",
+    "10f03bee-a841-44d1-97f4-ba3ae8af4073",
     Date.now() - 1000,
     Date.now(),
     0,
@@ -95,10 +98,11 @@ const vNodes = [new vNode(
     "Plocha",
     "Obsahuje soubory a složky na ploše",
     undefined,
-    [0, 21, 22, 23]
+    []
 ), new vNode(
-    3,
+    "27106875-6cf7-4666-bcd0-3eec4ddc10af",
     "documents",
+    "10f03bee-a841-44d1-97f4-ba3ae8af4073",
     Date.now() - 1000,
     Date.now(),
     0,
@@ -107,10 +111,11 @@ const vNodes = [new vNode(
     "Plocha",
     "Složka pro ukládání dokumentů",
     undefined,
-    [0, 31]
+    []
 ), new vNode(
-    4,
+    "13915013-2ea7-423b-9a84-7fb07c9ec9d2",
     "images",
+    "10f03bee-a841-44d1-97f4-ba3ae8af4073",
     Date.now() - 1000,
     Date.now(),
     0,
@@ -119,12 +124,13 @@ const vNodes = [new vNode(
     "Obrázky",
     "Složka pro ukládání obrázků",
     undefined,
-    [0]
+    []
 ),
 
 new vNode(
-    21,
+    "44c7bc8c-8201-4b61-a4a7-7ac488505a3b",
     "link",
+    "704d99cf-0e37-4797-8605-fa844f25efe5",
     Date.now() - 1000,
     Date.now(),
     0,
@@ -133,11 +139,12 @@ new vNode(
     "Koš",
     "Složka pro ukládání dokumentů",
     undefined,
-    [2, "vLinkTrash://"]
+    ["vLinkTrash://"]
 ),
 new vNode(
-    22,
+    "0f96d238-cc98-4825-9007-dc6bea0bc753",
     "file",
+    "704d99cf-0e37-4797-8605-fa844f25efe5",
     2,
     Date.now(),
     0,
@@ -146,10 +153,11 @@ new vNode(
     "Nový textový dokument.txt",
     "Typ: Textový dokument",
     undefined,
-    [2, "/2/"]
+    ["/2/"]
 ), new vNode(
-    23,
+    "6c1e65b9-ab3e-426a-b6ba-d0a1a304061b",
     "file",
+    "704d99cf-0e37-4797-8605-fa844f25efe5",
     1,
     Date.now(),
     0,
@@ -158,11 +166,12 @@ new vNode(
     "Dokument1.txt",
     "Typ: Textový dokument",
     undefined,
-    [2, "/2/"]
+    ["/2/"]
 ), 
 new vNode(
-    31,
+    "6c6bc7b9-0678-420b-a27f-bfadff021ece",
     "file",
+    "27106875-6cf7-4666-bcd0-3eec4ddc10af",
     3,
     Date.now(),
     0,
@@ -171,7 +180,7 @@ new vNode(
     "Testing.txt",
     "Typ: Textový dokument",
     undefined,
-    [3, "/3/"]
+    ["/3/"]
 )
 ];
 

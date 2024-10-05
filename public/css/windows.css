@@ -1,0 +1,187 @@
+#windows {
+	pointer-events: none;
+}
+
+#windows > .windows-app {
+	position: absolute;
+	top: 50px;
+	left: 250px;
+	min-width: 400px;
+	background-color: rgb(25, 25, 25);
+	border: 1px solid rgb(55, 55, 55);
+	border-radius: 6px;
+	box-shadow: 1px 1px 4px -1px rgb(0 12 26 / 50%);
+	color: #fff;
+	pointer-events: all;
+	user-select: none;
+}
+
+#windows > .windows-app.active {
+	border: 1px solid rgb(0, 99, 177);
+}
+
+.windows-app .app-padding {
+	width: 100%;
+	height: 23px;
+	background-color: rgb(28, 28, 28);
+}
+
+.windows-app > .app-header {
+	width: 100%;
+	height: min(fit-content, calc(10px + var(--app-controls-size)));
+	background-color: rgb(32, 32, 32);
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	flex-flow: row;
+	border-radius: 6px 6px 0 0;
+}
+
+.windows-app > .app-content {
+	width: 100%;
+	height: 100%;
+	min-height: 300px;
+}
+
+.windows-app > .app-content:before {
+	content: "Načítání...";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 2.5em;
+	/* color: #fff; */
+    animation: loading-text-animation 4s linear infinite;
+}
+
+@keyframes loading-text-animation {
+	0% {
+	color: #6e6e6e;
+	}
+	10% {
+		color: #6e6e6e;
+	}
+	30% {
+		color: white;
+	}
+	50% {
+		color: #6e6e6e;
+	}
+	60% {
+		color: #6e6e6e;
+	}
+	80% {
+		color: white;
+	}
+	100% {
+		color: #6e6e6e;
+	}
+}
+
+iframe {
+	width: 100%;
+	min-height: 350px;
+	border: none;
+	position: relative;
+}
+
+.app-v1 {
+	display: flex;
+	flex-flow: row;
+	align-self: center;
+	align-items: center;
+	gap: 4px;
+	padding: 2px 0 0 2px;
+}
+
+.app-v1 > .app-icon, .app-icon > img {
+	width: calc(
+		10px + var(--app-controls-size) + var(--app-controls-extra) - 4px
+	);
+	height: calc(
+		10px + var(--app-controls-size) + var(--app-controls-extra) - 4px
+	);
+	/* background-color: green; */
+	/* margin: 2px; */
+}
+
+.app-v1 > .app-icon {
+    margin: 2px;
+}
+
+.app-v1 > .app-title {
+    font-family: "Segoe UI Variable Static Text", sans-serif;
+    font-size: 1.1em;
+}
+
+.app-header > .app-controls {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	flex-flow: row;
+}
+
+.app-header > .app-controls div {
+	display: block;
+	position: relative;
+}
+
+.app-controls > div {
+	padding: max(
+			var(--app-controls-extra),
+			calc(-1 * var(--app-controls-extra))
+		)
+		calc(
+			10px +
+				max(
+					var(--app-controls-extra),
+					calc(-1 * var(--app-controls-extra))
+				)
+		);
+	fill: red;
+}
+
+.app-controls > .minimize {
+	content: url("../media/defaults/app-minimize.svg");
+	width: auto;
+	height: var(--app-controls-size);
+}
+.app-controls > .maximize {
+	content: url("../media/defaults/app-maximize.svg");
+	width: auto;
+	height: var(--app-controls-size);
+}
+
+.maximized .app-controls > .maximize {
+	content: url("../media/defaults/app-restore.svg");
+	width: auto;
+	height: var(--app-controls-size);
+}
+
+.app-controls > .close {
+	content: url("../media/defaults/app-close.svg");
+	width: auto;
+	height: var(--app-controls-size);
+}
+
+.active .app-header > .app-controls > .minimize:hover,
+.active .app-header > .app-controls > .maximize:hover {
+	background-color: rgb(15, 26, 40);
+}
+
+.app-header > .app-controls > .minimize:hover,
+.app-header > .app-controls > .maximize:hover {
+	background-color: #2d2d2d;
+}
+
+.app-header > .app-controls > .close {
+	border-radius: 0 5px 0 0;
+}
+
+.app-header > .app-controls > .close:hover {
+	background-color: rgb(196, 43, 28);
+}
+
+.windows-app.active > .app-header {
+	background-color: rgba(0, 12, 26, 0.7);
+}

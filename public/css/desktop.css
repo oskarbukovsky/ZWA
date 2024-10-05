@@ -1,0 +1,93 @@
+
+#desktop {
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-content: flex-start;
+	align-items: flex-start;
+	overflow: auto;
+}
+
+#desktop > .icon {
+	flex: 0 1 auto;
+	align-self: flex-start;
+	width: 75px;
+	height: 95px;
+	margin: 4px 2px;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-flow: column;
+}
+
+#desktop > .icon:hover {
+	border-radius: 3px;
+	background-color: #ececec32;
+}
+
+#desktop > .icon-selected {
+	border-radius: 3px;
+	background-color: #ececec56;
+}
+
+#desktop > .icon img {
+	width: 48px;
+	height: auto;
+	max-height: 48px;
+	margin-top: 3px;
+}
+
+#desktop > .icon img:before {
+	background-image: url("../media/defaults/unknown.webp");
+	position: relative;
+	width: 48px;
+	height: 48px;
+	content: " ";
+	display: block;
+	background-size: cover;
+}
+
+figcaption {
+	width: 100%;
+	inline-size: 71px;
+	height: min-content;
+	padding: 0 2px;
+	position: relative;
+	margin-top: 4px;
+}
+
+textarea {
+	width: 100%;
+	resize: none;
+	outline: none;
+	text-align: center;
+	font-family: "Segoe UI Variable Static Text", sans-serif;
+	overflow-wrap: break-word;
+	text-overflow: clip;
+	white-space: normal;
+	overflow: hidden;
+	border: 0;
+	margin: -2px;
+	padding: 2px;
+	font-size: 12px;
+	color: #000;
+}
+
+textarea:read-only::selection {
+	background: transparent;
+}
+
+#desktop > figure > img {
+	user-select: none;
+}
+
+textarea::-webkit-scrollbar {
+	display: none;
+}
+
+textarea:read-only {
+	text-shadow: 2px 1px 3px rgb(0, 0, 0);
+	background-color: transparent;
+	color: rgba(255, 255, 255, 0.9);
+}

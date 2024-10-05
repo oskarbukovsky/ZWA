@@ -1,0 +1,17 @@
+@media only screen and (width <= 800px), (height <= 500px) {
+	.errors.hidden {
+		display: block !important;
+	}
+	.errors.hidden::before {
+		content: "Chyba";
+		color: #f00;
+		font-size: 32px;
+	}
+	.errors.hidden::after {
+		content: "Příliš malé rozlišení monitoru";
+		color: #efefefef;
+		font-size: 20px;
+		position: relative;
+		left: -0.4em;
+	}
+}

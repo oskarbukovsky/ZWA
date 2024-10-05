@@ -1,0 +1,9 @@
+:root {
+	--navbar-transparency: 0.8;
+	--navbar-height: 47px;
+	--navbar-dev: 0;
+	/* --navbar-dev: 0.2; */
+
+	--app-controls-size: 13px;
+	--app-controls-extra: 9px;
+}

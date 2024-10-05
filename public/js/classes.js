@@ -7,10 +7,13 @@ class dbShape {
 }
 
 class vPermission {
-    constructor(canDelete = true, canView = true) {
+    constructor(canDelete = true) {
         this.canDelete = canDelete;
-        this.canView = canView;
     }
+    // constructor(canDelete = true, canView = true) {
+    //     this.canDelete = canDelete;
+    //     this.canView = canView;
+    // }
 }
 
 // crypto.randomUUID()
@@ -24,10 +27,11 @@ class user {
     }
 }
 class vNode {
-    constructor(id, type, timeCreate, timeEdit, timeRead, owner, permissions, name, description, size, data) {
+    constructor(id, type, parent, timeCreate, timeEdit, timeRead, owner, permissions, name, description, size, data) {
         this.id = id;
 
         this.type = type;
+        this.parent = parent;
 
         this.timeCreate = timeCreate;
         this.timeEdit = timeEdit;
