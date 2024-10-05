@@ -4,12 +4,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="css/login.css">
 <link rel="prefetch" href="desktop.html">
-<link rel="prefetch" href="css/main.css">
-<!-- <link rel="stylesheet" type="text/css" href="css/main.css"> -->
-<link rel="prefetch" href="js/classes.js">
-<link rel="prefetch" href="js/main.js">
-<link rel="prefetch" href="js/utils.js">
-<link rel="prefetch" href="media/last.webp">
 <link href="https://fonts.cdnfonts.com/css/segoe-ui-variable-static-display" rel="stylesheet">
 <link rel="icon" href="media/favicon.png" type="image/gif" sizes="256x256">
 <title>Login</title>
@@ -18,15 +12,15 @@
 
 <body>
     <video id="loginAnimation" class="hidden">
-        <source src="media/bloom.mp4" type="video/mp4">
+        <source src="media/login/bloom.mp4" type="video/mp4">
     </video>
     <div id="authForms">
         <div class="user-icon">
-            <img src="media/defaults/user-icon.webp" alt="Default User Icon">
+            <img src="media/login/user-icon.webp" alt="Default User Icon">
         </div>
         <form action="desktop.html" method="post" id="loginForm">
-            <input id="loginUsername" type="text" name="username" placeholder="Jméno" autocomplete="off">
-            <input id="loginPassword" type="password" name="password" placeholder="Heslo" autocomplete="current-password">
+            <input id="loginUsername" type="text" name="username" placeholder="Jméno" autocomplete="off" pattern="[a-zA-Z0-9]{5,16}" title="">
+            <input id="loginPassword" type="password" name="password" placeholder="Heslo" autocomplete="current-password" pattern=".{6,}">
             <label class="loginButton">
                 <input type="submit" value="Submit">
                 <svg width="24" height="24" viewBox="0 0 24 24">
@@ -35,9 +29,9 @@
             </label>
         </form>
         <form action="desktop.html" method="post" id="registerForm">
-            <input id="registerUsername" type="text" name="username" placeholder="Jméno" autocomplete="off">
-            <input id="registerPassword" type="password" name="password" placeholder="Heslo" autocomplete="off">
-            <input id="registerPasswordAgain" type="password" name="passwordAgain" placeholder="Heslo znovu" autocomplete="off">
+            <input id="registerUsername" type="text" name="username" placeholder="Jméno" autocomplete="off" pattern="[a-zA-Z0-9]{5,16}" title="Jméno musí mít 5-16 znaků, a smí být složenu pouze z a-z, A-Z, 0-9">
+            <input id="registerPassword" type="password" name="password" placeholder="Heslo" autocomplete="off" pattern=".{6,}" title="Heslo musí obsahovat 6 a více znaků">
+            <input id="registerPasswordAgain" type="password" name="passwordAgain" placeholder="Heslo znovu" autocomplete="off" pattern=".{6,}">
             <label class="loginButton">
                 <input type="submit" value="Submit">
                 <svg width="24" height="24" viewBox="0 0 24 24">

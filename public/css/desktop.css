@@ -39,7 +39,7 @@
 }
 
 #desktop > .icon img:before {
-	background-image: url("../media/defaults/unknown.webp");
+	background-image: url("../media/file-icons/unknown.webp");
 	position: relative;
 	width: 48px;
 	height: 48px;
