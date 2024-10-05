@@ -1,21 +1,31 @@
 "use strict";
 
-async function login(event) {
+async function authSubmit(event) {
     event.preventDefault();
     loginAnimation.classList.remove("hidden");
-    authForm.classList.add("hidden");
+    authForms.classList.add("hidden");
     loginAnimation.play();
     await sleep(5250);
     event.target.submit();
 }
 
+window.addEventListener("load", () => {
+    loginForm.addEventListener("submit", async (event) => {
+        await authSubmit(event);
+    }); 
+    registerForm.addEventListener("submit", async (event) => {
+        await authSubmit(event);
+    }); 
+});
 window.onpageshow = function(event) {
     if (event.persisted) {
         loginAnimation.load();
         loginAnimation.pause();
         loginAnimation.classList.add("hidden");
-        authForm.classList.remove("hidden");
-        password.value = "";
+        authForms.classList.remove("hidden");
+        loginPassword.value = "";
+        registerPassword.value = "";
+        registerPasswordAgain.value = "";
     }
 };
 

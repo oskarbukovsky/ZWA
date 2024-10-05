@@ -11,8 +11,7 @@
 <link rel="prefetch" href="js/utils.js">
 <link rel="prefetch" href="media/last.webp">
 <link href="https://fonts.cdnfonts.com/css/segoe-ui-variable-static-display" rel="stylesheet">
-<link rel="icon" href="media/favicon.png"
-        type="image/gif" sizes="256x256">
+<link rel="icon" href="media/favicon.png" type="image/gif" sizes="256x256">
 <title>Login</title>
 <script src="js/login.js"></script>
 </head>
@@ -21,13 +20,13 @@
     <video id="loginAnimation" class="hidden">
         <source src="media/bloom.mp4" type="video/mp4">
     </video>
-    <div id="authForm">
+    <div id="authForms">
         <div class="user-icon">
             <img src="media/defaults/user-icon.webp" alt="Default User Icon">
         </div>
-        <form action="desktop.html" method="post" onsubmit="login(event)">
-            <input id="username" type="text" name="username" placeholder="Jméno" autocomplete="off">
-            <input id="password" type="password" name="password" placeholder="Heslo" autocomplete="current-password">
+        <form action="desktop.html" method="post" id="loginForm">
+            <input id="loginUsername" type="text" name="username" placeholder="Jméno" autocomplete="off">
+            <input id="loginPassword" type="password" name="password" placeholder="Heslo" autocomplete="current-password">
             <label class="loginButton">
                 <input type="submit" value="Submit">
                 <svg width="24" height="24" viewBox="0 0 24 24">
@@ -35,7 +34,22 @@
                 </svg>
             </label>
         </form>
-        <span id="toggle-login-register">abc</span>
+        <form action="desktop.html" method="post" id="registerForm">
+            <input id="registerUsername" type="text" name="username" placeholder="Jméno" autocomplete="off">
+            <input id="registerPassword" type="password" name="password" placeholder="Heslo" autocomplete="off">
+            <input id="registerPasswordAgain" type="password" name="passwordAgain" placeholder="Heslo znovu" autocomplete="off">
+            <label class="loginButton">
+                <input type="submit" value="Submit">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z"></path>
+                </svg>
+            </label>
+        </form>
+
+        <label for="toggle-login-register">
+            <input type="checkbox" id="toggle-login-register"></input>
+        </label>
+
     </div>
 </body>
 

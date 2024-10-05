@@ -248,7 +248,7 @@ textarea:read-only {
 }
 
 .hidden {
-	display: none;
+	display: none !important;
 }
 
 @media only screen and (width <= 800px), (height <= 500px) {

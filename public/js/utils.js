@@ -137,6 +137,33 @@ function openDb() {
         localDatabase.getStore = function (store, readonly_readwrite = "readwrite") {
             return localDatabase.transaction(store, readonly_readwrite).objectStore(store);
         };
+
+        localDatabase.getColumn = async function (store, column, filter = null) {
+            let dbStore = localDatabase.getStore(store);
+            let dbIndex = dbStore.index(column);
+            let result = [];
+
+            return new Promise(function (resolve) {
+
+                function success(event) {
+                    const cursor = event.target.result;
+                    if (cursor) {
+                        console.log(" - item: ", cursor.value);
+                        result.push(cursor.value)
+                        cursor.continue();
+                    } else {
+                        console.log("Entries all displayed.");
+                        return resolve(result);
+                    }
+                }
+                if (filter === null) {
+                    let dbRange = IDBKeyRange.only(filter);
+                    let dbCursor = dbIndex.openCursor(dbRange).onsuccess = (event) => success(event);
+                } else {
+                    let dbCursor = dbIndex.openCursor().onsuccess = (event) => success(event);
+                }
+            });
+        }
         // localDatabase.stores = new Map();
         // [...localDatabase.objectStoreNames].forEach((el) => {
         //     localDatabase.stores.set(el, localDatabase.transaction(el, "readwrite").objectStore(el));
@@ -153,11 +180,22 @@ function openDb() {
         cl("Prohlížeč pravděpodobně nepodporuje nebo je zakázaná IndexedDB", event.target.error?.message);
     };
 
+    // localDatabaseRequest.onupgradeneeded = function (event) {
+    //     let dbStore;
+    //     dbStores.forEach((element) => {
+    //         dbStore = event.currentTarget.result.createObjectStore(element.name, { keyPath: "id", autoIncrement: false });
+    //         element.columns.forEach((column) => {
+    //             dbStore.createIndex(column, column, { unique: false });
+    //         });
+    //     });
+    // };
+
     localDatabaseRequest.onupgradeneeded = function (event) {
         let dbStore;
-        dbStores.forEach((element) => {
-            dbStore = event.currentTarget.result.createObjectStore(element.name, { keyPath: "id", autoIncrement: false });
-            element.columns.forEach((column) => {
+        dbStores.forEach((currentStore) => {
+            // cl("Creating with key: ", currentStore?.keyPath);
+            dbStore = event.currentTarget.result.createObjectStore(currentStore.name, { keyPath: currentStore.keyPath, autoIncrement: false });
+            currentStore.columns.forEach((column) => {
                 dbStore.createIndex(column, column, { unique: false });
             });
         });

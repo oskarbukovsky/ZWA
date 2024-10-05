@@ -33,18 +33,6 @@ body:before {
 	filter: blur(4px);
 }
 
-#authForm {
-	max-width: fit-content;
-	margin: auto;
-	/* z-index: 3; */
-}
-form {
-	display: flex;
-	flex-flow: column;
-	gap: 8px;
-	position: relative;
-}
-
 #loginAnimation {
 	position: absolute;
 	top: 50%;
@@ -58,7 +46,25 @@ form {
 	align-items: center;
 	flex-flow: column;
 	object-fit: cover;
+	filter: blur(4px);
 }
+
+#authForms {
+	max-width: fit-content;
+	margin: auto;
+	/* z-index: 3; */
+	display: flex;
+	flex-flow: column;
+	gap: 24px;
+	align-items: center;
+}
+form {
+	display: flex;
+	flex-flow: column;
+	gap: 8px;
+	position: relative;
+}
+
 
 #loginAnimation.hidden {
 	display: none;
@@ -72,10 +78,6 @@ form {
 	backdrop-filter: blur(2px);
 	width: 128px;
 	height: 128px;
-	max-width: fit-content;
-	margin: auto;
-	margin-bottom: 24px;
-	user-select: none;
 }
 
 input[type="text"],
@@ -103,7 +105,6 @@ input[type="text"]::placeholder,
 input[type="password"]::placeholder {
 	color: rgb(200, 200, 200);
 	font-size: 0.85em;
-	user-select: none;
 }
 
 input[type="text"]:focus,
@@ -123,7 +124,7 @@ input[type="password"]:focus {
 }
 
 .loginButton:hover {
-	fill: rgba(180, 180, 196, 1);
+	fill: rgba(180, 180, 196, 0.9);
 }
 
 input[type="submit"] {
@@ -131,5 +132,34 @@ input[type="submit"] {
 }
 
 .hidden {
+	display: none !important;
+}
+
+#authForms:has(#toggle-login-register:checked) > #loginForm {
 	display: none;
 }
+
+#authForms:not(:has(#toggle-login-register:checked)) > #registerForm {
+	display: none;
+}
+
+#toggle-login-register {
+	display: none;
+}
+
+#authForms:has(#toggle-login-register:checked) label[for=toggle-login-register]:before
+{
+	content: "Přihlásit";
+}
+
+#authForms:not(:has(#toggle-login-register:checked)) label[for=toggle-login-register]:before
+{
+	content: "Registrovat";
+}
+
+input,
+label,
+.user-icon {
+	user-select: none;
+}
+
