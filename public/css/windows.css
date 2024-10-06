@@ -14,6 +14,15 @@
 	color: #fff;
 	pointer-events: all;
 	user-select: none;
+	transition: opacity 250ms, transform 250ms;
+	transition-timing-function: ease-in-out;
+	opacity: 1;
+	transform: none;
+}
+
+#windows > .windows-app.closing {
+	opacity: 0;
+	transform: scale(0);
 }
 
 #windows > .windows-app.active {
@@ -184,4 +193,14 @@ iframe {
 
 .windows-app.active > .app-header {
 	background-color: rgba(0, 12, 26, 0.7);
+}
+
+#windows:has(.dragging) > .windows-app > .app-content:after {
+	position: absolute;
+	top: calc(12px + var(--app-controls-size) + var(--app-controls-extra));
+	left: 0;
+	content: "";
+	width: 100%;
+	height: calc(100% - calc(12px + var(--app-controls-size) + var(--app-controls-extra)));
+	background-color: transparent;
 }

@@ -34,41 +34,110 @@ const dbName = "ZWA";
 const dbStores = [new dbShape("vNodes", Object.keys(new vNode()), "id"), new dbShape("user", Object.keys(new user()), "uuid")];
 // const dbStores = [new dbShape("vNodes", Object.keys(new vNode()), "id"), new dbShape("vFiles", Object.keys(new vFile()), "uuid")];
 
+//TODO: vylepšit způsob generace columns
+
 window.addEventListener("click", () => {
     deselectIcons();
 })
 
-desktop.querySelectorAll("#desktop > .icon > figcaption").forEach((el) => {
-    el.addEventListener("dblclick", (event) => {
-        let element = event.toElement;
-        if (element.readOnly) {
-            textSelect(element, 0, element.value.lastIndexOf('.'))
-            element.readOnly = !element.readOnly
+window.addEventListener("blur", () => {
+    setTimeout(() => {
+        if (document.activeElement.tagName === "IFRAME") {
+            deselectIcons();
         }
-        event.stopPropagation();
-    });
-    el.addEventListener("focusout", (event) => {
-        event.srcElement.readOnly = true;
-        textDeSelect()
     });
 });
 
-document.querySelectorAll("#desktop > .icon").forEach((iconElement) => {
-    iconElement.addEventListener("click", (event) => {
-        if (!is_key_down('Control')) {
-            deselectIcons();
-        }
-        iconElement.classList.add("icon-selected");
-        event.stopPropagation();
-    })
-    iconElement.addEventListener("dblclick", (event) => {
-        cl("Open Window from Desktop\n", iconElement);
-    });
-    iconElement.addEventListener('contextmenu', function (event) {
-        cl("Open ContextMenu from Desktop\n", iconElement);
+// desktop.querySelectorAll("#desktop > .icon > figcaption").forEach((el) => {
+//     el.addEventListener("dblclick", (event) => {
+//         let element = event.toElement;
+//         if (element.readOnly) {
+//             textSelect(element, 0, element.value.lastIndexOf('.'))
+//             element.readOnly = !element.readOnly
+//         }
+//         event.stopPropagation();
+//     });
+//     el.addEventListener("focusout", (event) => {
+//         event.srcElement.readOnly = true;
+//         textDeSelect()
+//     });
+// });
+
+windows.querySelectorAll(".windows-app").forEach((el) => {
+    dragElement(el);
+});
+
+windows.querySelectorAll(".close").forEach((el) => {
+    el.addEventListener("click", (event) => {
         event.preventDefault();
+        let app = event.target;
+        while (!app.classList.contains("windows-app")) {
+            app = app.parentElement;
+        }
+        app.classList.add("closing");
+        setTimeout(() => {
+            app.remove();
+        }, 250);
     });
 });
+
+
+function dragElement(element) {
+    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    element.querySelector(".app-header").onmousedown = dragMouseDown;
+
+    function dragMouseDown(event) {
+        event.preventDefault();
+        let app = event.target;
+        while (!app.classList.contains("windows-app")) {
+            app = app.parentElement;
+        }
+        app.classList.add("dragging");
+        pos3 = event.clientX;
+        pos4 = event.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(event) {
+        event.preventDefault();
+        pos1 = pos3 - event.clientX;
+        pos2 = pos4 - event.clientY;
+        pos3 = event.clientX;
+        pos4 = event.clientY;
+
+        element.style.top = (element.offsetTop - pos2) + "px";
+        element.style.left = (element.offsetLeft - pos1) + "px";
+    }
+
+    function closeDragElement(event) {
+        let app = event.target;
+        while (!app.classList.contains("windows-app")) {
+            app = app.parentElement;
+        }
+        app.classList.remove("dragging");
+
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+}
+
+// document.querySelectorAll("#desktop > .icon").forEach((iconElement) => {
+//     iconElement.addEventListener("click", (event) => {
+//         if (!is_key_down('Control')) {
+//             deselectIcons();
+//         }
+//         iconElement.classList.add("icon-selected");
+//         event.stopPropagation();
+//     })
+//     iconElement.addEventListener("dblclick", (event) => {
+//         cl("Open Window from Desktop\n", iconElement);
+//     });
+//     iconElement.addEventListener('contextmenu', function (event) {
+//         cl("Open ContextMenu from Desktop\n", iconElement);
+//         event.preventDefault();
+//     });
+// });
 
 async function processUserIdentifier() {
     let time1 = new Date();

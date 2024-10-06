@@ -16,18 +16,26 @@ class vPermission {
     // }
 }
 
+class userSettings {
+    constructor(navbarTransparency, navbarHeigh, appControlsSize, appControlsExtra) {
+        this.navbarTransparency = navbarTransparency;
+        this.navbarHeigh = navbarHeigh;
+        this.appControlsSize = appControlsSize;
+        this.appControlsExtra = appControlsExtra;
+    }
+}
+
 // crypto.randomUUID()
 class user {
-    constructor(username, uuid, icon, navbarHeight, navbarTransparency) {
+    constructor(username, uuid, icon, settings = new userSettings()) {
         this.username = username;
         this.uuid = uuid;
         this.icon = icon;
-        this.navbarHeight = navbarHeight;
-        this.navbarTransparency = navbarTransparency;
+        this.settings = settings;
     }
 }
 class vNode {
-    constructor(id, type, parent, timeCreate, timeEdit, timeRead, owner, permissions, name, description, size, data) {
+    constructor(id, type, parent, timeCreate, timeEdit, timeRead, owner, permissions = new vPermission(), name, description, size, data = []) {
         this.id = id;
 
         this.type = type;
@@ -39,7 +47,7 @@ class vNode {
 
         this.owner = owner;
         this.permissions = permissions
-        
+
         this.name = name;
         this.description = description;
         this.size = size;
