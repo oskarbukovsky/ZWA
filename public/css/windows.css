@@ -60,12 +60,12 @@
 	transform: translate(-50%, -50%);
 	font-size: 2.5em;
 	/* color: #fff; */
-    animation: loading-text-animation 4s linear infinite;
+	animation: loading-text-animation 4s linear infinite;
 }
 
 @keyframes loading-text-animation {
 	0% {
-	color: #6e6e6e;
+		color: #6e6e6e;
 	}
 	10% {
 		color: #6e6e6e;
@@ -88,10 +88,20 @@
 }
 
 iframe {
+	position: absolute;
 	width: 100%;
 	min-height: 350px;
 	border: none;
+	border-radius: 0 0 6px 6px;
+}
+
+.detect {
 	position: relative;
+	top: 0;
+	left: 0;
+	width: 100%;
+	min-height: 350px;
+	pointer-events: all;
 }
 
 .app-v1 {
@@ -103,7 +113,8 @@ iframe {
 	padding: 2px 0 0 2px;
 }
 
-.app-v1 > .app-icon, .app-icon > img {
+.app-v1 > .app-icon,
+.app-icon > img {
 	width: calc(
 		10px + var(--app-controls-size) + var(--app-controls-extra) - 4px
 	);
@@ -115,12 +126,12 @@ iframe {
 }
 
 .app-v1 > .app-icon {
-    margin: 2px;
+	margin: 2px;
 }
 
 .app-v1 > .app-title {
-    font-family: "Segoe UI Variable Static Text", sans-serif;
-    font-size: 1.1em;
+	font-family: "Segoe UI Variable Static Text", sans-serif;
+	font-size: 1.1em;
 }
 
 .app-header > .app-controls {
@@ -201,6 +212,20 @@ iframe {
 	left: 0;
 	content: "";
 	width: 100%;
-	height: calc(100% - calc(12px + var(--app-controls-size) + var(--app-controls-extra)));
-	background-color: transparent;
+	height: calc(
+		100% - calc(12px + var(--app-controls-size) + var(--app-controls-extra))
+	);
+	/* background-color: transparent; */
+	background-color: rgba(255, 0, 0, 0.1);
+	border-radius: 0 0 6px 6px;
 }
+
+/* .windows-app > .app-content:after {
+	position: absolute;
+	top: calc(12px + var(--app-controls-size) + var(--app-controls-extra));
+	left: 0;
+	content: "";
+	width: 100%;
+	height: calc(100% - calc(12px + var(--app-controls-size) + var(--app-controls-extra)));
+	background-color: rgba(255, 0, 0, 0.1);
+} */

@@ -117,7 +117,7 @@ function deleteDb() {
     let time1 = new Date();
     return new Promise((resolve) => {
         function success() {
-            cl("|<Database cleared in " + (new Date() - time1) + "ms");
+            cl("|📗 Database cleared in " + (new Date() - time1) + "ms");
             resolve();
         }
         var req = indexedDB.deleteDatabase("ZWA");
@@ -184,7 +184,7 @@ function openDb() {
         localDatabase.onerror = function (event) {
             cl("! Nastala chyba v databázi:", event.target?.error);
         };
-        cl("|<indexedDB Ready in " + (new Date() - time1) + "ms");
+        cl("|📗 indexedDB Ready in " + (new Date() - time1) + "ms");
     };
 
     localDatabaseRequest.onerror = function (event) {
@@ -204,6 +204,160 @@ function openDb() {
     };
 }
 
+function getIcon(node) {
+    if (node.icon) {
+        return node.icon;
+    } else {
+        switch (node.type) {
+            case "trash":
+                return "./media/file-icons/trash.webp";
+            case "link":
+                if (node.data[0]) {
+                    switch (node.data[0].split(":\/\/").shift()) {
+                        case "vLinkTrash":
+                            return "./media/file-icons/trash.webp";
+                        default:
+                            return "./media/file-icons/unknown.webp"
+                    }
+                } else {
+                    return "./media/file-icons/link.webp";
+                }
+            case "folder":
+            case "images":
+            case "documents":
+                return "./media/file-icons/folder.webp";
+            case "pdf":
+                return "./media/file-icons/pdf.webp";
+            case "file":
+                if (node.name) {
+                    switch (node.name.split(".").pop()) {
+                        case "txt":
+                            return "./media/file-icons/text.webp";
+                        case "pdf":
+                            return "./media/file-icons/pdf.webp";
+                        default:
+                            return "./media/file-icons/unknown.webp"
+                    }
+                } else {
+                    return "./media/file-icons/unknown.webp"
+                }
+            default:
+                return "./media/file-icons/unknown.webp";
+        }
+    }
+}
+
+function closeApp(element) {
+    element.addEventListener("click", (event) => {
+        event.preventDefault();
+        let app = event.target;
+        while (!app.classList.contains("windows-app")) {
+            app = app.parentElement;
+        }
+        app.classList.add("closing");
+        setTimeout(() => {
+            app.remove();
+        }, 250);
+    });
+}
+
+function dragApp(element) {
+    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    element.querySelector(".app-header").onmousedown = dragMouseDown;
+
+    function dragMouseDown(event) {
+        event.preventDefault();
+        let app = event.target;
+        while (!app.classList.contains("windows-app")) {
+            app = app.parentElement;
+        }
+        app.classList.add("dragging");
+        pos3 = event.clientX;
+        pos4 = event.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(event) {
+        event.preventDefault();
+        pos1 = pos3 - event.clientX;
+        pos2 = pos4 - event.clientY;
+        pos3 = event.clientX;
+        pos4 = event.clientY;
+
+        element.style.top = (element.offsetTop - pos2) + "px";
+        element.style.left = (element.offsetLeft - pos1) + "px";
+    }
+
+    function closeDragElement(event) {
+        let app = event.target;
+        while (!app.classList.contains("windows-app")) {
+            app = app.parentElement;
+        }
+        app.classList.remove("dragging");
+
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+}
+
+function desktopIconSelect(element) {
+    element.addEventListener("click", (event) => {
+        if (!is_key_down('Control')) {
+            deselectIcons();
+        }
+        element.classList.add("icon-selected");
+        event.stopPropagation();
+    })
+}
+
+function desktopIconOpen(element) {
+    element.addEventListener("dblclick", (event) => {
+        // cl("Open Window from Desktop\n", holder);
+        let dbStore = localDatabase.getStore("vNodes");
+
+        let idRequest = dbStore.get(element.childNodes[1].dataset.id);
+        // cl("holder.childNodes[1].dataset.id: ", holder.childNodes[1].dataset.id);
+        idRequest.onsuccess = function () {
+            let data = idRequest.result;
+            // cl("get success: ", data);
+            data.timeRead = Date.now();
+
+            let putRequest = dbStore.put(data);
+            putRequest.onsuccess = function () {
+                // cl("put success: ", putRequest);
+            }
+
+            //TODO Sync with server
+
+            appOpen(data);
+        }
+        event.preventDefault();
+    });
+}
+
+function desktopIconContextMenu(element) {
+    element.addEventListener('contextmenu', function (event) {
+        cl("Open ContextMenu from Desktop\n", element);
+        event.preventDefault();
+    });
+}
+
+function desktopIconEditName(element) {
+    element.addEventListener("dblclick", (event) => {
+        let element = event.toElement;
+        if (element.readOnly) {
+            textSelect(element, 0, element.value.lastIndexOf('.'))
+            element.readOnly = !element.readOnly
+        }
+        event.stopPropagation();
+    });
+    element.addEventListener("focusout", (event) => {
+        // cl("srcElement deprecated; Event: ", event)
+        event.target.readOnly = true;
+        textDeSelect()
+    });
+}
 // var rgb = getAverageRGB(document.getElementById('i'));
 // document.body.style.backgroundColor = 'rgb('+rgb.r+','+rgb.g+','+rgb.b+')';
 

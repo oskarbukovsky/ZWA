@@ -17,11 +17,11 @@ class vPermission {
 }
 
 class userSettings {
-    constructor(navbarTransparency, navbarHeigh, appControlsSize, appControlsExtra) {
-        this.navbarTransparency = navbarTransparency;
-        this.navbarHeigh = navbarHeigh;
-        this.appControlsSize = appControlsSize;
-        this.appControlsExtra = appControlsExtra;
+    constructor(CssNavbarTransparency, CssNavbarHeigh, CssAppControlsSize, CssAppControlsExtra) {
+        this.CssNavbarTransparency = CssNavbarTransparency;
+        this.CssNavbarHeigh = CssNavbarHeigh;
+        this.CssAppControlsSize = CssAppControlsSize;
+        this.CssAppControlsExtra = CssAppControlsExtra;
     }
 }
 

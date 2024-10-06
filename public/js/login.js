@@ -10,10 +10,10 @@ async function authSubmit(event) {
 }
 
 window.addEventListener("load", () => {
-    loginForm.addEventListener("submit", async (event) => {
+    document.getElementById("loginForm").addEventListener("submit", async (event) => {
         await authSubmit(event);
     }); 
-    registerForm.addEventListener("submit", async (event) => {
+    document.getElementById("registerForm").addEventListener("submit", async (event) => {
         await authSubmit(event);
     }); 
 });

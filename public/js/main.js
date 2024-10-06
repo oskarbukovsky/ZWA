@@ -2,30 +2,33 @@
 
 const DEBUG = true;
 
+//TODO document.querySelectorAll("[data-id='66285580-f084-43fd-b3aa-308399055455']");
+
 window.addEventListener("DOMContentLoaded", async () => {
-    cl("|-Document Ready");
+    cl("|📘 Document Ready");
     let time1 = new Date();
 
-    cl("|>Clearing database")
+    cl("|📙 Clearing database")
     await deleteDb();
 
-    cl("|>Opening indexedDB")
+    cl("|📙 Opening indexedDB")
     openDb();
 
     while (!localDatabase) {
         await sleep(4);
     }
 
-    cl("|>Processing userIdentifier...");
+    cl("|📙 Processing userIdentifier...");
     await processUserIdentifier();
 
-    cl("|>Processing vNodes...");
+    cl("|📙 Processing vNodes...");
     await processVNodes();
 
-    cl("|>Processing desktop...");
+    cl("|📙 Processing desktop...");
     await processDesktopIcons();
 
-    cl("|-Finished in " + (new Date() - time1) + "ms");
+    cl("|📘 Finished in " + (new Date() - time1) + "ms");
+    // 📕📙📗📘
     return;
 });
 
@@ -44,105 +47,65 @@ window.addEventListener("blur", () => {
     setTimeout(() => {
         if (document.activeElement.tagName === "IFRAME") {
             deselectIcons();
+            cl(document.event)
         }
+    }, 4);
+});
+
+windows.querySelectorAll(".detect").forEach((el) => {
+    el.addEventListener("click", (e) => {
+        cl(e.target);
+    }, true);
+});
+
+windows.querySelectorAll("iframe").forEach((el) => {
+    el.addEventListener("mouseover", (e) => {
+        cl(e.target);
+    });
+    el.addEventListener("mouseout", (e) => {
+        cl(e.target);
     });
 });
 
-// desktop.querySelectorAll("#desktop > .icon > figcaption").forEach((el) => {
-//     el.addEventListener("dblclick", (event) => {
-//         let element = event.toElement;
-//         if (element.readOnly) {
-//             textSelect(element, 0, element.value.lastIndexOf('.'))
-//             element.readOnly = !element.readOnly
-//         }
-//         event.stopPropagation();
-//     });
-//     el.addEventListener("focusout", (event) => {
-//         event.srcElement.readOnly = true;
-//         textDeSelect()
-//     });
-// });
-
-windows.querySelectorAll(".windows-app").forEach((el) => {
-    dragElement(el);
+window.addEventListener("blur", () => {
+    if (document.activeElement.tagName === "IFRAME") {
+        deselectIcons();
+    }
 });
 
-windows.querySelectorAll(".close").forEach((el) => {
-    el.addEventListener("click", (event) => {
-        event.preventDefault();
-        let app = event.target;
-        while (!app.classList.contains("windows-app")) {
-            app = app.parentElement;
-        }
-        app.classList.add("closing");
-        setTimeout(() => {
-            app.remove();
-        }, 250);
-    });
+navbar.querySelector(".navbar-search").addEventListener("click", (event) => {
+    if (event.target == navbar.querySelector(".navbar-search")) {
+        navbar.querySelector(".navbar-search").children[0].classList.toggle("open");
+    }
 });
-
-
-function dragElement(element) {
-    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    element.querySelector(".app-header").onmousedown = dragMouseDown;
-
-    function dragMouseDown(event) {
-        event.preventDefault();
-        let app = event.target;
-        while (!app.classList.contains("windows-app")) {
-            app = app.parentElement;
-        }
-        app.classList.add("dragging");
-        pos3 = event.clientX;
-        pos4 = event.clientY;
-        document.onmouseup = closeDragElement;
-        document.onmousemove = elementDrag;
-    }
-
-    function elementDrag(event) {
-        event.preventDefault();
-        pos1 = pos3 - event.clientX;
-        pos2 = pos4 - event.clientY;
-        pos3 = event.clientX;
-        pos4 = event.clientY;
-
-        element.style.top = (element.offsetTop - pos2) + "px";
-        element.style.left = (element.offsetLeft - pos1) + "px";
-    }
-
-    function closeDragElement(event) {
-        let app = event.target;
-        while (!app.classList.contains("windows-app")) {
-            app = app.parentElement;
-        }
-        app.classList.remove("dragging");
-
-        document.onmouseup = null;
-        document.onmousemove = null;
-    }
-}
-
-// document.querySelectorAll("#desktop > .icon").forEach((iconElement) => {
-//     iconElement.addEventListener("click", (event) => {
-//         if (!is_key_down('Control')) {
-//             deselectIcons();
-//         }
-//         iconElement.classList.add("icon-selected");
-//         event.stopPropagation();
-//     })
-//     iconElement.addEventListener("dblclick", (event) => {
-//         cl("Open Window from Desktop\n", iconElement);
-//     });
-//     iconElement.addEventListener('contextmenu', function (event) {
-//         cl("Open ContextMenu from Desktop\n", iconElement);
-//         event.preventDefault();
-//     });
-// });
 
 async function processUserIdentifier() {
     let time1 = new Date();
     await localDatabase.add("user", userIdentifier);
-    cl("|<userIdentifier processed in " + (new Date() - time1) + "ms");
+
+    Object.keys(userIdentifier.settings).forEach(key => {
+        if (key.includes("Css")) {
+            switch (key) {
+                case "CssNavbarTransparency":
+                    cssVar("--navbar-transparency", userIdentifier.settings[key]);
+                    break;
+                case "CssNavbarHeigh":
+                    cssVar("--navbar-height", userIdentifier.settings[key]);
+                    break;
+                case "CssAppControlsSize":
+                    cssVar("--app-controls-size", userIdentifier.settings[key]);
+                    break;
+                case "CssAppControlsExtra":
+                    cssVar("--app-controls-extra", userIdentifier.settings[key]);
+                    break;
+                default:
+                    cl("### Unknown user settings Css: ", key + "-" + userIdentifier.settings[key]);
+                    break;
+            }
+        }
+    });
+
+    cl("|📗 userIdentifier processed in " + (new Date() - time1) + "ms");
 }
 
 async function processVNodes() {
@@ -150,7 +113,7 @@ async function processVNodes() {
     vNodes.forEach(async (node) => {
         await localDatabase.add("vNodes", node);
     })
-    cl("|<vNodes processed in " + (new Date() - time1) + "ms");
+    cl("|📗 vNodes processed in " + (new Date() - time1) + "ms");
 }
 
 async function processDesktopIcons() {
@@ -170,116 +133,79 @@ async function processDesktopIcons() {
 
     desktopNodes.forEach((node) => addDesktopIcon(node));
 
-    cl("|<Desktop processed in " + (new Date() - time1) + "ms");
+    cl("|📗 Desktop processed in " + (new Date() - time1) + "ms");
 }
 
-function openWindow(data) {
-    cl("opening window", data);
+function appOpen(node) {
+    cl("opening window", node);
+
+    let holder = document.createElement("div");
+    holder.classList.add("windows-app");
+    holder.dataset.id = node.id;
+
+    let header = document.createElement("header");
+    header.classList.add("app-header");
+    holder.appendChild(header);
+
+    let v1 = document.createElement("div");
+    v1.classList.add("app-v1");
+    header.appendChild(v1);
+
+    let iconHolder = document.createElement("div");
+    iconHolder.classList.add("app-icon");
+    v1.appendChild(iconHolder);
+
+    let icon = document.createElement("img");
+    icon.src = getIcon(node);
+    iconHolder.appendChild(icon);
+
+    let title = document.createElement("div");
+    title.textContent = node.name;
+    v1.appendChild(title);
+
+    let controls = document.createElement("div");
+    controls.classList.add("app-controls");
+    header.appendChild(controls);
+
+    let minimize = document.createElement("div");
+    minimize.classList.add("minimize");
+    controls.appendChild(minimize);
+
+    let maximize = document.createElement("div");
+    maximize.classList.add("maximize");
+    controls.appendChild(maximize);
+
+    let close = document.createElement("div");
+    close.classList.add("close");
+    controls.appendChild(close);
+
+    let content = document.createElement("div");
+    content.classList.add("app-content");
+    holder.appendChild(content);
+
+    let iframe = document.createElement("iframe");
+    iframe.src = "user-data/" + node.owner + node.data[0] + node.name;
+    content.appendChild(iframe);
+
+    let detector = document.createElement("div");
+    detector.classList.add("detect");
+    content.appendChild(detector);
+
+    windows.appendChild(holder);
+
+    dragApp(holder);
+    closeApp(close);
 }
 
 function addDesktopIcon(node) {
-    // cl(" - adding desktop icon", node);
     let holder = document.createElement("figure");
     holder.classList.add("icon");
-    holder.addEventListener("click", (event) => {
-        if (!is_key_down('Control')) {
-            deselectIcons();
-        }
-        holder.classList.add("icon-selected");
-        event.stopPropagation();
-    })
-    holder.addEventListener("dblclick", (event) => {
-        // cl("Open Window from Desktop\n", holder);
-        let dbStore = localDatabase.getStore("vNodes");
-
-        let idRequest = dbStore.get(holder.childNodes[1].dataset.id);
-        // cl("holder.childNodes[1].dataset.id: ", holder.childNodes[1].dataset.id);
-        idRequest.onsuccess = function () {
-            let data = idRequest.result;
-            // cl("get success: ", data);
-            data.timeRead = Date.now();
-
-            let putRequest = dbStore.put(data);
-            putRequest.onsuccess = function () {
-                // cl("put success: ", putRequest);
-            }
-
-            //TODO Sync with server
-
-            openWindow(data);
-        }
-        event.preventDefault();
-    });
-    holder.addEventListener('contextmenu', function (event) {
-        cl("Open ContextMenu from Desktop\n", holder);
-        event.preventDefault();
-    });
 
     let icon = document.createElement("img");
-    if (node.icon) {
-        icon.src = node.icon;
-    } else {
-        switch (node.type) {
-            case "trash":
-                icon.src = "./media/file-icons/trash.webp";
-                break;
-            case "link":
-                if (node.data[0]) {
-                    switch (node.data[0].split(":\/\/").shift()) {
-                        case "vLinkTrash":
-                            icon.src = "./media/file-icons/trash.webp";
-                            break;
-                        default:
-                            icon.src = "./media/file-icons/unknown.webp"
-                    }
-                } else {
-                    icon.src = "./media/file-icons/link.webp";
-                }
-                break;
-            case "folder":
-            case "images":
-            case "documents":
-                icon.src = "./media/file-icons/folder.webp";
-                break;
-            case "pdf":
-                icon.src = "./media/file-icons/pdf.webp";
-                break;
-            case "file":
-                if (node.name) {
-                    switch (node.name.split(".").pop()) {
-                        case "txt":
-                            icon.src = "./media/file-icons/text.webp";
-                            break;
-                        case "pdf":
-                            icon.src = "./media/file-icons/pdf.webp";
-                            break;
-                        default:
-                            icon.src = "./media/file-icons/unknown.webp"
-                    }
-                } else {
-                    icon.src = "./media/file-icons/unknown.webp"
-                }
-                break;
-            default:
-                icon.src = "./media/file-icons/unknown.webp";
-        }
-    }
+    icon.src = getIcon(node);
     holder.appendChild(icon);
 
     let caption = document.createElement("figcaption");
-    caption.addEventListener("dblclick", (event) => {
-        let element = event.toElement;
-        if (element.readOnly) {
-            textSelect(element, 0, element.value.lastIndexOf('.'))
-            element.readOnly = !element.readOnly
-        }
-        event.stopPropagation();
-    });
-    caption.addEventListener("focusout", (event) => {
-        // cl("srcElement deprecated; Event: ", event)
-        event.target.readOnly = true;
-        textDeSelect()
-    });
     caption.dataset.id = node.id;
     holder.appendChild(caption);
 
@@ -291,4 +217,56 @@ function addDesktopIcon(node) {
     caption.appendChild(textarea);
 
     desktop.appendChild(holder);
+
+    desktopIconSelect(holder);
+    desktopIconOpen(holder);
+    desktopIconContextMenu(holder);
+    desktopIconEditName(caption);
 }
+
+
+function watchIframeFocus(onFocus, onBlur) {
+    let iframeClickedLast;
+
+    function windowBlurred(e) {
+        const el = document.activeElement;
+        if (el.tagName.toLowerCase() == 'iframe') {
+            iframeClickedLast = true;
+            cl(e);
+        }
+    }
+    function windowFocussed(e) {
+        if (iframeClickedLast) {
+            iframeClickedLast = false;
+            cl(e);
+        }
+    }
+    window.addEventListener('focus', windowFocussed, true);
+    window.addEventListener('blur', windowBlurred, true);
+}
+
+// watchIframeFocus((e) => cl("focus: ", e), (e) => cl("blur: ", e));
+
+
+let start;
+function step(timestamp) {
+    if (start === undefined) {
+        start = timestamp;
+    }
+    const elapsed = timestamp - start;
+    if (window.event !== undefined) {
+        cl(elapsed, window.event)
+    }
+    requestAnimationFrame(step);
+}
+
+// requestAnimationFrame(step);
+let a;
+windows.addEventListener("mousemove", (e) => {
+    setTimeout(() => {
+        // cl(new Date());
+        // a = e.target;
+        // cl(a, e.screenX, e.screenY);
+    }, 1);
+    // e.target.childNodes[2].addEventListener("mouseover", (e) => cl(e));
+});
