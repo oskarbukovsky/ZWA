@@ -99,6 +99,19 @@ new vNode(
     undefined,
     ["/2/"]
 ), new vNode(
+    "66285580-f084-43fd-b3aa-308399055455",
+    "file",
+    "704d99cf-0e37-4797-8605-fa844f25efe5",
+    2,
+    Date.now(),
+    0,
+    "50eced28-c925-4948-80eb-e4fabe83a41b",
+    new vPermission(),
+    "sample.pdf",
+    "Typ: PDF dokument",
+    undefined,
+    ["/2/"]
+), new vNode(
     "6c1e65b9-ab3e-426a-b6ba-d0a1a304061b",
     "file",
     "704d99cf-0e37-4797-8605-fa844f25efe5",

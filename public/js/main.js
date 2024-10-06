@@ -179,7 +179,7 @@ function addDesktopIcon(node) {
                 if (node.name) {
                     switch (node.name.split(".").pop()) {
                         case "txt":
-                            icon.src = "./media/file-icons/text-document.webp";
+                            icon.src = "./media/file-icons/text.webp";
                             break;
                         case "pdf":
                             icon.src = "./media/file-icons/pdf.webp";

@@ -22,28 +22,32 @@ function bool(value) {
     return (/true/).test(value);
 }
 
-const isElementLoaded2 = async selector => {
-    while (document.querySelector(selector) === null) {
-        await new Promise(resolve => requestAnimationFrame(resolve))
+// const isElementLoaded2 = async selector => {
+//     while (document.querySelector(selector) === null) {
+//         await new Promise(resolve => requestAnimationFrame(resolve))
+//     }
+//     return document.querySelector(selector);
+// };
+
+// const isElementLoaded = async selector => {
+//     while (selector === null) {
+//         await new Promise(resolve => requestAnimationFrame(resolve))
+//     }
+//     return selector;
+// };
+
+
+// function auto_grow(element) {
+//     element.style.height = "1px !important";
+//     element.style.height = (element.scrollHeight) + "px !important";
+// }
+
+function cssVar(variableName, value = null) {
+    if (value !== null) {
+        document.documentElement.style.setProperty(variableName, value);
+    } else {
+        return getComputedStyle(document.documentElement).getPropertyValue(variableName);
     }
-    return document.querySelector(selector);
-};
-
-const isElementLoaded = async selector => {
-    while (selector === null) {
-        await new Promise(resolve => requestAnimationFrame(resolve))
-    }
-    return selector;
-};
-
-
-function auto_grow(element) {
-    element.style.height = "1px !important";
-    element.style.height = (element.scrollHeight) + "px !important";
-}
-
-function cssVar(variableName, value) {
-    document.querySelector(':root').style.setProperty(variableName, value)
 }
 
 function deselectIcons() {
@@ -54,12 +58,12 @@ function deselectIcons() {
 
 const is_key_down = (() => {
     const state = {};
-    window.addEventListener('keyup', (e) => {
-        state[e.key] = false;
+    window.addEventListener('keyup', (event) => {
+        state[event.key] = false;
         // cl(e.key + " " + state[e.key]);
     });
-    window.addEventListener('keydown', (e) => {
-        state[e.key] = true;
+    window.addEventListener('keydown', (event) => {
+        state[event.key] = true;
         // cl(e.key + " " + state[e.key]);
     });
     return (key) => state.hasOwnProperty(key) && state[key] || false;
