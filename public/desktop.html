@@ -20,6 +20,9 @@
     <link href="https://fonts.cdnfonts.com/css/segoe-ui-variable-static-display" rel="stylesheet">
     <link rel="icon" href="media/favicon.png" type="image/png" sizes="256x256">
 
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+
     <script src="js/classes.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/testData.js"></script>
@@ -31,7 +34,7 @@
     </div>
     <div id="windows" class="working-area">
     </div>
-    <div id="navbar">
+    <div id="navbar" class="no-select">
         <div class="navbar-menu"></div>
         <div class="navbar-search">
             <div class="search-menu"></div>
@@ -72,7 +75,35 @@
 
         <div class="navbar-spacer"></div>
         <div class="navbar-volume"></div>
-        <div class="navbar-time"><span class="datetime" id="datetime"></span></div>
+        <div class="navbar-time">
+            <div class="calendar-container">
+                <header class="calendar-header">
+                    <p class="calendar-current-date"></p>
+                    <div class="calendar-navigation">
+                        <span id="calendar-prev" class="material-symbols-rounded">
+                            arrow_drop_up
+                        </span>
+                        <span id="calendar-next" class="material-symbols-rounded">
+                            arrow_drop_down
+                        </span>
+                    </div>
+                </header>
+
+                <div class="calendar-body">
+                    <ul class="calendar-weekdays">
+                        <li>po</li>
+                        <li>út</li>
+                        <li>st</li>
+                        <li>čt</li>
+                        <li>pá</li>
+                        <li>so</li>
+                        <li>ne</li>
+                    </ul>
+                    <ul class="calendar-dates"></ul>
+                </div>
+            </div>
+            <span class="datetime" id="datetime"></span>
+        </div>
         <div class="navbar-minimize"></div>
     </div>
     <div class="errors hidden">

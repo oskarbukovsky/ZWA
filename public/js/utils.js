@@ -50,10 +50,12 @@ function cssVar(variableName, value = null) {
     }
 }
 
-function deselectIcons() {
+function deselectSelectedOrOpen() {
     document.querySelectorAll("figure.icon.icon-selected").forEach((el) => {
         el.classList.remove("icon-selected");
     });
+    // navbar.querySelector(".navbar-time").children[0].classList.remove("open");
+    // navbar.querySelector(".navbar-search").children[0].classList.remove("open");
 }
 
 const is_key_down = (() => {
@@ -304,7 +306,7 @@ function dragApp(element) {
 function desktopIconSelect(element) {
     element.addEventListener("click", (event) => {
         if (!is_key_down('Control')) {
-            deselectIcons();
+            deselectSelectedOrOpen();
         }
         element.classList.add("icon-selected");
         event.stopPropagation();

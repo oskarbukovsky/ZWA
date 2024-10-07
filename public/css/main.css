@@ -21,6 +21,7 @@ body {
 	background-repeat: no-repeat;
 	background-size: cover;
 	overflow: hidden;
+	font-family: "Segoe UI Variable Static Text", sans-serif;
 }
 
 .working-area {
