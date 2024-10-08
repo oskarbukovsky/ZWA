@@ -232,12 +232,12 @@ iframe {
 	border-radius: 0 0 6px 6px;
 }
 
-/* .windows-app > .app-content:after {
-	position: absolute;
-	top: calc(12px + var(--app-controls-size) + var(--app-controls-extra));
-	left: 0;
-	content: "";
-	width: 100%;
-	height: calc(100% - calc(12px + var(--app-controls-size) + var(--app-controls-extra)));
-	background-color: rgba(255, 0, 0, 0.1);
-} */
+.windows-app.maximized {
+    top: 0 !important;
+    left: 0 !important;
+    min-width: 100vw !important;
+	border-radius: 0 !important;
+}
+.windows-app.maximized > .app-content {
+	min-height: calc(100vh - var(--navbar-height) - 1px) !important;
+}

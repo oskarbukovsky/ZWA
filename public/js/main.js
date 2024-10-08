@@ -1,7 +1,5 @@
 "use strict";
 
-const DEBUG = true;
-
 //TODO document.querySelectorAll("[data-id='66285580-f084-43fd-b3aa-308399055455']");
 
 window.addEventListener("DOMContentLoaded", async () => {
@@ -39,6 +37,10 @@ const dbStores = [new dbShape("vNodes", Object.keys(new vNode()), "id"), new dbS
 
 //TODO: vylepšit způsob generace columns
 
+window.addEventListener("contextmenu", (event) => {
+    // event.preventDefault();
+});
+
 window.addEventListener("click", () => {
     deselectSelectedOrOpen();
 })
@@ -50,15 +52,16 @@ window.addEventListener("blur", () => {
 });
 
 navbar.querySelector(".navbar-search").addEventListener("click", (event) => {
-    if (event.target == navbar.querySelector(".navbar-search")) {
-        navbar.querySelector(".navbar-search").children[0].classList.toggle("open");
+    if (navbar.querySelector(".navbar-search").contains(event.target)) {
+        navbar.querySelector(".navbar-search > .search-menu").classList.toggle("open");
     }
 });
 
-navbar.querySelector(".navbar-time").addEventListener("click", (event) => {
-    if (event.target == navbar.querySelector(".navbar-time .datetime")) {
-        navbar.querySelector(".navbar-time").children[0].classList.toggle("open");
-    }
+navbar.querySelector(".navbar-time .navbar-button-content").addEventListener("click", (event) => {
+    // cl(event.target.classList);
+    // if (!event.target.classList[0].contains(".calendar-container")) {
+    // }
+    navbar.querySelector(".navbar-time .calendar-container").classList.toggle("open");
 });
 
 let date = new Date();
@@ -331,6 +334,7 @@ function appOpen(node) {
     windows.appendChild(holder);
 
     dragApp(holder);
+    maximizeApp(maximize, header);
     closeApp(close);
 }
 
@@ -398,7 +402,6 @@ function step(timestamp) {
 }
 
 // requestAnimationFrame(step);
-let a;
 windows.addEventListener("mousemove", (e) => {
     setTimeout(() => {
         // cl(new Date());
@@ -407,3 +410,89 @@ windows.addEventListener("mousemove", (e) => {
     }, 1);
     // e.target.childNodes[2].addEventListener("mouseover", (e) => cl(e));
 });
+
+
+
+
+const fetchAndLoadImage = async (imagePath) => {
+    try {
+        let response = await fetch(imagePath);
+        return await response.blob();
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+// let a, b, c;
+
+// (async () => {
+
+//     a = await fetchAndLoadImage("media/favicon.png")
+
+//     b = await a.stream()
+
+//     c = await b.getReader()
+
+// })();
+
+
+// const reader = new FileReader();
+// reader.onload = function(e) {
+//     console.log(e.target.result); // Outputs: Hello
+// };
+// reader.readAsText(blob);
+
+// let window2 = window.open(textFile, 'log.' + new Date() + '.txt');
+// window2.onload = e => window.URL.revokeObjectURL(textFile);
+
+// const inputElement = document.querySelector('input[type="file"]');
+// inputElement.addEventListener('change', handleFiles, false);
+
+// function handleFiles() {
+//     const fileList = this.files; // fileList is a FileList of File objects
+//     const file = fileList[0];
+
+//     // Read the file content
+//     const reader = new FileReader();
+//     reader.onload = function(e) {
+//         console.log(e.target.result);
+//     };
+//     reader.readAsText(file);
+// }
+
+
+var input = document.querySelector('input[type=file]');
+
+function readFile(event) {
+    let data = new Blob([event.target.result], JSON.parse('{"type":"' + file.type + '"}'));
+    let textFile = window.URL.createObjectURL(data);
+    let window2 = window.open(textFile, 'log.' + new Date() + '.txt');
+    // window2.onload = e => window.URL.revokeObjectURL(textFile);
+}
+async function changeFile() {
+    let file = input.files[0];
+    let reader = new FileReader();
+    let data = reader.readAsArrayBuffer(file)
+    reader.addEventListener('load', readFile);
+
+    input.value = null;
+    cl(await uploadFiles(data));
+}
+
+input.addEventListener('change', changeFile);
+
+
+async function uploadFiles(data) {
+    const url = 'https://zwa.toad.cz/~xklima/vypisform.php';
+    const formData = new FormData(data);
+
+    const fetchOptions = {
+        method: "post",
+        redirect: "follow",
+        body: formData
+    };
+
+    let response = fetch(url, fetchOptions);
+    // window.location.replace("https://zwa.toad.cz/~xklima/vypisform.php")
+    return response;
+}

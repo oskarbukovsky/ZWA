@@ -1,5 +1,7 @@
 "use strict";
 
+const DEBUG = true;
+
 const getDirectory = () => {
     if (!window.showDirectoryPicker) {
         alert('Unsupported Browser Notice');
@@ -96,12 +98,28 @@ function textDeSelect() {
     }
 }
 
-setInterval(function () {
-    var dt = new Date();
-    document.getElementById("datetime").innerHTML = (("0" + dt.getHours()).slice(-2)) + ":" +
-        (("0" + dt.getMinutes()).slice(-2)) + ":" + (("0" + dt.getSeconds()).slice(-2)) + "<br>" + (("0" + dt.getDate()).slice(-2)) + "." + (("0" +
-            (dt.getMonth() + 1)).slice(-2)) + "." + (dt.getFullYear());
-}, 999);
+// setInterval(function () {
+//     var dt = new Date();
+//     document.getElementById("datetime").innerHTML = (("0" + dt.getHours()).slice(-2)) + ":" +
+//         (("0" + dt.getMinutes()).slice(-2)) + ":" + (("0" + dt.getSeconds()).slice(-2)) + "<br>" + (("0" + dt.getDate()).slice(-2)) + "." + (("0" +
+//             (dt.getMonth() + 1)).slice(-2)) + "." + (dt.getFullYear());
+// }, 999);
+
+let d;
+function clock() {
+    let dateTime = new Intl.DateTimeFormat("cs-CZ", {
+        dateStyle: "short",
+        timeStyle: "medium",
+        hour12: false
+    }).format(new Date()).split(" ");
+    d = dateTime[0];
+    // dateTime[0].replace(dateTime[0].split(".").pop(), "20" + dateTime[0].split(".").pop())
+    // cl(dateTime[0].replace(dateTime[0].split(".").pop(), "20" + dateTime[0].split(".").pop()));
+    document.getElementById("datetime").setAttribute("data-date", dateTime[0].replace(dateTime[0].split(".").pop(), "20" + dateTime[0].split(".").pop()));
+    document.getElementById("datetime").setAttribute("data-time", dateTime[1] + " ");
+    requestAnimationFrame(clock);
+}
+requestAnimationFrame(clock);
 
 function cl() {
     if (DEBUG) {
@@ -249,6 +267,25 @@ function getIcon(node) {
     }
 }
 
+function maximizeApp(closeButton, header) {
+    closeButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        let app = event.target;
+        while (!app.classList.contains("windows-app")) {
+            app = app.parentElement;
+        }
+        app.classList.toggle("maximized");
+    });
+    header.addEventListener("dblclick", (event) => {
+        event.preventDefault();
+        let app = event.target;
+        while (!app.classList.contains("windows-app")) {
+            app = app.parentElement;
+        }
+        app.classList.toggle("maximized");
+    });
+}
+
 function closeApp(element) {
     element.addEventListener("click", (event) => {
         event.preventDefault();
@@ -273,11 +310,22 @@ function dragApp(element) {
         while (!app.classList.contains("windows-app")) {
             app = app.parentElement;
         }
-        app.classList.add("dragging");
-        pos3 = event.clientX;
-        pos4 = event.clientY;
-        document.onmouseup = closeDragElement;
-        document.onmousemove = elementDrag;
+        if(!app.classList.contains("maximized")) {
+            app.classList.add("dragging");
+            pos3 = event.clientX;
+            pos4 = event.clientY;
+            document.onmouseup = closeDragElement;
+            document.onmousemove = elementDrag;
+        } else {
+            //TODO: after window resizing do this
+
+            // app.classList.remove("maximized");
+            // app.classList.add("dragging");
+            // pos3 = event.clientX;
+            // pos4 = event.clientY;
+            // document.onmouseup = closeDragElement;
+            // document.onmousemove = elementDrag;
+        }
     }
 
     function elementDrag(event) {

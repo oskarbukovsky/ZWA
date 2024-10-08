@@ -91,6 +91,7 @@
 #navbar > .navbar-time {
 	width: 97px;
 	background: rgba(0, 255, 0, var(--navbar-dev));
+	align-content: center;
 }
 
 #navbar > .navbar-minimize {
@@ -98,17 +99,46 @@
 	background: rgba(255, 0, 0, var(--navbar-dev));
 }
 
-.datetime {
-	color: #fff;
-	font-size: 11px;
+#navbar .navbar-button-content {
+	margin: 2px 0px;
+	background-color: transparent;
+	border-radius: 4px;
+	height: calc(100% - 4px);
+	transition: background-color 100ms ease-in-out;
+}
+
+#navbar .navbar-button-content:hover {
+    background-color: hsl(0deg 0% 50% / 15%);
+}
+
+#navbar .datetime {
 	position: relative;
-	top: calc(-363px - 1em);
+	display: flex;
+	gap: 4px;
+	align-items: center;
+	color: #fff;
+	padding-right: 4px;
+}
+
+#datetime {
+	font-size: 12px;
+	text-shadow: 2px 1px 3px rgba(0, 0, 0, 0.5);
+	display: block;
+	text-align: end;
+	white-space: pre-wrap;
+}
+
+#datetime:before {
+	content: attr(data-time);
+}
+#datetime:after {
+	content: attr(data-date);
 }
 
 .calendar-container {
-	position: relative;
-	bottom: calc(345px + var(--navbar-height));
-	left: 110px;
+	position: absolute;
+	bottom: calc(10px + var(--navbar-height));
+	right: -342px;
 	background: rgb(20, 61, 117);
 	width: 340px;
 	height: max-content;
@@ -117,12 +147,12 @@
 	border-radius: 6px;
 	box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
 	color: #fff;
-	transition: left 150ms ease-in-out;
+	transition: right 150ms ease-in-out;
 }
 
 .calendar-container.open {
-	left: -240px;
-	transition: left 150ms cubic-bezier(0.3, 0, 0.8, 0.15);
+	right: 7px;
+	transition: right 150ms cubic-bezier(0.3, 0, 0.8, 0.15);
 }
 
 .calendar-container header {
