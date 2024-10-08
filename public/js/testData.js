@@ -113,9 +113,22 @@ new vNode(
     ["/2/"]
 ), new vNode(
     "6c1e65b9-ab3e-426a-b6ba-d0a1a304061b",
-    "file",
+    "link",
     "704d99cf-0e37-4797-8605-fa844f25efe5",
     1,
+    Date.now(),
+    0,
+    "50eced28-c925-4948-80eb-e4fabe83a41b",
+    new vPermission(),
+    "Tento Počítač",
+    "Umístění: Tento Počítač",
+    undefined,
+    ["vComputer://"]
+), new vNode(
+    "f7d9830f-90d0-45b4-b612-d46d15a289e6",
+    "file",
+    "704d99cf-0e37-4797-8605-fa844f25efe5",
+    6,
     Date.now(),
     0,
     "50eced28-c925-4948-80eb-e4fabe83a41b",

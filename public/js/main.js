@@ -6,6 +6,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     cl("|📘 Document Ready");
     let time1 = new Date();
 
+    requestAnimationFrame(clock);
+
     cl("|📙 Clearing database")
     await deleteDb();
 
@@ -35,21 +37,45 @@ const dbName = "ZWA";
 const dbStores = [new dbShape("vNodes", Object.keys(new vNode()), "id"), new dbShape("user", Object.keys(new user()), "uuid")];
 // const dbStores = [new dbShape("vNodes", Object.keys(new vNode()), "id"), new dbShape("vFiles", Object.keys(new vFile()), "uuid")];
 
-//TODO: vylepšit způsob generace columns
+//TODO: custom získávání columns např. pro permissions a settings
 
 window.addEventListener("contextmenu", (event) => {
     // event.preventDefault();
 });
 
-window.addEventListener("click", () => {
-    deselectSelectedOrOpen();
-})
-
-window.addEventListener("blur", () => {
-    if (document.activeElement.tagName === "IFRAME") {
-        deselectSelectedOrOpen();
+var myConfObj = {
+    iframeMouseOver: false,
+    lastIframe: null
+}
+window.addEventListener('blur', (event) => {
+    if (myConfObj.iframeMouseOver) {
+        console.log('Wow! Iframe Click!');
+        closeDesktopCalendar();
+        deselectDesktopIcon();
+        deselectAllApps();
+        iframe = event;
+        let app = myConfObj.lastIframe;
+        while (!app?.classList?.contains("windows-app")) {
+            app = app.parentElement;
+            if (app === null) {
+                return false;
+            }
+        }
+        app.classList.add("active");
     }
 });
+var iframe;
+
+window.addEventListener("click", (event) => {
+    if (!(bubbleToClass(event, "calendar-container") || bubbleToClass(event, "datetime"))) {
+        closeDesktopCalendar();
+    }
+    // bubbleToClass(event, "windows-app")?.classList?.remove("active");
+    deselectDesktopIcon();
+    if (!bubbleToClass(event, "windows-app")) {
+        deselectAllApps();
+    }
+})
 
 navbar.querySelector(".navbar-search").addEventListener("click", (event) => {
     if (navbar.querySelector(".navbar-search").contains(event.target)) {
@@ -58,9 +84,6 @@ navbar.querySelector(".navbar-search").addEventListener("click", (event) => {
 });
 
 navbar.querySelector(".navbar-time .navbar-button-content").addEventListener("click", (event) => {
-    // cl(event.target.classList);
-    // if (!event.target.classList[0].contains(".calendar-container")) {
-    // }
     navbar.querySelector(".navbar-time .calendar-container").classList.toggle("open");
 });
 
@@ -68,31 +91,24 @@ let date = new Date();
 let year = date.getFullYear();
 let month = date.getMonth();
 
-const day = document.querySelector(".calendar-dates");
-
-const currentDate = document
-    .querySelector(".calendar-current-date");
-
-const calendarNavigation = document.querySelectorAll(".calendar-navigation span");
-
-// Array of month names
-const months = [
-    "leden",
-    "únor",
-    "březen",
-    "duben",
-    "květen",
-    "červen",
-    "červenec",
-    "srpen",
-    "září",
-    "říjen",
-    "listopad",
-    "prosinec"
-];
 
 // Function to generate the calendar
 const manipulate = () => {
+    // Array of month names
+    const months = [
+        "leden",
+        "únor",
+        "březen",
+        "duben",
+        "květen",
+        "červen",
+        "červenec",
+        "srpen",
+        "září",
+        "říjen",
+        "listopad",
+        "prosinec"
+    ];
 
     // Get the first day of the month
     let dayOne = new Date(year, month, 0).getDay();
@@ -131,17 +147,16 @@ const manipulate = () => {
 
     // Update the text of the current date element 
     // with the formatted current month and year
-    currentDate.innerText = `${months[month]} ${year}`;
+    document.querySelector(".calendar-current-date").textContent = months[month] + " " + year;
 
     // update the HTML of the dates element 
     // with the generated calendar
-    day.innerHTML = lit;
+    document.querySelector(".calendar-dates").innerHTML = lit;
 }
 
 manipulate();
-
 // Attach a click event listener to each icon
-calendarNavigation.forEach(icon => {
+document.querySelectorAll(".calendar-navigation span").forEach(icon => {
 
     // When an icon is clicked
     icon.addEventListener("click", () => {
@@ -175,6 +190,7 @@ calendarNavigation.forEach(icon => {
         manipulate();
     });
 });
+
 
 async function processUserIdentifier() {
     let time1 = new Date();
@@ -233,22 +249,12 @@ async function processDesktopIcons() {
     cl("|📗 Desktop processed in " + (new Date() - time1) + "ms");
 }
 
-var myConfObj = {
-    iframeMouseOver: false
-}
-window.addEventListener('blur', function () {
-    if (myConfObj.iframeMouseOver) {
-        console.log('Wow! Iframe Click!');
-    }
-});
-
-
-
 function appOpen(node) {
     cl("opening window", node);
 
     let holder = document.createElement("div");
     holder.classList.add("windows-app");
+    holder.classList.add("active");
     holder.dataset.id = node.id;
 
     let header = document.createElement("header");
@@ -291,49 +297,63 @@ function appOpen(node) {
     content.classList.add("app-content");
     holder.appendChild(content);
 
+    // let detector = document.createElement("div");
+    // detector.classList.add("detect");
+    // content.appendChild(detector);
+
     let iframe = document.createElement("iframe");
-    iframe.src = "user-data/" + node.owner + node.data[0] + node.name;
+
+    // cl(node.data[0].split(":\/\/").shift());
+    if (node.type == "link") {
+        switch (node.data[0].split(":\/\/").shift()) {
+            case "vLinkTrash":
+                iframe.src = "user-data/" + node.owner + node.data[0] + node.name;
+                break;
+            case "vComputer":
+                iframe.src = "explorer.html?folder=user-data/" + node.owner;
+                break;
+            default:
+                iframe.src = "user-data/" + node.owner + node.data[0] + node.name;
+        }
+    } else {
+        iframe.src = "user-data/" + node.owner + node.data[0] + node.name;
+    }
+    cl(iframe.src);
+    // cl(iframe.src);
+
     content.appendChild(iframe);
 
-    let detector = document.createElement("div");
-    detector.classList.add("detect");
-    content.appendChild(detector);
-
-    iframe.addEventListener('mouseover', function () {
+    iframe.addEventListener('mouseover', (event) => {
         myConfObj.iframeMouseOver = true;
+        myConfObj.lastIframe = event.target;
     });
-    iframe.addEventListener('mouseout', function () {
+    iframe.addEventListener('mouseout', () => {
         myConfObj.iframeMouseOver = false;
+        myConfObj.lastIframe = null;
     });
 
+    //TODO: resizing
 
-    // windows.querySelectorAll(".detect").forEach((el) => {
-    //     el.addEventListener("click", (e) => {
-    //         console.log(new Date() + event);
-    //     }, true);
+    // var side = ["nw", "ne", "sw", "se", "n", "e", "s", "w"];
+    // side.forEach((item) => {
+    //     var grip = document.createElement("div");
+    //     grip.classList.add("resizable");
+    //     grip.classList.add(item + "grip");
+    //     holder.appendChild(grip);
     // });
 
-    // windows.querySelectorAll("iframe").forEach((el) => {
-    //     el.addEventListener("mouseover", (e) => {
-    //         cl(e.target);
-    //     });
-    //     el.addEventListener("mouseout", (e) => {
-    //         cl(e.target);
-    //     });
-    // });
 
-    // window.addEventListener("blur", () => {
-    //     setTimeout(() => {
-    //         if (document.activeElement.tagName === "IFRAME") {
-    //             deselectIcons();
-    //             cl(document.event)
-    //         }
-    //     }, 4);
-    // });
+
+
+
+
 
     windows.appendChild(holder);
 
+    resizeWindow(holder);
+    // selectApp(holder);
     dragApp(holder);
+    minimizeApp(minimize);
     maximizeApp(maximize, header);
     closeApp(close);
 }
@@ -364,55 +384,6 @@ function addDesktopIcon(node) {
     desktopIconContextMenu(holder);
     desktopIconEditName(caption);
 }
-
-
-function watchIframeFocus(onFocus, onBlur) {
-    let iframeClickedLast;
-
-    function windowBlurred(e) {
-        const el = document.activeElement;
-        if (el.tagName.toLowerCase() == 'iframe') {
-            iframeClickedLast = true;
-            cl(e);
-        }
-    }
-    function windowFocussed(e) {
-        if (iframeClickedLast) {
-            iframeClickedLast = false;
-            cl(e);
-        }
-    }
-    window.addEventListener('focus', windowFocussed, true);
-    window.addEventListener('blur', windowBlurred, true);
-}
-
-// watchIframeFocus((e) => cl("focus: ", e), (e) => cl("blur: ", e));
-
-
-let start;
-function step(timestamp) {
-    if (start === undefined) {
-        start = timestamp;
-    }
-    const elapsed = timestamp - start;
-    if (window.event !== undefined) {
-        cl(elapsed, window.event)
-    }
-    requestAnimationFrame(step);
-}
-
-// requestAnimationFrame(step);
-windows.addEventListener("mousemove", (e) => {
-    setTimeout(() => {
-        // cl(new Date());
-        // a = e.target;
-        // cl(a, e.screenX, e.screenY);
-    }, 1);
-    // e.target.childNodes[2].addEventListener("mouseover", (e) => cl(e));
-});
-
-
-
 
 const fetchAndLoadImage = async (imagePath) => {
     try {

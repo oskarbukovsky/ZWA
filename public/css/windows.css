@@ -7,6 +7,7 @@
 	top: 50px;
 	left: 250px;
 	min-width: 400px;
+	min-height: 350px;
 	background-color: rgb(25, 25, 25);
 	border: 1px solid rgb(55, 55, 55);
 	border-radius: 6px;
@@ -100,9 +101,10 @@
 }
 
 iframe {
-	position: absolute;
+	position: relative;
 	width: 100%;
 	min-height: 350px;
+	height: 100%;
 	border: none;
 	border-radius: 0 0 6px 6px;
 }
@@ -112,7 +114,7 @@ iframe {
 	top: 0;
 	left: 0;
 	width: 100%;
-	min-height: 350px;
+	height: 100%;
 	pointer-events: none;
 }
 
@@ -227,17 +229,103 @@ iframe {
 	height: calc(
 		100% - calc(12px + var(--app-controls-size) + var(--app-controls-extra))
 	);
-	/* background-color: transparent; */
-	background-color: rgba(255, 0, 0, 0.1);
+	background-color: transparent;
+	/* background-color: rgba(255, 0, 0, 0.1); */
 	border-radius: 0 0 6px 6px;
 }
 
 .windows-app.maximized {
-    top: 0 !important;
-    left: 0 !important;
-    min-width: 100vw !important;
+	top: -1px !important;
+	left: 0 !important;
+	min-width: 100vw !important;
 	border-radius: 0 !important;
+	border: 0 !important;
 }
 .windows-app.maximized > .app-content {
-	min-height: calc(100vh - var(--navbar-height) - 1px) !important;
+	height: calc(
+		100vh + 1px - var(--navbar-height) -
+			max(
+				calc(
+					var(--app-controls-size) + 2 *
+						max(
+							var(--app-controls-extra),
+							calc(-1 * var(--app-controls-extra))
+						)
+				),
+				calc(
+					12px + var(--app-controls-size) + var(--app-controls-extra)
+				)
+			)
+	) !important;
+}
+
+.windows-app.maximized iframe {
+	border-radius: 0 0 0 0 !important;
+}
+
+.windows-app.minimized {
+	filter: opacity(0);
+	display: none !important;
+}
+
+.windows-app > .resizable {
+	position: absolute;
+	/* background-color: rgba(255, 0, 0, 0.4); */
+	background-color: transparent;
+}
+
+.resizable.negrip {
+	top: -5px;
+	right: -5px;
+	height: 6px;
+	width: 6px;
+}
+
+.resizable.segrip {
+	bottom: -5px;
+	right: -5px;
+	height: 6px;
+	width: 6px;
+}
+
+.resizable.nwgrip {
+	top: -5px;
+	left: -5px;
+	height: 6px;
+	width: 6px;
+}
+
+.resizable.swgrip {
+	bottom: -5px;
+	left: -5px;
+	height: 6px;
+	width: 6px;
+}
+
+.resizable.ngrip {
+	top: -5px;
+	left: 0;
+	height: 5px;
+	width: 100%;
+}
+
+.resizable.egrip {
+	right: -5px;
+	top: 0;
+	height: 100%;
+	width: 5px;
+}
+
+.resizable.sgrip {
+	bottom: -5px;
+	left: 0;
+	width: 100%;
+	height: 5px;
+}
+
+.resizable.wgrip {
+	left: -5px;
+	top: 0;
+	height: 100%;
+	width: 5px;
 }

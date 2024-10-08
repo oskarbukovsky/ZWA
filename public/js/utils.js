@@ -52,7 +52,7 @@ function cssVar(variableName, value = null) {
     }
 }
 
-function deselectSelectedOrOpen() {
+function deselectDesktopIcon() {
     document.querySelectorAll("figure.icon.icon-selected").forEach((el) => {
         el.classList.remove("icon-selected");
     });
@@ -119,7 +119,6 @@ function clock() {
     document.getElementById("datetime").setAttribute("data-time", dateTime[1] + " ");
     requestAnimationFrame(clock);
 }
-requestAnimationFrame(clock);
 
 function cl() {
     if (DEBUG) {
@@ -200,6 +199,9 @@ function openDb() {
         // })
         localDatabase.onclose = function (event) {
             cl("! Spojení s databází bylo přerušeno", event);
+
+            document.querySelector(".errors").classList.remove("hidden")
+            document.querySelector(".errors").classList.add("db-error");
         }
         localDatabase.onerror = function (event) {
             cl("! Nastala chyba v databázi:", event.target?.error);
@@ -236,6 +238,8 @@ function getIcon(node) {
                     switch (node.data[0].split(":\/\/").shift()) {
                         case "vLinkTrash":
                             return "./media/file-icons/trash.webp";
+                        case "vComputer":
+                            return "./media/file-icons/computer.webp";
                         default:
                             return "./media/file-icons/unknown.webp"
                     }
@@ -267,32 +271,36 @@ function getIcon(node) {
     }
 }
 
-function maximizeApp(closeButton, header) {
-    closeButton.addEventListener("click", (event) => {
-        event.preventDefault();
-        let app = event.target;
-        while (!app.classList.contains("windows-app")) {
-            app = app.parentElement;
+function bubbleToClass(event, className) {
+    event.preventDefault();
+    let app = event.target;
+    while (!app?.classList?.contains(className)) {
+        app = app.parentElement;
+        if (app === null) {
+            return false;
         }
-        app.classList.toggle("maximized");
-    });
-    header.addEventListener("dblclick", (event) => {
-        event.preventDefault();
-        let app = event.target;
-        while (!app.classList.contains("windows-app")) {
-            app = app.parentElement;
-        }
-        app.classList.toggle("maximized");
+    }
+    return app;
+}
+
+function minimizeApp(minimizeButton) {
+    minimizeButton.addEventListener("click", (event) => {
+        bubbleToClass(event, "windows-app").classList.toggle("minimized");
     });
 }
 
-function closeApp(element) {
-    element.addEventListener("click", (event) => {
-        event.preventDefault();
-        let app = event.target;
-        while (!app.classList.contains("windows-app")) {
-            app = app.parentElement;
-        }
+function maximizeApp(closeButton, header) {
+    closeButton.addEventListener("click", (event) => {
+        bubbleToClass(event, "windows-app").classList.toggle("maximized");
+    });
+    header.addEventListener("dblclick", (event) => {
+        bubbleToClass(event, "windows-app").classList.toggle("maximized");
+    });
+}
+
+function closeApp(closeButton) {
+    closeButton.addEventListener("click", (event) => {
+        let app = bubbleToClass(event, "windows-app");
         app.classList.add("closing");
         setTimeout(() => {
             app.remove();
@@ -305,13 +313,11 @@ function dragApp(element) {
     element.querySelector(".app-header").onmousedown = dragMouseDown;
 
     function dragMouseDown(event) {
-        event.preventDefault();
-        let app = event.target;
-        while (!app.classList.contains("windows-app")) {
-            app = app.parentElement;
-        }
+        let app = bubbleToClass(event, "windows-app");
         if(!app.classList.contains("maximized")) {
             app.classList.add("dragging");
+            deselectAllApps();
+            app.classList.add("active");
             pos3 = event.clientX;
             pos4 = event.clientY;
             document.onmouseup = closeDragElement;
@@ -335,15 +341,15 @@ function dragApp(element) {
         pos3 = event.clientX;
         pos4 = event.clientY;
 
+        // element.dataset.top = (element.offsetTop - pos2) + "px";
+        // element.dataset.left = (element.offsetLeft - pos1) + "px";
+
         element.style.top = (element.offsetTop - pos2) + "px";
         element.style.left = (element.offsetLeft - pos1) + "px";
     }
 
     function closeDragElement(event) {
-        let app = event.target;
-        while (!app.classList.contains("windows-app")) {
-            app = app.parentElement;
-        }
+        let app = bubbleToClass(event, "windows-app");
         app.classList.remove("dragging");
 
         document.onmouseup = null;
@@ -354,11 +360,29 @@ function dragApp(element) {
 function desktopIconSelect(element) {
     element.addEventListener("click", (event) => {
         if (!is_key_down('Control')) {
-            deselectSelectedOrOpen();
+            deselectDesktopIcon();
         }
-        element.classList.add("icon-selected");
+        element.classList.toggle("icon-selected");
+        closeDesktopCalendar();
         event.stopPropagation();
     })
+}
+
+function selectApp(element) {
+    // deselectAllApps();
+    // element.addEventListener("click", (event) => {
+    //     element.classList.add("active");
+    // });
+}
+
+function deselectAllApps() {
+    document.querySelectorAll(".windows-app").forEach((app) => {
+        app.classList.remove("active");
+    });
+}
+
+function closeDesktopCalendar() {
+    navbar.querySelector(".calendar-container").classList.remove("open");
 }
 
 function desktopIconOpen(element) {
@@ -457,12 +481,6 @@ function desktopIconEditName(element) {
 
 // }
 
-
-
-
-
-
-
 // function get_average_rgb(img) {
 //     var context = document.createElement('canvas').getContext('2d');
 //     if (typeof img == 'string') {
@@ -475,3 +493,8 @@ function desktopIconEditName(element) {
 //     context.drawImage(img, 0, 0, 1, 1);
 //     return context.getImageData(0, 0, 1, 1).data.slice(0,3);
 // }
+
+
+function resizeWindow(app) {
+    cl("resizing", app);
+}

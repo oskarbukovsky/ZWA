@@ -32,6 +32,10 @@ body {
 	height: calc(100vh - var(--navbar-height) - 1px);
 }
 
+.no-select {
+	user-select: none;
+}
+
 .errors {
 	position: absolute;
 	top: 0;
@@ -43,4 +47,33 @@ body {
 	text-align: center;
 	align-content: center;
 	white-space: pre-wrap;
+}
+
+.errors:before {
+	color: #f00;
+	font-size: 32px;
+}
+
+.errors:after {
+	color: #efefefef;
+	font-size: 20px;
+	position: relative;
+	left: -0.4em;
+}
+
+.hidden {
+	display: none !important;
+}
+
+.test {
+	top: 400px !important;
+	left: 300px !important;
+}
+
+.errors.db-error:before {
+	content: "Chyba";
+}
+
+.errors.db-error:after {
+    content: "Spojení s lokální databází bylo přerušeno ";
 }
