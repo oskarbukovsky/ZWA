@@ -46,7 +46,7 @@ function bool(value) {
 
 function cssVar(variableName, value = null) {
     if (value !== null) {
-        document.documentElement.style.setProperty(variableName, value);
+        document.documentElement.style.setProperty(variableName, value.toString());
     } else {
         return getComputedStyle(document.documentElement).getPropertyValue(variableName);
     }
@@ -139,16 +139,25 @@ function deleteDb() {
             cl("|📗 Database cleared in " + (new Date() - time1) + "ms");
             resolve();
         }
-        var req = indexedDB.deleteDatabase("ZWA");
+        var req = indexedDB.deleteDatabase(dbName);
         req.onsuccess = success();
     });
+}
+
+function openDbError(timeout) {
+    cl("! Nedaří se připojit k databázi v časovém limitu: " + timeout + "s");
+    cssVar("--db-error", '"Nedaří se připojit k databázi v časovém limitu ' + timeout + 's: \\a Zavřete ostatní okna s aplikací"');
+
+    document.querySelector(".errors").classList.remove("hidden")
+    document.querySelector(".errors").classList.add("db-error");
 }
 
 function openDb() {
     let time1 = new Date();
     let localDatabaseRequest = indexedDB.open(dbName, 1);
 
-    localDatabaseRequest.onsuccess = function () {
+    localDatabaseRequest.onsuccess = function (event) {
+        // cl("DB Success: ", event);
         localDatabase = this.result;
 
         localDatabase.getStore = function (store, readonly_readwrite = "readwrite") {
@@ -198,22 +207,41 @@ function openDb() {
         //     localDatabase.stores.set(el, localDatabase.transaction(el, "readwrite").objectStore(el));
         // })
         localDatabase.onclose = function (event) {
-            cl("! Spojení s databází bylo přerušeno", event);
+            cl("! Spojení s databází bylo přerušeno: ", event);
+            cssVar("--db-error", '"Spojení s lokální databází bylo přerušeno"');
 
             document.querySelector(".errors").classList.remove("hidden")
             document.querySelector(".errors").classList.add("db-error");
         }
         localDatabase.onerror = function (event) {
-            cl("! Nastala chyba v databázi:", event.target?.error);
+            cl("Nastala chyba v databázi: ", event);
+            cssVar("--db-error", '"Nastala chyba v databázi: \\a ' + event.target.error + '"');
+
+            document.querySelector(".errors").classList.remove("hidden")
+            document.querySelector(".errors").classList.add("db-error");
+
         };
         cl("|📗 indexedDB Ready in " + (new Date() - time1) + "ms");
     };
 
     localDatabaseRequest.onerror = function (event) {
-        cl("Prohlížeč pravděpodobně nepodporuje nebo je zakázaná IndexedDB", event.target.error?.message);
+        cl("Prohlížeč pravděpodobně nepodporuje nebo je zakázaná IndexedDB: ", event);
+        cssVar("--db-error", '"Prohlížeč pravděpodobně nepodporuje nebo je zakázaná IndexedDB"');
+
+        document.querySelector(".errors").classList.remove("hidden")
+        document.querySelector(".errors").classList.add("db-error");
+    };
+
+    localDatabaseRequest.onblocked = function (event) {
+        cl("! Nelze navázat spojení s databází: ", event);
+        cssVar("--db-error", '"Nelze navázat spojení s databází"');
+
+        document.querySelector(".errors").classList.remove("hidden")
+        document.querySelector(".errors").classList.add("db-error");
     };
 
     localDatabaseRequest.onupgradeneeded = function (event) {
+        // cl("DB Upgrade: ", event);
         let dbStore;
         dbStores.forEach((currentStore) => {
             // cl("Creating with key: ", currentStore?.keyPath);
@@ -314,7 +342,7 @@ function dragApp(element) {
 
     function dragMouseDown(event) {
         let app = bubbleToClass(event, "windows-app");
-        if(!app.classList.contains("maximized")) {
+        if (!app.classList.contains("maximized")) {
             app.classList.add("dragging");
             deselectAllApps();
             app.classList.add("active");
@@ -385,6 +413,14 @@ function closeDesktopCalendar() {
     navbar.querySelector(".calendar-container").classList.remove("open");
 }
 
+function closeSearchbarMenu() {
+    navbar.querySelector(".search-menu").classList.remove("open");
+}
+
+function closeMainMenu() {
+    navbar.querySelector(".main-menu").classList.remove("open");
+}
+
 function desktopIconOpen(element) {
     element.addEventListener("dblclick", (event) => {
         // cl("Open Window from Desktop\n", holder);
@@ -446,7 +482,7 @@ function desktopIconEditName(element) {
 //     length,
 //     rgb = {r:0,g:0,b:0},
 //     count = 0;
-    
+
 // if (!context) {
 //     return defaultRGB;
 // }
@@ -496,5 +532,9 @@ function desktopIconEditName(element) {
 
 
 function resizeWindow(app) {
-    cl("resizing", app);
+    cl("Preparing resizing: ", app);
+    resizingElementsPrefixes.forEach((side) => {
+        let resizingElement = app.querySelector("." + side + "grip");
+        cl("side: " + side + ", Selector: \"" + "." + side + "grip" + "\"\n", resizingElement);
+    })
 }

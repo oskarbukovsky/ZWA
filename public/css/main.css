@@ -75,5 +75,5 @@ body {
 }
 
 .errors.db-error:after {
-    content: "Spojení s lokální databází bylo přerušeno ";
+    content: var(--db-error);
 }
