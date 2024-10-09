@@ -14,8 +14,14 @@ window.addEventListener("DOMContentLoaded", async () => {
     cl("|📙 Opening indexedDB")
     openDb();
 
+    const dbOpenTimeout = 10;
+    let time1Db = new Date();
     while (!localDatabase) {
         await sleep(4);
+        if (new Date() - time1Db >= dbOpenTimeout * 1000) {
+            openDbError(dbOpenTimeout);
+            return;
+        }
     }
 
     cl("|📙 Processing userIdentifier...");
@@ -50,6 +56,9 @@ var myConfObj = {
 window.addEventListener('blur', (event) => {
     if (myConfObj.iframeMouseOver) {
         console.log('Wow! Iframe Click!');
+        cl(2);
+        closeMainMenu();
+        closeSearchbarMenu()
         closeDesktopCalendar();
         deselectDesktopIcon();
         deselectAllApps();
@@ -67,6 +76,12 @@ window.addEventListener('blur', (event) => {
 var iframe;
 
 window.addEventListener("click", (event) => {
+    if (!(bubbleToClass(event, "navbar-menu") || bubbleToClass(event, "main-menu"))) {
+        closeMainMenu();
+    }
+    if (!(bubbleToClass(event, "search-menu") || bubbleToClass(event, "searchbar"))) {
+        closeSearchbarMenu();
+    }
     if (!(bubbleToClass(event, "calendar-container") || bubbleToClass(event, "datetime"))) {
         closeDesktopCalendar();
     }
@@ -77,14 +92,18 @@ window.addEventListener("click", (event) => {
     }
 })
 
-navbar.querySelector(".navbar-search").addEventListener("click", (event) => {
-    if (navbar.querySelector(".navbar-search").contains(event.target)) {
-        navbar.querySelector(".navbar-search > .search-menu").classList.toggle("open");
+navbar.querySelector(".navbar-menu").addEventListener("click", (event) => {
+    if (event.target != navbar.querySelector(".navbar-menu > .main-menu")) {
+        navbar.querySelector(".navbar-menu > .main-menu").classList.toggle("open");
     }
 });
 
-navbar.querySelector(".navbar-time .navbar-button-content").addEventListener("click", (event) => {
-    navbar.querySelector(".navbar-time .calendar-container").classList.toggle("open");
+navbar.querySelector(".navbar-search .navbar-button-content").addEventListener("click", () => {
+    navbar.querySelector(".navbar-search > .search-menu").classList.toggle("open");
+});
+
+navbar.querySelector(".navbar-time .navbar-button-content").addEventListener("click", () => {
+    navbar.querySelector(".navbar-time > .calendar-container").classList.toggle("open");
 });
 
 let date = new Date();
@@ -249,6 +268,9 @@ async function processDesktopIcons() {
     cl("|📗 Desktop processed in " + (new Date() - time1) + "ms");
 }
 
+
+
+const resizingElementsPrefixes = ["nw", "ne", "sw", "se", "n", "e", "s", "w"];
 function appOpen(node) {
     cl("opening window", node);
 
@@ -318,6 +340,7 @@ function appOpen(node) {
     } else {
         iframe.src = "user-data/" + node.owner + node.data[0] + node.name;
     }
+
     cl(iframe.src);
     // cl(iframe.src);
 
@@ -333,25 +356,17 @@ function appOpen(node) {
     });
 
     //TODO: resizing
-
-    // var side = ["nw", "ne", "sw", "se", "n", "e", "s", "w"];
-    // side.forEach((item) => {
-    //     var grip = document.createElement("div");
-    //     grip.classList.add("resizable");
-    //     grip.classList.add(item + "grip");
-    //     holder.appendChild(grip);
-    // });
-
-
-
-
-
-
+    resizingElementsPrefixes.forEach((item) => {
+        var grip = document.createElement("div");
+        grip.classList.add("resizable");
+        grip.classList.add(item + "grip");
+        holder.appendChild(grip);
+    });
 
     windows.appendChild(holder);
 
     resizeWindow(holder);
-    // selectApp(holder);
+    selectApp(holder);
     dragApp(holder);
     minimizeApp(minimize);
     maximizeApp(maximize, header);
