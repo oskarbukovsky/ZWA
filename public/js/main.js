@@ -22,6 +22,7 @@ window.addEventListener("DOMContentLoaded", async () => {
             openDbError(dbOpenTimeout);
             return;
         }
+        scheduler.yield();
     }
 
     cl("|📙 Processing userIdentifier...");
@@ -71,6 +72,7 @@ window.addEventListener('blur', (event) => {
             }
         }
         app.classList.add("active");
+        navbar.querySelector('[data-id="' + app.dataset.id + '"]').classList.add("active");
     }
 });
 var iframe;
@@ -87,8 +89,8 @@ window.addEventListener("click", (event) => {
     }
     // bubbleToClass(event, "windows-app")?.classList?.remove("active");
     deselectDesktopIcon();
-    if (!bubbleToClass(event, "windows-app")) {
-        deselectAllApps();
+    if (!bubbleToClass(event, "windows-app") && !bubbleToClass(event, "navbar-icon")) {
+            deselectAllApps();
     }
 })
 
@@ -341,10 +343,40 @@ function appOpen(node) {
         iframe.src = "user-data/" + node.owner + node.data[0] + node.name;
     }
 
-    cl(iframe.src);
-    // cl(iframe.src);
 
     content.appendChild(iframe);
+
+    let navbarHolder = document.createElement("div");
+    navbarHolder.classList.add("navbar-icon");
+    navbarHolder.dataset.id = node.id;
+
+    let navbarButton = document.createElement("div");
+    navbarButton.classList.add("navbar-button-content");
+    navbarHolder.appendChild(navbarButton);
+
+    navbarHolder.addEventListener("click", (event) => {
+        setTimeout(() => {}, 20);
+        if (bubbleToClass(event, "navbar-icon").classList.contains("active")) {
+            bubbleToClass(event, "navbar-icon").classList.remove("active");
+            windows.querySelector('[data-id="' + node.id + '"]').classList.add("minimized");
+            windows.querySelector('[data-id="' + node.id + '"]').classList.remove("active");
+        } else {
+            bubbleToClass(event, "navbar-icon").classList.add("active");
+            windows.querySelector('[data-id="' + node.id + '"]').classList.remove("minimized");
+            windows.querySelector('[data-id="' + node.id + '"]').classList.add("active");
+        }
+    });
+
+    let navbarIcon = document.createElement("img");
+    navbarIcon.src = getIcon(node);
+    navbarButton.appendChild(navbarIcon);
+
+    appendBefore(navbarHolder, document.querySelector("#navbar > div.navbar-spacer"));
+
+    iframe.addEventListener("load", () => {
+        navbarHolder.classList.add("running");
+        navbarHolder.classList.add("active");
+    });
 
     iframe.addEventListener('mouseover', (event) => {
         myConfObj.iframeMouseOver = true;
@@ -465,7 +497,7 @@ async function changeFile() {
     cl(await uploadFiles(data));
 }
 
-input.addEventListener('change', changeFile);
+// input.addEventListener('change', changeFile);
 
 
 async function uploadFiles(data) {

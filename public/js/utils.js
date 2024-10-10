@@ -313,12 +313,15 @@ function bubbleToClass(event, className) {
 
 function minimizeApp(minimizeButton) {
     minimizeButton.addEventListener("click", (event) => {
-        bubbleToClass(event, "windows-app").classList.toggle("minimized");
+        let app = bubbleToClass(event, "windows-app");
+        app.classList.toggle("minimized");
+
+        navbar.querySelector('[data-id="' + app.dataset.id + '"]').classList.remove("active");        
     });
 }
 
-function maximizeApp(closeButton, header) {
-    closeButton.addEventListener("click", (event) => {
+function maximizeApp(maximizeButton, header) {
+    maximizeButton.addEventListener("click", (event) => {
         bubbleToClass(event, "windows-app").classList.toggle("maximized");
     });
     header.addEventListener("dblclick", (event) => {
@@ -333,6 +336,13 @@ function closeApp(closeButton) {
         setTimeout(() => {
             app.remove();
         }, 250);
+        let navbarIcon = navbar.querySelector('[data-id="' + app.dataset.id + '"]');
+        if (navbarIcon.dataset.persistent != "false") {
+            navbarIcon.classList.add("closing");
+            setTimeout(() => {
+                navbarIcon.remove();
+            }, 250);
+        }
     });
 }
 
@@ -346,6 +356,7 @@ function dragApp(element) {
             app.classList.add("dragging");
             deselectAllApps();
             app.classList.add("active");
+            navbar.querySelector('[data-id="' + app.dataset.id + '"]').classList.add("active");
             pos3 = event.clientX;
             pos4 = event.clientY;
             document.onmouseup = closeDragElement;
@@ -404,8 +415,12 @@ function selectApp(element) {
 }
 
 function deselectAllApps() {
-    document.querySelectorAll(".windows-app").forEach((app) => {
+    windows.querySelectorAll(".windows-app").forEach((app) => {
         app.classList.remove("active");
+    });
+    navbar.querySelectorAll("div.active").forEach((element) => {
+        cl("unactivating: ", element);
+        element.classList.remove("active")
     });
 }
 
@@ -537,4 +552,8 @@ function resizeWindow(app) {
         let resizingElement = app.querySelector("." + side + "grip");
         cl("side: " + side + ", Selector: \"" + "." + side + "grip" + "\"\n", resizingElement);
     })
+}
+
+function appendBefore(element, beforeWhat) {
+    return beforeWhat.parentNode.insertBefore(element, beforeWhat);;
 }
