@@ -56,8 +56,6 @@ var myConfObj = {
 }
 window.addEventListener('blur', (event) => {
     if (myConfObj.iframeMouseOver) {
-        console.log('Wow! Iframe Click!');
-        cl(2);
         closeMainMenu();
         closeSearchbarMenu()
         closeDesktopCalendar();
@@ -106,6 +104,14 @@ navbar.querySelector(".navbar-search .navbar-button-content").addEventListener("
 
 navbar.querySelector(".navbar-time .navbar-button-content").addEventListener("click", () => {
     navbar.querySelector(".navbar-time > .calendar-container").classList.toggle("open");
+});
+
+navbar.querySelector(".navbar-minimize").addEventListener("click", () => {
+    cl(".navbar-minimize");
+    deselectAllApps();
+    windows.querySelectorAll(".windows-app").forEach((app) => {
+        app.classList.add("minimized");
+    });
 });
 
 let date = new Date();
@@ -274,6 +280,8 @@ async function processDesktopIcons() {
 
 const resizingElementsPrefixes = ["nw", "ne", "sw", "se", "n", "e", "s", "w"];
 function appOpen(node) {
+    deselectAllApps();
+
     cl("opening window", node);
 
     let holder = document.createElement("div");

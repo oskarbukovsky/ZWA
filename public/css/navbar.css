@@ -158,14 +158,14 @@
 
 .navbar-button-content img {
 	width: 100%;
-    height: 100%;
-    object-fit: contain;
+	height: 100%;
+	object-fit: contain;
 	transform: scale(0.75);
 	transition: transform 100ms ease-in-out;
 }
 
 .navbar-button-content:active img {
-	transform: scale(0.6)
+	transform: scale(0.6);
 }
 
 /* TODO */
@@ -174,7 +174,8 @@
 	position: relative;
 	opacity: 1;
 	top: 0;
-	transition: opacity 130ms linear, top 150ms cubic-bezier(0.36, -0.45, 0.46, 0.81);
+	transition: opacity 130ms linear,
+		top 150ms cubic-bezier(0.36, -0.45, 0.46, 0.81);
 }
 
 #navbar > .navbar-icon.closing {
@@ -202,7 +203,7 @@
 
 #navbar > .navbar-icon.active > .navbar-button-content:after {
 	min-width: calc(var(--navbar-height) * 0.4);
-	background-color: rgb(64,189,255,0.9);
+	background-color: rgb(64, 189, 255, 0.9);
 }
 
 #navbar .navbar-button-content:hover,
@@ -390,4 +391,25 @@ header .calendar-current-date {
 
 .calendar-body > .calendar-dates li:active:hover {
 	color: rgb(51, 146, 208);
+}
+
+#navbar > .navbar-minimize:after {
+	content: "";
+	position: absolute;
+	right: 6px;
+	min-width: calc(var(--navbar-height) * 0.035);
+	border-radius: 16px;
+	top: 50%;
+	transform: translate(0%, -50%);
+	min-height: 35%;
+	background-color: transparent;
+	transition: background-color 50ms linear;
+}
+
+#navbar > .navbar-minimize:hover::after {
+	background-color: rgba(142, 155, 175, 0.9);
+}
+
+#navbar > .navbar-minimize:active::after {
+	background-color: rgba(46,70,107,0.9);
 }

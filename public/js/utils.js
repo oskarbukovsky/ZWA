@@ -419,7 +419,7 @@ function deselectAllApps() {
         app.classList.remove("active");
     });
     navbar.querySelectorAll("div.active").forEach((element) => {
-        cl("unactivating: ", element);
+        // cl("unActivating: ", element);
         element.classList.remove("active")
     });
 }
@@ -547,10 +547,10 @@ function desktopIconEditName(element) {
 
 
 function resizeWindow(app) {
-    cl("Preparing resizing: ", app);
+    // cl("Preparing resizing: ", app);
     resizingElementsPrefixes.forEach((side) => {
         let resizingElement = app.querySelector("." + side + "grip");
-        cl("side: " + side + ", Selector: \"" + "." + side + "grip" + "\"\n", resizingElement);
+        // cl("side: " + side + ", Selector: \"" + "." + side + "grip" + "\"\n", resizingElement);
     })
 }
 
