@@ -22,7 +22,7 @@ let month = date.getMonth();
 let appResizing = {
     top: null,
     left: null,
-    within: null,
+    width: null,
     height: null,
     _status: false,
     element: null,
@@ -56,6 +56,7 @@ let appResizing = {
         }
         if (val) {
             cl("true: ", app);
+            app.classList.add("active");
             app.classList.add("resizing");
             window.addEventListener("mousemove", this.resizingEvent);
         } else {

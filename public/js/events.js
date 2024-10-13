@@ -110,5 +110,5 @@ window.onmessage = function(event) {
 };
 
 addEventListener("resize", () => {
-    resizing.windowResize();
+    appResizing.windowResize();
 });
