@@ -230,19 +230,14 @@ iframe {
 	position: absolute;
 	background-color: transparent;
 	top: 0;
-    left: 0;
-    content: "";
-    width: 100%;
-    height: 100%;
+	left: 0;
+	content: "";
+	width: 100%;
+	height: 100%;
 	pointer-events: none;
 }
 
-#windows:has(.resizing) > .windows-app > .app-content:after {
-	background-color: rgba(128, 255, 128, 0.2);
-	pointer-events: all;
-}
-
-/* #windows:has(.resizing) > .windows-app > .app-content:after, */
+#windows:has(.resizing) > .windows-app > .app-content:after,
 #windows:has(.dragging) > .windows-app > .app-content:after {
 	position: absolute;
 	top: calc(12px + var(--app-controls-size) + var(--app-controls-extra));
@@ -255,6 +250,12 @@ iframe {
 	background-color: transparent;
 	background-color: rgba(255, 0, 0, 0.1);
 	border-radius: 0 0 6px 6px;
+	pointer-events: none;
+}
+
+#windows:has(.resizing) > .windows-app > .app-content:after {
+	background-color: rgba(128, 255, 128, 0.2);
+	pointer-events: all;
 }
 
 .windows-app.maximized {
