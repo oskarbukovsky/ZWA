@@ -100,24 +100,6 @@
 	}
 }
 
-iframe {
-	position: relative;
-	width: 100%;
-	min-height: 350px;
-	height: 100%;
-	border: none;
-	border-radius: 0 0 6px 6px;
-}
-
-.detect {
-	position: relative;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	pointer-events: none;
-}
-
 .app-v1 {
 	display: flex;
 	flex-flow: row;
@@ -220,6 +202,47 @@ iframe {
 	background-color: rgba(0, 12, 26, 0.7);
 }
 
+iframe {
+	position: relative;
+	width: 100%;
+	min-height: 350px;
+	height: 100%;
+	border: none;
+	border-radius: 0 0 6px 6px;
+}
+
+.detect {
+	position: absolute;
+	top: 0;
+	width: 100%;
+	min-height: 350px;
+	height: 100%;
+	border: none;
+	border-radius: 0 0 6px 6px;
+	background-color: transparent;
+	/* pointer-events: all; */
+}
+
+/* #windows:has(.resizing) > .windows-app > iframe {
+	pointer-events: none;
+} */
+#windows > .windows-app > .app-content:after {
+	position: absolute;
+	background-color: transparent;
+	top: 0;
+    left: 0;
+    content: "";
+    width: 100%;
+    height: 100%;
+	pointer-events: none;
+}
+
+#windows:has(.resizing) > .windows-app > .app-content:after {
+	background-color: rgba(128, 255, 128, 0.2);
+	pointer-events: all;
+}
+
+/* #windows:has(.resizing) > .windows-app > .app-content:after, */
 #windows:has(.dragging) > .windows-app > .app-content:after {
 	position: absolute;
 	top: calc(12px + var(--app-controls-size) + var(--app-controls-extra));
@@ -230,7 +253,7 @@ iframe {
 		100% - calc(12px + var(--app-controls-size) + var(--app-controls-extra))
 	);
 	background-color: transparent;
-	/* background-color: rgba(255, 0, 0, 0.1); */
+	background-color: rgba(255, 0, 0, 0.1);
 	border-radius: 0 0 6px 6px;
 }
 
@@ -270,8 +293,8 @@ iframe {
 
 .windows-app > .resizable {
 	position: absolute;
-	/* background-color: rgba(255, 0, 0, 0.4); */
 	background-color: transparent;
+	background-color: rgba(255, 0, 0, 0.4);
 }
 
 .resizable.negrip {
@@ -279,6 +302,7 @@ iframe {
 	right: -5px;
 	height: 6px;
 	width: 6px;
+	cursor: ne-resize;
 }
 
 .resizable.segrip {
@@ -286,6 +310,7 @@ iframe {
 	right: -5px;
 	height: 6px;
 	width: 6px;
+	cursor: se-resize;
 }
 
 .resizable.nwgrip {
@@ -293,6 +318,7 @@ iframe {
 	left: -5px;
 	height: 6px;
 	width: 6px;
+	cursor: nw-resize;
 }
 
 .resizable.swgrip {
@@ -300,6 +326,7 @@ iframe {
 	left: -5px;
 	height: 6px;
 	width: 6px;
+	cursor: sw-resize;
 }
 
 .resizable.ngrip {
@@ -307,6 +334,7 @@ iframe {
 	left: 0;
 	height: 5px;
 	width: 100%;
+	cursor: n-resize;
 }
 
 .resizable.egrip {
@@ -314,6 +342,7 @@ iframe {
 	top: 0;
 	height: 100%;
 	width: 5px;
+	cursor: e-resize;
 }
 
 .resizable.sgrip {
@@ -321,6 +350,7 @@ iframe {
 	left: 0;
 	width: 100%;
 	height: 5px;
+	cursor: s-resize;
 }
 
 .resizable.wgrip {
@@ -328,4 +358,5 @@ iframe {
 	top: 0;
 	height: 100%;
 	width: 5px;
+	cursor: w-resize;
 }

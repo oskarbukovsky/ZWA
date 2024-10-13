@@ -98,3 +98,17 @@ document.querySelectorAll(".calendar-navigation span").forEach(icon => {
         manipulateCalendar();
     });
 });
+
+const appIframeLoaded = () => {
+    cl("loaded");
+    navbarHolder.classList.add("running");
+    navbarHolder.classList.add("active");
+};
+
+window.onmessage = function(event) {
+    cl("receivedFromIframe: ", event);
+};
+
+addEventListener("resize", () => {
+    resizing.windowResize();
+});

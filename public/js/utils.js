@@ -677,3 +677,10 @@ function setupCalendar() {
 
     manipulateCalendar();
 }
+
+function appResizeDown(event) {
+    appResizing.status = [true, this];
+}
+function appResizeUp(event) {
+    appResizing.status = [false];
+}

@@ -23,6 +23,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     cl("|📘 Document Ready");
     let time1 = new Date();
 
+    appResizing.windowResize();
+
     requestAnimationFrame(clock);
 
     cl("|📙 Clearing database")
@@ -124,7 +126,6 @@ async function processDesktopIcons() {
     cl("|📗 Desktop processed in " + (new Date() - time1) + "ms");
 }
 
-
 function appOpen(node) {
     deselectAllApps();
     cl("opening window", node);
@@ -141,9 +142,6 @@ function appOpen(node) {
     const close = createElement("div", new ClassList("close"), new AppendTo(controls));
     const content = createElement("div", new ClassList("app-content"), new AppendTo(holder));
 
-    // let detector = document.createElement("div");
-    // detector.classList.add("detect");
-    // content.appendChild(detector);
 
     windows.appendChild(holder);
 
@@ -161,9 +159,18 @@ function appOpen(node) {
         new ElementEvent("load", appIframeLoaded), new ElementEvent("mouseover", ElementEvents.appIframeMouseOver), new ElementEvent("mouseout", ElementEvents.appIframeMouseOut),
         new AppendTo(content));
 
+    // iframe.contentWindow.postMessage('hello', '*');
+
+    // let detector = document.createElement("div");
+    // detector.classList.add("detect");
+    // content.appendChild(detector);
+
     //TODO: resizing
+
     resizingElementsPrefixes.forEach((item) => {
         const grip = createElement("div", new ClassList("resizable", item + "grip"), new AppendTo(holder));
+        grip.addEventListener("mousedown", appResizeDown);
+        window.addEventListener("mouseup", appResizeUp);
     });
 
     resizeWindow(holder);
@@ -172,6 +179,7 @@ function appOpen(node) {
     minimizeApp(minimize);
     maximizeApp(maximize, header);
     closeApp(close);
+    iframe.contentWindow.postMessage("Tu máš Áj Frejme", "*");
 }
 
 function addDesktopIcon(node) {
@@ -187,7 +195,7 @@ function addDesktopIcon(node) {
     desktopIconEditName(caption);
 }
 
-async function fetchAndLoadImage (imagePath) {
+async function fetchAndLoadImage(imagePath) {
     try {
         let response = await fetch(imagePath);
         return await response.blob();
