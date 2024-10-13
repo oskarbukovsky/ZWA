@@ -1,8 +1,6 @@
 "use strict";
 
-const DEBUG = true;
-
-const getDirectory = () => {
+function getDirectory () {
     if (!window.showDirectoryPicker) {
         alert('Unsupported Browser Notice');
         return;
@@ -75,7 +73,7 @@ const is_key_down = (() => {
 
 function textSelect(field, start, end) {
     if (field.createTextRange) {
-        var selRange = field.createTextRange();
+        const selRange = field.createTextRange();
         selRange.collapse(true);
         selRange.moveStart('character', start);
         selRange.moveEnd('character', end - start);
@@ -105,14 +103,12 @@ function textDeSelect() {
 //             (dt.getMonth() + 1)).slice(-2)) + "." + (dt.getFullYear());
 // }, 999);
 
-let d;
 function clock() {
     let dateTime = new Intl.DateTimeFormat("cs-CZ", {
         dateStyle: "short",
         timeStyle: "medium",
         hour12: false
     }).format(new Date()).split(" ");
-    d = dateTime[0];
     // dateTime[0].replace(dateTime[0].split(".").pop(), "20" + dateTime[0].split(".").pop())
     // cl(dateTime[0].replace(dateTime[0].split(".").pop(), "20" + dateTime[0].split(".").pop()));
     document.getElementById("datetime").setAttribute("data-date", dateTime[0].replace(dateTime[0].split(".").pop(), "20" + dateTime[0].split(".").pop()));
@@ -139,7 +135,7 @@ function deleteDb() {
             cl("|📗 Database cleared in " + (new Date() - time1) + "ms");
             resolve();
         }
-        var req = indexedDB.deleteDatabase(dbName);
+        const req = indexedDB.deleteDatabase(dbName);
         req.onsuccess = success();
     });
 }
@@ -254,6 +250,21 @@ function openDb() {
     };
 }
 
+function getDestination(node) {
+    if (node.type == "link") {
+        switch (node.data[0].split(":\/\/").shift()) {
+            case "vLinkTrash":
+                return "user-data/" + node.owner + node.data[0] + node.name;
+            case "vComputer":
+                return "explorer.html?folder=user-data/" + node.owner;
+            default:
+                return "user-data/" + node.owner + node.data[0] + node.name;
+        }
+    } else {
+        return "user-data/" + node.owner + node.data[0] + node.name;
+    }
+}
+
 function getIcon(node) {
     if (node.icon) {
         return node.icon;
@@ -316,7 +327,7 @@ function minimizeApp(minimizeButton) {
         let app = bubbleToClass(event, "windows-app");
         app.classList.toggle("minimized");
 
-        navbar.querySelector('[data-id="' + app.dataset.id + '"]').classList.remove("active");        
+        navbar.querySelector('[data-id="' + app.dataset.id + '"]').classList.remove("active");
     });
 }
 
@@ -347,7 +358,7 @@ function closeApp(closeButton) {
 }
 
 function dragApp(element) {
-    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     element.querySelector(".app-header").onmousedown = dragMouseDown;
 
     function dragMouseDown(event) {
@@ -389,10 +400,12 @@ function dragApp(element) {
 
     function closeDragElement(event) {
         let app = bubbleToClass(event, "windows-app");
-        app.classList.remove("dragging");
+        if (app) {
+            app.classList.remove("dragging");
 
-        document.onmouseup = null;
-        document.onmousemove = null;
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
     }
 }
 
@@ -412,6 +425,64 @@ function selectApp(element) {
     // element.addEventListener("click", (event) => {
     //     element.classList.add("active");
     // });
+}
+
+function createElement() {
+    let parameters = [...arguments];
+    let parameter;
+    let element;
+    if (!parameters) {
+        return null;
+    }
+    if (parameters.length < 1) {
+        return null;
+    }
+    let elementType = parameters.shift();
+    if (typeof elementType === "string") {
+        element = document.createElement(elementType);
+    } else {
+        return null;
+    }
+    while (parameters.length >= 1) {
+        parameter = parameters.shift();
+        switch (parameter.constructor) {
+            case Id:
+                element.id = parameter.id;
+                break;
+            case Src:
+                element.src = parameter.src;
+                break;
+            case Cols:
+                element.cols = parameter.cols;
+                break;
+            case Name:
+                element.name = parameter.name;
+                break;
+            case ReadOnly:
+                element.readOnly = parameter.readOnly;
+            case TextContent:
+                element.textContent = parameter.textContent;
+                break;
+            case ClassList:
+                for (let className of parameter) {
+                    element.classList.add(className);
+                }
+                break;
+            case Data:
+                element.dataset[parameter.key] = parameter.value;
+                break;
+            case ElementEvent:
+                element.addEventListener(parameter.type, parameter.handler);
+                break;
+            case AppendTo:
+                parameter.element.appendChild(element);
+                break;
+            default:
+                cl("Element construction error: " + parameter);
+                break;
+        }
+    }
+    return element;
 }
 
 function deselectAllApps() {
@@ -556,4 +627,53 @@ function resizeWindow(app) {
 
 function appendBefore(element, beforeWhat) {
     return beforeWhat.parentNode.insertBefore(element, beforeWhat);;
+}
+
+function manipulateCalendar() {
+    const months = [
+        "leden",
+        "únor",
+        "březen",
+        "duben",
+        "květen",
+        "červen",
+        "červenec",
+        "srpen",
+        "září",
+        "říjen",
+        "listopad",
+        "prosinec"
+    ];
+    let dayOne = new Date(year, month, 0).getDay();
+    let lastDate = new Date(year, month + 1, 0).getDate();
+    let monthLastDate = new Date(year, month, 0).getDate();
+    let lit = "";
+
+    for (let i = dayOne; i > 0; i--) {
+        lit +=
+            `<li class="inactive" tabindex="-1">${monthLastDate - i + 1}</li>`;
+    }
+
+    for (let i = 1; i <= lastDate; i++) {
+        let isToday = i === date.getDate()
+            && month === new Date().getMonth()
+            && year === new Date().getFullYear()
+            ? "active"
+            : "";
+        lit += `<li class="${isToday}" tabindex="-1">${i}</li>`;
+    }
+
+    for (let i = 0; i < 42 - dayOne - lastDate; i++) {
+        lit += `<li class="inactive" tabindex="-1">${i + 1}</li>`
+    }
+
+    document.querySelector(".calendar-current-date").textContent = months[month] + " " + year;
+
+    document.querySelector(".calendar-dates").innerHTML = lit;
+}
+function setupCalendar() {
+
+    // Function to generate the calendar
+
+    manipulateCalendar();
 }

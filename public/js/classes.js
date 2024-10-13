@@ -1,3 +1,90 @@
+"use strict";
+
+class ClassList {
+    constructor(...args) {
+        args.forEach((element, index) => {
+            this[index] = element;
+        });
+    }
+
+    [Symbol.iterator]() {
+        var index = -1;
+        return {
+            next: () => ({ value: this[++index], done: !(index in this) })
+        };
+    };
+}
+
+class Id {
+    constructor(id) {
+        this.id = id;
+    }
+}
+
+class Src {
+    constructor(src) {
+        this.src = src;
+    }
+}
+
+class Name {
+    constructor(name) {
+        this.name = name;
+    }
+}
+
+class TextContent {
+    constructor(textContent) {
+        this.textContent = textContent;
+    }
+}
+
+class Cols {
+    constructor(cols) {
+        this.cols = cols;
+    }
+}
+
+class ReadOnly {
+    constructor(readOnly) {
+        this.readOnly = readOnly;
+    }
+}
+
+class Data {
+    constructor(key, value) {
+        if (!key) {
+            cl("No key provided!");
+            return null;
+        }
+        this.key = key;
+        this.value = value;
+    }
+}
+
+class AppendTo {
+    constructor(selectorOrElement) {
+        if (!selectorOrElement) {
+            cl("None selector or element provided!");
+            return null;
+        }
+        if (typeof selectorOrElement === "string") {
+            this.element = document.querySelector(selectorOrElement);
+        } else if (selectorOrElement instanceof HTMLElement) {
+            this.element = selectorOrElement;
+        } else {
+            cl("Invalid selector or element:", selectorOrElement, "\n", this.element);
+        }
+    }
+}
+
+class ElementEvent {
+    constructor(type, handler) {
+        this.type = type;
+        this.handler = handler;
+    }
+}
+
 class dbShape {
     constructor(name, columns, keyPath = null) {
         this.name = name;

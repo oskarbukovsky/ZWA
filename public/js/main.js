@@ -2,6 +2,23 @@
 
 //TODO document.querySelectorAll("[data-id='66285580-f084-43fd-b3aa-308399055455']");
 
+// https://cdn-factory.marketjs.com/en/trixology-classic-responsive-hd/index.html
+// https://www.onlinegames.io/games/2022/unity2/masked-special-forces/index.html
+// https://www.chess.com/play/computer
+// https://frvr.com/play/solitaire/
+// https://play.chessbase.com/en/howto/embedfritz
+// https://playpager.com/embed/chess/index.html
+
+// TODO: no html css?
+
+// const sheet = new CSSStyleSheet();
+// sheet.replaceSync("div { background-color: red !important; }");
+// document.adoptedStyleSheets = [sheet];
+
+// sheet.insertRule("* { background-color: blue; }");
+
+// document.adoptedStyleSheets.push(sheet);
+
 window.addEventListener("DOMContentLoaded", async () => {
     cl("|📘 Document Ready");
     let time1 = new Date();
@@ -34,14 +51,15 @@ window.addEventListener("DOMContentLoaded", async () => {
     cl("|📙 Processing desktop...");
     await processDesktopIcons();
 
+    cl("|📙 Starting up calendar...");
+    setupCalendar();
+
     cl("|📘 Finished in " + (new Date() - time1) + "ms");
     // 📕📙📗📘
     return;
 });
 
-let localDatabase
-const dbName = "ZWA";
-const dbStores = [new dbShape("vNodes", Object.keys(new vNode()), "id"), new dbShape("user", Object.keys(new user()), "uuid")];
+
 // const dbStores = [new dbShape("vNodes", Object.keys(new vNode()), "id"), new dbShape("vFiles", Object.keys(new vFile()), "uuid")];
 
 //TODO: custom získávání columns např. pro permissions a settings
@@ -49,175 +67,6 @@ const dbStores = [new dbShape("vNodes", Object.keys(new vNode()), "id"), new dbS
 window.addEventListener("contextmenu", (event) => {
     // event.preventDefault();
 });
-
-var myConfObj = {
-    iframeMouseOver: false,
-    lastIframe: null
-}
-window.addEventListener('blur', (event) => {
-    if (myConfObj.iframeMouseOver) {
-        closeMainMenu();
-        closeSearchbarMenu()
-        closeDesktopCalendar();
-        deselectDesktopIcon();
-        deselectAllApps();
-        iframe = event;
-        let app = myConfObj.lastIframe;
-        while (!app?.classList?.contains("windows-app")) {
-            app = app.parentElement;
-            if (app === null) {
-                return false;
-            }
-        }
-        app.classList.add("active");
-        navbar.querySelector('[data-id="' + app.dataset.id + '"]').classList.add("active");
-    }
-});
-var iframe;
-
-window.addEventListener("click", (event) => {
-    if (!(bubbleToClass(event, "navbar-menu") || bubbleToClass(event, "main-menu"))) {
-        closeMainMenu();
-    }
-    if (!(bubbleToClass(event, "search-menu") || bubbleToClass(event, "searchbar"))) {
-        closeSearchbarMenu();
-    }
-    if (!(bubbleToClass(event, "calendar-container") || bubbleToClass(event, "datetime"))) {
-        closeDesktopCalendar();
-    }
-    // bubbleToClass(event, "windows-app")?.classList?.remove("active");
-    deselectDesktopIcon();
-    if (!bubbleToClass(event, "windows-app") && !bubbleToClass(event, "navbar-icon")) {
-            deselectAllApps();
-    }
-})
-
-navbar.querySelector(".navbar-menu").addEventListener("click", (event) => {
-    if (event.target != navbar.querySelector(".navbar-menu > .main-menu")) {
-        navbar.querySelector(".navbar-menu > .main-menu").classList.toggle("open");
-    }
-});
-
-navbar.querySelector(".navbar-search .navbar-button-content").addEventListener("click", () => {
-    navbar.querySelector(".navbar-search > .search-menu").classList.toggle("open");
-});
-
-navbar.querySelector(".navbar-time .navbar-button-content").addEventListener("click", () => {
-    navbar.querySelector(".navbar-time > .calendar-container").classList.toggle("open");
-});
-
-navbar.querySelector(".navbar-minimize").addEventListener("click", () => {
-    cl(".navbar-minimize");
-    deselectAllApps();
-    windows.querySelectorAll(".windows-app").forEach((app) => {
-        app.classList.add("minimized");
-    });
-});
-
-let date = new Date();
-let year = date.getFullYear();
-let month = date.getMonth();
-
-
-// Function to generate the calendar
-const manipulate = () => {
-    // Array of month names
-    const months = [
-        "leden",
-        "únor",
-        "březen",
-        "duben",
-        "květen",
-        "červen",
-        "červenec",
-        "srpen",
-        "září",
-        "říjen",
-        "listopad",
-        "prosinec"
-    ];
-
-    // Get the first day of the month
-    let dayOne = new Date(year, month, 0).getDay();
-
-    // Get the last date of the month
-    let lastDate = new Date(year, month + 1, 0).getDate();
-
-    // Get the last date of the previous month
-    let monthLastDate = new Date(year, month, 0).getDate();
-
-    // Variable to store the generated calendar HTML
-    let lit = "";
-
-    // Loop to add the last dates of the previous month
-    for (let i = dayOne; i > 0; i--) {
-        lit +=
-            `<li class="inactive" tabindex="-1">${monthLastDate - i + 1}</li>`;
-    }
-
-    // Loop to add the dates of the current month
-    for (let i = 1; i <= lastDate; i++) {
-
-        // Check if the current date is today
-        let isToday = i === date.getDate()
-            && month === new Date().getMonth()
-            && year === new Date().getFullYear()
-            ? "active"
-            : "";
-        lit += `<li class="${isToday}" tabindex="-1">${i}</li>`;
-    }
-
-    // Loop to add the first dates of the next month
-    for (let i = 0; i < 42 - dayOne - lastDate; i++) {
-        lit += `<li class="inactive" tabindex="-1">${i + 1}</li>`
-    }
-
-    // Update the text of the current date element 
-    // with the formatted current month and year
-    document.querySelector(".calendar-current-date").textContent = months[month] + " " + year;
-
-    // update the HTML of the dates element 
-    // with the generated calendar
-    document.querySelector(".calendar-dates").innerHTML = lit;
-}
-
-manipulate();
-// Attach a click event listener to each icon
-document.querySelectorAll(".calendar-navigation span").forEach(icon => {
-
-    // When an icon is clicked
-    icon.addEventListener("click", () => {
-
-        // Check if the icon is "calendar-prev"
-        // or "calendar-next"
-        month = icon.id === "calendar-prev" ? month - 1 : month + 1;
-
-        // Check if the month is out of range
-        if (month < 0 || month > 11) {
-
-            // Set the date to the first day of the 
-            // month with the new year
-            date = new Date(year, month, new Date().getDate());
-
-            // Set the year to the new year
-            year = date.getFullYear();
-
-            // Set the month to the new month
-            month = date.getMonth();
-        }
-
-        else {
-
-            // Set the date to the current date
-            date = new Date();
-        }
-
-        // Call the manipulate function to 
-        // update the calendar display
-        manipulate();
-    });
-});
-
 
 async function processUserIdentifier() {
     let time1 = new Date();
@@ -244,7 +93,6 @@ async function processUserIdentifier() {
             }
         }
     });
-
     cl("|📗 userIdentifier processed in " + (new Date() - time1) + "ms");
 }
 
@@ -277,133 +125,46 @@ async function processDesktopIcons() {
 }
 
 
-
-const resizingElementsPrefixes = ["nw", "ne", "sw", "se", "n", "e", "s", "w"];
 function appOpen(node) {
     deselectAllApps();
-
     cl("opening window", node);
 
-    let holder = document.createElement("div");
-    holder.classList.add("windows-app");
-    holder.classList.add("active");
-    holder.dataset.id = node.id;
-
-    let header = document.createElement("header");
-    header.classList.add("app-header");
-    holder.appendChild(header);
-
-    let v1 = document.createElement("div");
-    v1.classList.add("app-v1");
-    header.appendChild(v1);
-
-    let iconHolder = document.createElement("div");
-    iconHolder.classList.add("app-icon");
-    v1.appendChild(iconHolder);
-
-    let icon = document.createElement("img");
-    icon.src = getIcon(node);
-    iconHolder.appendChild(icon);
-
-    let title = document.createElement("div");
-    title.textContent = node.name;
-    v1.appendChild(title);
-
-    let controls = document.createElement("div");
-    controls.classList.add("app-controls");
-    header.appendChild(controls);
-
-    let minimize = document.createElement("div");
-    minimize.classList.add("minimize");
-    controls.appendChild(minimize);
-
-    let maximize = document.createElement("div");
-    maximize.classList.add("maximize");
-    controls.appendChild(maximize);
-
-    let close = document.createElement("div");
-    close.classList.add("close");
-    controls.appendChild(close);
-
-    let content = document.createElement("div");
-    content.classList.add("app-content");
-    holder.appendChild(content);
+    const holder = createElement("div", new Data("id", node.id), new ClassList("windows-app", "active"));
+    const header = createElement("header", new ClassList("app-header"), new AppendTo(holder));
+    const v1 = createElement("div", new ClassList("app-v1"), new AppendTo(header));
+    const iconHolder = createElement("div", new ClassList("app-icon"), new AppendTo(v1));
+    const icon = createElement("img", new Src(getIcon(node)), new AppendTo(iconHolder));
+    const title = createElement("div", new TextContent(node.name), new AppendTo(v1));
+    const controls = createElement("div", new ClassList("app-controls"), new AppendTo(header));
+    const minimize = createElement("div", new ClassList("minimize"), new AppendTo(controls));
+    const maximize = createElement("div", new ClassList("maximize"), new AppendTo(controls));
+    const close = createElement("div", new ClassList("close"), new AppendTo(controls));
+    const content = createElement("div", new ClassList("app-content"), new AppendTo(holder));
 
     // let detector = document.createElement("div");
     // detector.classList.add("detect");
     // content.appendChild(detector);
 
-    let iframe = document.createElement("iframe");
+    windows.appendChild(holder);
 
-    // cl(node.data[0].split(":\/\/").shift());
-    if (node.type == "link") {
-        switch (node.data[0].split(":\/\/").shift()) {
-            case "vLinkTrash":
-                iframe.src = "user-data/" + node.owner + node.data[0] + node.name;
-                break;
-            case "vComputer":
-                iframe.src = "explorer.html?folder=user-data/" + node.owner;
-                break;
-            default:
-                iframe.src = "user-data/" + node.owner + node.data[0] + node.name;
-        }
-    } else {
-        iframe.src = "user-data/" + node.owner + node.data[0] + node.name;
-    }
-
-
-    content.appendChild(iframe);
-
-    let navbarHolder = document.createElement("div");
-    navbarHolder.classList.add("navbar-icon");
-    navbarHolder.dataset.id = node.id;
-
-    let navbarButton = document.createElement("div");
-    navbarButton.classList.add("navbar-button-content");
-    navbarHolder.appendChild(navbarButton);
-
-    navbarHolder.addEventListener("click", (event) => {
-        setTimeout(() => {}, 20);
-        if (bubbleToClass(event, "navbar-icon").classList.contains("active")) {
-            bubbleToClass(event, "navbar-icon").classList.remove("active");
-            windows.querySelector('[data-id="' + node.id + '"]').classList.add("minimized");
-            windows.querySelector('[data-id="' + node.id + '"]').classList.remove("active");
-        } else {
-            bubbleToClass(event, "navbar-icon").classList.add("active");
-            windows.querySelector('[data-id="' + node.id + '"]').classList.remove("minimized");
-            windows.querySelector('[data-id="' + node.id + '"]').classList.add("active");
-        }
-    });
-
-    let navbarIcon = document.createElement("img");
-    navbarIcon.src = getIcon(node);
-    navbarButton.appendChild(navbarIcon);
-
+    const navbarHolder = createElement("div", new ClassList("navbar-icon"), new Data("id", node.id), new ElementEvent("click", ElementEvents.navbarIconClick));
+    const navbarButton = createElement("div", new ClassList("navbar-button-content"), new AppendTo(navbarHolder));
+    const navbarIcon = createElement("img", new Src(getIcon(node)), new AppendTo(navbarButton));
     appendBefore(navbarHolder, document.querySelector("#navbar > div.navbar-spacer"));
 
-    iframe.addEventListener("load", () => {
+    const appIframeLoaded = () => {
+        cl("loaded");
         navbarHolder.classList.add("running");
         navbarHolder.classList.add("active");
-    });
-
-    iframe.addEventListener('mouseover', (event) => {
-        myConfObj.iframeMouseOver = true;
-        myConfObj.lastIframe = event.target;
-    });
-    iframe.addEventListener('mouseout', () => {
-        myConfObj.iframeMouseOver = false;
-        myConfObj.lastIframe = null;
-    });
+    };
+    const iframe = createElement("iframe", new Src(getDestination(node)),
+        new ElementEvent("load", appIframeLoaded), new ElementEvent("mouseover", ElementEvents.appIframeMouseOver), new ElementEvent("mouseout", ElementEvents.appIframeMouseOut),
+        new AppendTo(content));
 
     //TODO: resizing
     resizingElementsPrefixes.forEach((item) => {
-        var grip = document.createElement("div");
-        grip.classList.add("resizable");
-        grip.classList.add(item + "grip");
-        holder.appendChild(grip);
+        const grip = createElement("div", new ClassList("resizable", item + "grip"), new AppendTo(holder));
     });
-
-    windows.appendChild(holder);
 
     resizeWindow(holder);
     selectApp(holder);
@@ -414,24 +175,10 @@ function appOpen(node) {
 }
 
 function addDesktopIcon(node) {
-    let holder = document.createElement("figure");
-    holder.classList.add("icon");
-
-    let icon = document.createElement("img");
-    icon.src = getIcon(node);
-    holder.appendChild(icon);
-
-    let caption = document.createElement("figcaption");
-    caption.dataset.id = node.id;
-    holder.appendChild(caption);
-
-    let textarea = document.createElement("textarea");
-    textarea.name = "icon-name";
-    textarea.cols = 11;
-    textarea.readOnly = true;
-    textarea.textContent = node.name;
-    caption.appendChild(textarea);
-
+    const holder = createElement("figure", new ClassList("icon"));
+    const icon = createElement("img", new Src(getIcon(node)), new AppendTo(holder));
+    const caption = createElement("figcaption", new Data("id", node.id), new AppendTo(holder));
+    const textarea = createElement("textarea", new Name("icon-name"), new Cols(11), new ReadOnly(true), new TextContent(node.name), new AppendTo(caption));
     desktop.appendChild(holder);
 
     desktopIconSelect(holder);
@@ -440,7 +187,7 @@ function addDesktopIcon(node) {
     desktopIconEditName(caption);
 }
 
-const fetchAndLoadImage = async (imagePath) => {
+async function fetchAndLoadImage (imagePath) {
     try {
         let response = await fetch(imagePath);
         return await response.blob();
@@ -486,8 +233,6 @@ const fetchAndLoadImage = async (imagePath) => {
 //     reader.readAsText(file);
 // }
 
-
-var input = document.querySelector('input[type=file]');
 
 function readFile(event) {
     let data = new Blob([event.target.result], JSON.parse('{"type":"' + file.type + '"}'));
