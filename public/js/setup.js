@@ -26,6 +26,8 @@ let appResizing = {
     height: null,
     _status: false,
     element: null,
+    grip: null,
+    app: null,
     maxX: null,
     maxY: null,
     windowResize: function () {
@@ -37,31 +39,85 @@ let appResizing = {
         let x = event.pageX < 0 ? 0 : event.pageX;
         let y = event.pageY < 0 ? 0 : event.pageY;
 
-        if (x > windows.clientWidth) {
-            x = windows.clientWidth;
+        if (x > appResizing.maxX) {
+            x = appResizing.maxX;
         }
-        if (y > windows.clientHeight) {
-            y = windows.clientHeight;
+        if (y > appResizing.maxY) {
+            y = appResizing.maxY;
         }
-        cl(x, y);
+
+        let boundingBox = appResizing.app.getBoundingClientRect();
+
+        if (!appResizing.grip) {
+            cl("no grip");
+            return;
+        }
+        switch (appResizing.grip) {
+            case "n":
+                cl("nahoře", boundingBox, "\n", `${x}:${y}`);
+                appResizing.app.style.top = y + "px";
+                appResizing.app.style.height = boundingBox.height - y + "px";
+                break;
+            case "e":
+                cl("pravá", boundingBox, "\n", `${x}:${y}`);
+                appResizing.app.style.width = x - boundingBox.left + "px";
+                break;
+            case "s":
+                cl("dole", boundingBox, "\n", `${x}:${y}`);
+                appResizing.app.style.height = y - boundingBox.top + "px";
+                break;
+            case "w":
+                cl("levá", boundingBox, "\n", `${x}:${y}`);
+                appResizing.app.style.width = (boundingBox.left - x) + boundingBox.width + "px";
+                appResizing.app.style.left = x + "px";
+                // cl("appResizing.app.style.width: ", appResizing.app.style.width);
+                break;
+            case "nw":
+                cl("levá nahoře", boundingBox, "\n", `${x}:${y}`);
+                appResizing.app.style.top = appResizing.y + "px";
+                appResizing.app.style.left = appResizing.x + "px";
+                break;
+            case "ne":
+                cl("pravá nahoře", boundingBox, "\n", `${x}:${y}`);
+                appResizing.app.style.top = appResizing.y + "px";
+                appResizing.app.style.width = appResizing.x - parseInt(appResizing.app.style.left) + "px";
+                break;
+            case "sw":
+                cl("levá dole", boundingBox, "\n", `${x}:${y}`);
+                appResizing.app.style.height = appResizing.y - parseInt(appResizing.app.style.top) + "px";
+                appResizing.app.style.left = appResizing.x + "px";
+                break;
+            case "se":
+                cl("pravá dole", boundingBox, "\n", `${x}:${y}`);
+                appResizing.app.style.height = appResizing.y - parseInt(appResizing.app.style.top) + "px";
+                appResizing.app.style.width = appResizing.x - parseInt(appResizing.app.style.left) + "px";
+                break;
+            default:
+                cl("Error");
+                break;
+        }
     },
     changeEvent: function (val) {
         let app = this.element;
-        while (!app?.classList?.contains("windows-app")) {
-            if (app === null) {
-                return false;
-            } else {
-                app = app.parentElement;
+        if (app) {
+            this.grip = app.classList[1].split("-grip")[0];
+            while (!app?.classList?.contains("windows-app")) {
+                if (app === null) {
+                    return false;
+                } else {
+                    app = app.parentElement;
+                }
             }
+            this.app = app;
         }
         if (val) {
-            cl("true: ", app);
-            app.classList.add("active");
-            app.classList.add("resizing");
+            cl("true: ", this.app, " this.grip: ", this.grip);
+            this.app.classList.add("active");
+            this.app.classList.add("resizing");
             window.addEventListener("mousemove", this.resizingEvent);
         } else {
-            cl("false: ", app);
-            app.classList.remove("resizing");
+            cl("false: ", this.app);
+            this.app.classList.remove("resizing");
             window.removeEventListener("mousemove", this.resizingEvent);
         }
     },

@@ -173,14 +173,14 @@ function appOpen(node) {
     //TODO: resizing
 
     resizingElementsPrefixes.forEach((item) => {
-        const grip = createElement("div", new ClassList("resizable", item + "grip"), new AppendTo(holder));
+        const grip = createElement("div", new ClassList("resizable", item + "-grip"), new AppendTo(holder));
         grip.addEventListener("mousedown", appResizeDown);
         window.addEventListener("mouseup", appResizeUp);
     });
 
     resizeWindow(holder);
     selectApp(holder);
-    dragApp(holder);
+    // dragApp(holder);
     minimizeApp(minimize);
     maximizeApp(maximize, header);
     closeApp(close);
