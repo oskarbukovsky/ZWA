@@ -15,14 +15,16 @@ class ElementEvents {
         setTimeout(() => { }, 20);
         const icon = bubbleToClass(event, "navbar-icon");
         const id = icon.dataset.id;
+        const selector = windows.querySelector('[data-id="' + id + '"]');
         if (icon.classList.contains("active")) {
             icon.classList.remove("active");
-            windows.querySelector('[data-id="' + id + '"]').classList.add("minimized");
-            windows.querySelector('[data-id="' + id + '"]').classList.remove("active");
+            selector.classList.add("minimized");
+            selector.classList.remove("active");
         } else {
             icon.classList.add("active");
-            windows.querySelector('[data-id="' + id + '"]').classList.remove("minimized");
-            windows.querySelector('[data-id="' + id + '"]').classList.add("active");
+            selector.classList.remove("minimized");
+            selector.classList.add("active");
+            selector.style.zIndex = getLowestMaxAppZIndex();
         }
     };
 }
@@ -43,6 +45,7 @@ window.addEventListener('blur', () => {
         }
         app.classList.add("active");
         navbar.querySelector('[data-id="' + app.dataset.id + '"]').classList.add("active");
+        app.style.zIndex = getLowestMaxAppZIndex();
     }
 });
 
@@ -112,3 +115,10 @@ window.onmessage = function(event) {
 addEventListener("resize", () => {
     appResizing.windowResize();
 });
+
+function appResizeDown() {
+    appResizing.status = [true, this];
+}
+function appResizeUp() {
+    appResizing.status = [false];
+}

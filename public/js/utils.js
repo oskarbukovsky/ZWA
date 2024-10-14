@@ -1,6 +1,6 @@
 "use strict";
 
-function getDirectory () {
+function getDirectory() {
     if (!window.showDirectoryPicker) {
         alert('Unsupported Browser Notice');
         return;
@@ -364,24 +364,30 @@ function dragApp(element) {
     function dragMouseDown(event) {
         let app = bubbleToClass(event, "windows-app");
         if (!app.classList.contains("maximized")) {
-            app.classList.add("dragging");
-            deselectAllApps();
-            app.classList.add("active");
-            navbar.querySelector('[data-id="' + app.dataset.id + '"]').classList.add("active");
-            pos3 = event.clientX;
-            pos4 = event.clientY;
-            document.onmouseup = closeDragElement;
-            document.onmousemove = elementDrag;
+            doDrag(app);
         } else {
-            //TODO: after window resizing do this
+            //TODO: need some extra work, do later
 
             // app.classList.remove("maximized");
+            // doDrag(app);
             // app.classList.add("dragging");
             // pos3 = event.clientX;
             // pos4 = event.clientY;
             // document.onmouseup = closeDragElement;
             // document.onmousemove = elementDrag;
         }
+    }
+
+    function doDrag(app) {
+        app.classList.add("dragging");
+        deselectAllApps();
+        app.classList.add("active");
+        navbar.querySelector('[data-id="' + app.dataset.id + '"]').classList.add("active");
+        app.style.zIndex = getLowestMaxAppZIndex();
+        pos3 = event.clientX;
+        pos4 = event.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
     }
 
     function elementDrag(event) {
@@ -678,9 +684,14 @@ function setupCalendar() {
     manipulateCalendar();
 }
 
-function appResizeDown(event) {
-    appResizing.status = [true, this];
-}
-function appResizeUp(event) {
-    appResizing.status = [false];
+function getLowestMaxAppZIndex() {
+    let indexes = [];
+    let elements = windows.querySelectorAll(".windows-app");
+    if (elements.length === 0) {
+        return 100;
+    }
+    elements.forEach((element) => {
+        indexes.push(element.style.zIndex ? Number(element.style.zIndex) : 0)
+    });
+    return indexes.sort((a, b) => b - a)[0] + 1;
 }
