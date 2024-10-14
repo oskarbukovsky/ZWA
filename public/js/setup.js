@@ -113,6 +113,7 @@ let appResizing = {
             this.boundingBox = this.app.getBoundingClientRect();
             this.app.classList.add("active");
             this.app.classList.add("resizing");
+            this.app.style.zIndex = getLowestMaxAppZIndex();
             window.addEventListener("mousemove", this.resizingEvent);
         } else {
             // cl("false: ", this.app);
