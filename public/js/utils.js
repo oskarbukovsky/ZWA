@@ -143,14 +143,15 @@ function deleteDb() {
 function openDbError(timeout) {
     cl("! Nedaří se připojit k databázi v časovém limitu: " + timeout + "s");
     cssVar("--db-error", '"Nedaří se připojit k databázi v časovém limitu ' + timeout + 's: \\a Zavřete ostatní okna s aplikací"');
-
-    document.querySelector(".errors").classList.remove("hidden")
-    document.querySelector(".errors").classList.add("db-error");
+    const errorsElement = document.querySelector(".errors");
+    errorsElement.classList.remove("hidden")
+    errorsElement.document.querySelector(".errors").classList.add("db-error");
 }
 
 function openDb() {
     let time1 = new Date();
     let localDatabaseRequest = indexedDB.open(dbName, 1);
+    const errorsElement = document.querySelector(".errors");
 
     localDatabaseRequest.onsuccess = function (event) {
         // cl("DB Success: ", event);
@@ -206,15 +207,15 @@ function openDb() {
             cl("! Spojení s databází bylo přerušeno: ", event);
             cssVar("--db-error", '"Spojení s lokální databází bylo přerušeno"');
 
-            document.querySelector(".errors").classList.remove("hidden")
-            document.querySelector(".errors").classList.add("db-error");
+            errorsElement.classList.remove("hidden")
+            errorsElement.classList.add("db-error");
         }
         localDatabase.onerror = function (event) {
             cl("Nastala chyba v databázi: ", event);
             cssVar("--db-error", '"Nastala chyba v databázi: \\a ' + event.target.error + '"');
 
-            document.querySelector(".errors").classList.remove("hidden")
-            document.querySelector(".errors").classList.add("db-error");
+            errorsElement.classList.remove("hidden")
+            errorsElement.classList.add("db-error");
 
         };
         cl("|📗 indexedDB Ready in " + (new Date() - time1) + "ms");
@@ -224,16 +225,16 @@ function openDb() {
         cl("Prohlížeč pravděpodobně nepodporuje nebo je zakázaná IndexedDB: ", event);
         cssVar("--db-error", '"Prohlížeč pravděpodobně nepodporuje nebo je zakázaná IndexedDB"');
 
-        document.querySelector(".errors").classList.remove("hidden")
-        document.querySelector(".errors").classList.add("db-error");
+        errorsElement.classList.remove("hidden")
+        errorsElement.classList.add("db-error");
     };
 
     localDatabaseRequest.onblocked = function (event) {
         cl("! Nelze navázat spojení s databází: ", event);
         cssVar("--db-error", '"Nelze navázat spojení s databází"');
 
-        document.querySelector(".errors").classList.remove("hidden")
-        document.querySelector(".errors").classList.add("db-error");
+        errorsElement.classList.remove("hidden")
+        errorsElement.classList.add("db-error");
     };
 
     localDatabaseRequest.onupgradeneeded = function (event) {
@@ -347,7 +348,7 @@ function closeApp(closeButton) {
         setTimeout(() => {
             app.remove();
         }, 250);
-        let navbarIcon = navbar.querySelector('[data-id="' + app.dataset.id + '"]');
+        const navbarIcon = navbar.querySelector('[data-id="' + app.dataset.id + '"]');
         if (navbarIcon.dataset.persistent != "false") {
             navbarIcon.classList.add("closing");
             setTimeout(() => {
@@ -686,7 +687,7 @@ function setupCalendar() {
 
 function getLowestMaxAppZIndex() {
     let indexes = [];
-    let elements = windows.querySelectorAll(".windows-app");
+    const elements = windows.querySelectorAll(".windows-app");
     if (elements.length === 0) {
         return 100;
     }
