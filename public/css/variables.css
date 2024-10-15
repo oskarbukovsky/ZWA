@@ -9,3 +9,9 @@
 
 	--explorer-side-size: 176px;
 }
+
+
+* {
+	margin: 0;
+	padding: 0;
+}

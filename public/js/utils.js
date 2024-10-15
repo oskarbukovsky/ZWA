@@ -695,6 +695,7 @@ function getLowestMaxAppZIndex() {
 
 function getBattery() {
     const icons = ["battery_0_bar", "battery_1_bar", "battery_2_bar", "battery_3_bar", "battery_4_bar", "battery_5_bar", "battery_6_bar", "battery_full"];
+    const iconsCharging = ["battery_charging_full", "battery_charging_20", "battery_charging_30", "battery_charging_80", "battery_charging_90", "battery_full"]
     navigator.getBattery().then((battery) => {
         // cl("Battery: ", battery);
 
@@ -703,62 +704,38 @@ function getBattery() {
 
         const batteryTooltip = createElement("div", new ClassList("battery-tooltip"), new AppendTo(batteryNavbar));
 
-        // <div class="battery">
-        //     <span class="material-symbols-rounded">
-        //         battery_1_bar
-        //     </span>
-        // </div>
-
-        function updateAllBatteryInfo() {
-            updateChargeInfo();
-            updateLevelInfo();
-            updateChargingInfo();
-            updateDischargingInfo();
-        }
-        updateAllBatteryInfo();
         if (!battery.charging || battery.chargingTime !== 0) {
             document.querySelector(".navbar-battery > .navbar-button-content").appendChild(batteryNavbar);
+            updateBatteryInfo();
         }
 
         battery.addEventListener("chargingchange", () => {
-            updateChargeInfo();
+            updateBatteryInfo();
         });
-        function updateChargeInfo() {
-            // console.log(`Battery charging? ${battery.charging ? "Yes" : "No"}`);
-        }
-
         battery.addEventListener("levelchange", () => {
-            updateLevelInfo();
+            updateBatteryInfo();
         });
-        function updateLevelInfo() {
-            // console.log(`Battery level: ${battery.level * 100}%`);
-            // cl(icons[scaleValue(battery.level, [0, 1], [0, 7])]);
+        battery.addEventListener("chargingtimechange", () => {
+            updateBatteryInfo();
+        });
+        battery.addEventListener("dischargingtimechange", () => {
+            updateBatteryInfo();
+        });
+
+        function updateBatteryInfo() {
             if (battery.charging) {
                 batteryTooltip.textContent = "Stav baterie: nabíjení " + (battery.level * 100).toFixed() + "%"
                 if (battery.chargingTime > 0 && isFinite(battery.chargingTime)) {
                     batteryTooltip.textContent += " (" + (battery.chargingTime / 3600).toFixed() + "h" + ((battery.chargingTime / 60) % 60).toFixed() + "m)"
                 }
+                batteryIcon.textContent = iconsCharging[scaleValue(battery.level, [0, 1], [0, 5])];
             } else {
                 batteryTooltip.textContent = "Stav baterie: zbývá " + (battery.level * 100).toFixed() + "%"
                 if(battery.dischargingTime > 0 && isFinite(battery.dischargingTime)) {
                     batteryTooltip.textContent += " (" + (battery.dischargingTime / 3600).toFixed() + "h" + ((battery.dischargingTime / 60) % 60).toFixed() + "m)"
                 }
+                batteryIcon.textContent = icons[scaleValue(battery.level, [0, 1], [0, 7])];
             }
-            batteryIcon.textContent = icons[scaleValue(battery.level, [0, 1], [0, 7])];
-        }
-
-        battery.addEventListener("chargingtimechange", () => {
-            updateChargingInfo();
-        });
-        function updateChargingInfo() {
-            // console.log(`Battery charging time: ${battery.chargingTime / 60} minutes`);
-        }
-
-        battery.addEventListener("dischargingtimechange", () => {
-            updateDischargingInfo();
-        });
-        function updateDischargingInfo() {
-            // console.log(`Battery discharging time: ${battery.dischargingTime / 60} minutes`);
         }
     });
 

@@ -2,7 +2,6 @@ body,
 :not(:root):fullscreen::backdrop {
 	width: 100vw;
 	height: 100vh;
-	margin: 0;
 	font-size: 12px;
 	background: linear-gradient(rgb(35, 15, 214), transparent),
 		linear-gradient(to top left, rgb(123, 1, 128), transparent),
