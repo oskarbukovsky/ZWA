@@ -182,7 +182,7 @@ function appOpen(node) {
     });
 
     resizeWindow(holder);
-    selectApp(holder);
+    selectApp(node.id);
     dragApp(holder);
     minimizeApp(minimize);
     maximizeApp(maximize, header);

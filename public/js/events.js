@@ -16,15 +16,12 @@ class ElementEvents {
         const icon = bubbleToClass(event, "navbar-icon");
         const id = icon.dataset.id;
         const selector = windows.querySelector('[data-id="' + id + '"]');
-        deselectAllApps(); 
         if (icon.classList.contains("active")) {
-            icon.classList.remove("active");
+            deselectAllApps(); 
             selector.classList.add("minimized");
-            selector.classList.remove("active");
         } else {
-            icon.classList.add("active");
             selector.classList.remove("minimized");
-            selector.classList.add("active");
+            selectApp(id);
             selector.style.zIndex = getLowestMaxAppZIndex();
         }
     };
@@ -82,7 +79,7 @@ navbar.querySelector(".navbar-time .navbar-button-content").addEventListener("cl
 });
 
 navbar.querySelector(".navbar-minimize").addEventListener("click", () => {
-    cl(".navbar-minimize");
+    // cl(".navbar-minimize");
     deselectAllApps();
     windows.querySelectorAll(".windows-app").forEach((app) => {
         app.classList.add("minimized");

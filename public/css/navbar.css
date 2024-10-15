@@ -162,6 +162,7 @@
 }
 .navbar-battery > .navbar-button-content div {
 	transform: scale(0.9);
+	padding-top: 4px;
 }
 
 .navbar-volume .battery > span {
@@ -170,10 +171,24 @@
 
 .battery > .battery-tooltip {
 	position: absolute;
+	left: -6em;
 	bottom: var(--navbar-height);
-	width: 150px;
-	height: 60px;
-	background-color: coral;
+	width: fit-content;
+	height: fit-content;
+	background-color: rgba(41,46,47,0.9);
+	border-radius: 8px;
+	padding: 8px 10px;
+	font-size: 1.2em;
+	text-shadow: 2px 1px 3px rgba(0, 0, 0, 0.5);
+	box-shadow: 1px 1px 4px -1px rgb(0 12 26 / 50%);
+	text-wrap: nowrap;
+	opacity: 0;
+	transition: opacity 175ms ease-in-out 200ms;
+}
+
+.battery:has(span:hover) > .battery-tooltip {
+	transition: opacity 175ms ease-in-out 500ms;
+    opacity: 1;
 }
 
 .navbar-volume span {
