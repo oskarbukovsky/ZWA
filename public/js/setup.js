@@ -30,6 +30,7 @@ let appResizing = {
     app: null,
     maxX: null,
     maxY: null,
+    boundingBox: null,
     windowResize: function () {
         const defaultAppsSizes = document.querySelector("#windows").getBoundingClientRect();
         this.maxX = defaultAppsSizes.width;
@@ -46,56 +47,53 @@ let appResizing = {
             y = appResizing.maxY;
         }
 
-        let boundingBox = appResizing.app.getBoundingClientRect();
-
         if (!appResizing.grip) {
-            cl("no grip");
+            // cl("no grip");
             return;
         }
-        switch (appResizing.grip) {
-            case "n":
-                cl("nahoře", boundingBox, "\n", `${x}:${y}`);
-                appResizing.app.style.top = y + "px";
-                appResizing.app.style.height = boundingBox.height - y + "px";
-                break;
-            case "e":
-                cl("pravá", boundingBox, "\n", `${x}:${y}`);
-                appResizing.app.style.width = x - boundingBox.left + "px";
-                break;
-            case "s":
-                cl("dole", boundingBox, "\n", `${x}:${y}`);
-                appResizing.app.style.height = y - boundingBox.top + "px";
-                break;
-            case "w":
-                cl("levá", boundingBox, "\n", `${x}:${y}`);
-                appResizing.app.style.width = (boundingBox.left - x) + boundingBox.width + "px";
-                appResizing.app.style.left = x + "px";
-                // cl("appResizing.app.style.width: ", appResizing.app.style.width);
-                break;
-            case "nw":
-                cl("levá nahoře", boundingBox, "\n", `${x}:${y}`);
-                appResizing.app.style.top = appResizing.y + "px";
-                appResizing.app.style.left = appResizing.x + "px";
-                break;
-            case "ne":
-                cl("pravá nahoře", boundingBox, "\n", `${x}:${y}`);
-                appResizing.app.style.top = appResizing.y + "px";
-                appResizing.app.style.width = appResizing.x - parseInt(appResizing.app.style.left) + "px";
-                break;
-            case "sw":
-                cl("levá dole", boundingBox, "\n", `${x}:${y}`);
-                appResizing.app.style.height = appResizing.y - parseInt(appResizing.app.style.top) + "px";
-                appResizing.app.style.left = appResizing.x + "px";
-                break;
-            case "se":
-                cl("pravá dole", boundingBox, "\n", `${x}:${y}`);
-                appResizing.app.style.height = appResizing.y - parseInt(appResizing.app.style.top) + "px";
-                appResizing.app.style.width = appResizing.x - parseInt(appResizing.app.style.left) + "px";
-                break;
-            default:
-                cl("Error");
-                break;
-        }
+        let headerBoundingBox = appResizing.app.querySelector(".app-header").getBoundingClientRect();
+        appResizing.grip.split("").forEach(grip => {
+            switch (grip) {
+                case "n":
+                    // cl("nahoře", appResizing.boundingBox, "\n", `${x}:${y}`);
+                    let height = (appResizing.boundingBox.top - y) + appResizing.boundingBox.height - 2;
+                    if (height < 300) {
+                        height = 300
+                    }
+                    let top = y;
+                    if (y + 303 + headerBoundingBox.height > appResizing.boundingBox.bottom) {
+                        top = appResizing.boundingBox.bottom - headerBoundingBox.height - 303;
+                    }
+                    appResizing.app.style.top = top + "px";
+                    appResizing.app.style.height = height + "px";
+                    break;
+                case "e":
+                    // cl("pravá", appResizing.boundingBox, "\n", `${x}:${y}`);
+                    appResizing.app.style.width = x - appResizing.boundingBox.left + "px";
+                    break;
+                case "s":
+                    // cl("dole", appResizing.boundingBox, "\n", `${x}:${y}`);
+                    appResizing.app.style.height = y - appResizing.boundingBox.top + "px";
+                    break;
+                case "w":
+                    // cl("levá", appResizing.boundingBox, "\n", `${x}:${y}`);
+                    let width = (appResizing.boundingBox.left - x) + appResizing.boundingBox.width - 2;
+                    if (width < 400) {
+                        width = 400
+                    }
+                    let left = x;
+                    if (x + 402 > appResizing.boundingBox.right) {
+                        left = appResizing.boundingBox.right - 402;
+                    }
+                    appResizing.app.style.left = left + "px";
+                    appResizing.app.style.width = width + "px";
+                    break;
+                // case "nw":
+                default:
+                    cl("Error");
+                    break;
+            }
+        });
     },
     changeEvent: function (val) {
         let app = this.element;
@@ -111,13 +109,19 @@ let appResizing = {
             this.app = app;
         }
         if (val) {
-            cl("true: ", this.app, " this.grip: ", this.grip);
+            // cl("true: ", this.app, " this.grip: ", this.grip);
+            this.boundingBox = this.app.getBoundingClientRect();
+            deselectAllApps();
             this.app.classList.add("active");
+            navbar.querySelector('[data-id="' + this.app.dataset.id + '"]').classList.add("active");
             this.app.classList.add("resizing");
+            this.app.style.zIndex = getLowestMaxAppZIndex();
             window.addEventListener("mousemove", this.resizingEvent);
         } else {
-            cl("false: ", this.app);
-            this.app.classList.remove("resizing");
+            // cl("false: ", this.app);
+            if (this.app) {
+                this.app.classList.remove("resizing");
+            }
             window.removeEventListener("mousemove", this.resizingEvent);
         }
     },

@@ -47,6 +47,7 @@ body, :not(:root):fullscreen::backdrop {
 	text-align: center;
 	align-content: center;
 	white-space: pre-wrap;
+	z-index: 999999;
 }
 
 .errors:before {

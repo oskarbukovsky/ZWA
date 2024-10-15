@@ -59,7 +59,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     cl("|📘 Finished in " + (new Date() - time1) + "ms");
     // 📕📙📗📘
 
-    //Temporary FPS/frametime/ram usage counter
+    //Temporary FPS/frameTime/ram usage counter
 
     if (DEBUG) {
         (function () { var script = document.createElement('script'); script.onload = function () { var stats = new Stats(); document.body.appendChild(stats.dom); requestAnimationFrame(function loop() { stats.update(); requestAnimationFrame(loop) }); }; script.src = 'https://mrdoob.github.io/stats.js/build/stats.min.js'; document.head.appendChild(script); })()
@@ -136,6 +136,7 @@ function appOpen(node) {
     cl("opening window", node);
 
     const holder = createElement("div", new Data("id", node.id), new ClassList("windows-app", "active"));
+    holder.style.zIndex = getLowestMaxAppZIndex();
     const header = createElement("header", new ClassList("app-header"), new AppendTo(holder));
     const v1 = createElement("div", new ClassList("app-v1"), new AppendTo(header));
     const iconHolder = createElement("div", new ClassList("app-icon"), new AppendTo(v1));
@@ -180,7 +181,7 @@ function appOpen(node) {
 
     resizeWindow(holder);
     selectApp(holder);
-    // dragApp(holder);
+    dragApp(holder);
     minimizeApp(minimize);
     maximizeApp(maximize, header);
     closeApp(close);
