@@ -16,6 +16,7 @@ class ElementEvents {
         const icon = bubbleToClass(event, "navbar-icon");
         const id = icon.dataset.id;
         const selector = windows.querySelector('[data-id="' + id + '"]');
+        deselectAllApps(); 
         if (icon.classList.contains("active")) {
             icon.classList.remove("active");
             selector.classList.add("minimized");

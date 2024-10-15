@@ -25,6 +25,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     appResizing.windowResize();
 
+    getBattery();
+
     requestAnimationFrame(clock);
 
     cl("|📙 Clearing database")
