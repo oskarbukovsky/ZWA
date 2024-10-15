@@ -120,3 +120,26 @@ function appResizeDown() {
 function appResizeUp() {
     appResizing.status = [false];
 }
+
+window.document.body.addEventListener("dragover", (event) => {
+    event.preventDefault();
+});
+
+window.document.body.addEventListener("dragenter", (event) => {
+    event.preventDefault();
+    uploadElement.classList.add("upload");
+});
+uploadElement.addEventListener('dragleave', (event) => {
+    event.preventDefault();
+    uploadElement.classList.remove("upload");
+});
+
+window.document.body.addEventListener("drop", (event) => {
+    uploadElement.classList.remove("upload");
+    event.preventDefault();
+    const files = event.dataTransfer.files;
+    if (files.length) {
+        fileUpload.files = files;
+        handleFileUpload(files)
+    }
+});

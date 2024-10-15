@@ -13,7 +13,13 @@ const myConfObj = {
 
 const resizingElementsPrefixes = ["n", "e", "s", "w", "nw", "ne", "sw", "se"];
 
-const input = document.querySelector('input[type=file]');
+// document.addEventListener("load", () => {
+//     const input = document.querySelector("input[type=file]");
+//     const uploadElement = document.querySelector(".uploading");
+// });
+
+const input = document.querySelector("input[type=file]");
+const uploadElement = document.querySelector(".uploading");
 
 let date = new Date();
 let year = date.getFullYear();

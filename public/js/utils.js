@@ -717,8 +717,8 @@ function getBattery() {
         }
         updateAllBatteryInfo();
         if (!battery.charging || battery.chargingTime !== 0) {
+            document.querySelector(".navbar-battery > .navbar-button-content").appendChild(batteryNavbar);
         }
-        document.querySelector(".navbar-battery > .navbar-button-content").appendChild(batteryNavbar);
 
         battery.addEventListener("chargingchange", () => {
             updateChargeInfo();
@@ -768,4 +768,26 @@ function scaleValue(value, from, to) {
     var scale = (to[1] - to[0]) / (from[1] - from[0]);
     var capped = Math.min(from[1], Math.max(from[0], value)) - from[0];
     return ~~(capped * scale + to[0]);
+}
+
+function handleFileUpload(files) {
+    const maxSize = 2 * 1024 * 1024; // 50 MB
+
+    [...files].forEach(function (file) {
+        if (file) {
+            if (file.size > maxSize) {
+                cl("File size exceeds the limit of 2 MB");
+                return;
+            } else if (!isValidFileType(file)) {
+                cl("File type is not supported");
+                return;
+            }
+            cl("File to be uploaded: ", file);
+        }
+    });
+}
+
+function isValidFileType(file) {
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif"]
+    return allowedTypes.includes(file.type)
 }

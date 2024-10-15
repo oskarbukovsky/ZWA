@@ -137,6 +137,10 @@ function appOpen(node) {
     deselectAllApps();
     cl("opening window", node);
 
+    if (windows.querySelector('[data-id="' + node.id + '"]')) {
+        cl("app is already open", node);
+        return;
+    }
     const holder = createElement("div", new Data("id", node.id), new ClassList("windows-app", "active"));
     holder.style.zIndex = getLowestMaxAppZIndex();
     const header = createElement("header", new ClassList("app-header"), new AppendTo(holder));
