@@ -137,6 +137,19 @@ new vNode(
     "Typ: Textový dokument",
     undefined,
     ["/2/"]
+),  new vNode(
+    "9e27b8bb-dfeb-404b-bf4e-08fa59744206",
+    "link",
+    "704d99cf-0e37-4797-8605-fa844f25efe5",
+    7,
+    Date.now(),
+    0,
+    "50eced28-c925-4948-80eb-e4fabe83a41b",
+    new vPermission(),
+    "Administrace",
+    "Správa uživatelských profilů",
+    undefined,
+    ["admin://"]
 ), 
 new vNode(
     "6c6bc7b9-0678-420b-a27f-bfadff021ece",

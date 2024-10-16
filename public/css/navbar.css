@@ -202,6 +202,31 @@
 	align-content: center;
 }
 
+.navbar-time > .time-tooltip {
+	position: absolute;
+	right: 1em;
+	bottom: calc(7px + var(--navbar-height));
+	width: fit-content;
+	height: fit-content;
+	background-color: rgba(41,46,47,0.9);
+	border-radius: 8px;
+	padding: 8px 10px;
+	font-size: 1em;
+	text-shadow: 2px 1px 3px rgba(0, 0, 0, 0.5);
+	box-shadow: 1px 1px 4px -1px rgb(0 12 26 / 50%);
+	text-wrap: nowrap;
+	opacity: 0;
+	color: #fff;
+	transition: opacity 175ms ease-in-out 200ms;
+	display: flex;
+	flex-flow: column;
+	gap: 10px;
+}
+.navbar-time:has(.datetime:hover):not(:has(.calendar-container.open)) > .time-tooltip {
+	transition: opacity 175ms ease-in-out 500ms;
+    opacity: 1;
+}
+
 #navbar > .navbar-minimize {
 	width: 12px;
 	background: rgba(255, 0, 0, var(--navbar-dev));
