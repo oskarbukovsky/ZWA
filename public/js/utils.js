@@ -50,27 +50,6 @@ function cssVar(variableName, value = null) {
     }
 }
 
-function deselectDesktopIcon() {
-    document.querySelectorAll("figure.icon.icon-selected").forEach((el) => {
-        el.classList.remove("icon-selected");
-    });
-    // navbar.querySelector(".navbar-time").children[0].classList.remove("open");
-    // navbar.querySelector(".navbar-search").children[0].classList.remove("open");
-}
-
-const is_key_down = (() => {
-    const state = {};
-    window.addEventListener('keyup', (event) => {
-        state[event.key] = false;
-        // cl(e.key + " " + state[e.key]);
-    });
-    window.addEventListener('keydown', (event) => {
-        state[event.key] = true;
-        // cl(e.key + " " + state[e.key]);
-    });
-    return (key) => state.hasOwnProperty(key) && state[key] || false;
-})();
-
 function textSelect(field, start, end) {
     if (field.createTextRange) {
         const selRange = field.createTextRange();
@@ -269,7 +248,7 @@ function openDb() {
 }
 
 function getSizeInNormalUnits(size) {
-    cl("// TODO");
+    // TODO: convert number to KB, MB, etc.
     return size;
 }
 
@@ -469,17 +448,6 @@ function dragApp(element) {
     }
 }
 
-function desktopIconSelect(element) {
-    element.addEventListener("click", (event) => {
-        if (!is_key_down('Control')) {
-            deselectDesktopIcon();
-        }
-        element.classList.toggle("icon-selected");
-        closeDesktopCalendar();
-        event.stopPropagation();
-    })
-}
-
 function selectApp(id) {
     deselectAllApps(id);
     windows.querySelector('[data-id="' + id + '"]').classList.add("active");
@@ -544,6 +512,13 @@ function createElement() {
     return element;
 }
 
+function closeAllDesktopContextMenus() {
+    desktop.querySelectorAll(".context-menu").forEach((element) => {
+        element.classList.remove("open");
+        setTimeout(() => element.remove(), 250);
+    });
+}
+
 function deselectAllApps() {
     windows.querySelectorAll(".windows-app").forEach((app) => {
         app.classList.remove("active");
@@ -566,53 +541,42 @@ function closeMainMenu() {
     navbar.querySelector(".main-menu").classList.remove("open");
 }
 
-function desktopIconOpen(element) {
-    element.addEventListener("dblclick", (event) => {
-        // cl("Open Window from Desktop\n", holder);
-        let dbStore = localDatabase.getStore("vNodes");
-
-        let idRequest = dbStore.get(element.childNodes[1].dataset.id);
-        // cl("holder.childNodes[1].dataset.id: ", holder.childNodes[1].dataset.id);
-        idRequest.onsuccess = function () {
-            let data = idRequest.result;
-            // cl("get success: ", data);
-            data.timeRead = Date.now();
-
-            let putRequest = dbStore.put(data);
-            putRequest.onsuccess = function () {
-                // cl("put success: ", putRequest);
+function desktopIconTooltip(element, node) {
+    let tooltipTimer, tooltipX, tooltipY;
+    element.addEventListener("mouseenter", desktopIconTooltipLogic);
+    element.addEventListener("mouseleave", desktopIconTooltipLogic);
+    element.addEventListener("mousemove", desktopIconTooltipLogic);
+    function desktopIconTooltipLogic(event) {
+        if (event.type == "mouseenter") {
+            tooltipTimer = new Date();
+            const tooltip = createElement("div", new ClassList("icon-tooltip", "no-select"), new AppendTo(element), new TextContent(getIconTooltipText(node)));
+            setTimeout(() => {
+                if (tooltip && !element.querySelector(".context-menu")) {
+                    tooltip.style.left = tooltipX + "px";
+                    tooltip.style.top = "calc(1.5rem + " + tooltipY + "px)";
+                    tooltip.classList.add("active");
+                }
+            }, 900);
+        } else if (event.type === "mousemove") {
+            if (new Date() - tooltipTimer <= 900) {
+                tooltipX = event.clientX;
+                tooltipY = event.clientY;
             }
-
-            //TODO Sync with server
-
-            appOpen(data);
         }
-        event.preventDefault();
-    });
-}
-
-function desktopIconContextMenu(element) {
-    element.addEventListener('contextmenu', function (event) {
-        cl("Open ContextMenu from Desktop\n", element);
-        event.preventDefault();
-    });
-}
-
-function desktopIconEditName(element) {
-    element.addEventListener("dblclick", (event) => {
-        let element = event.toElement;
-        if (element.readOnly) {
-            textSelect(element, 0, element.value.lastIndexOf('.'))
-            element.readOnly = !element.readOnly
+        else if (event.type == "mouseleave") {
+            const tooltip = element.querySelector(".icon-tooltip");
+            if (tooltip && tooltip.classList.contains("active")) {
+                tooltip.classList.remove("active");
+                setTimeout(() => tooltip.remove(), 250);
+            } else {
+                if (tooltip) {
+                    tooltip.remove();
+                }
+            }
         }
-        event.stopPropagation();
-    });
-    element.addEventListener("focusout", (event) => {
-        // cl("srcElement deprecated; Event: ", event)
-        event.target.readOnly = true;
-        textDeSelect()
-    });
+    }
 }
+
 // var rgb = getAverageRGB(document.getElementById('i'));
 // document.body.style.backgroundColor = 'rgb('+rgb.r+','+rgb.g+','+rgb.b+')';
 

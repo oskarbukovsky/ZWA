@@ -202,44 +202,49 @@ function addDesktopIcon(node) {
     const textarea = createElement("textarea", new Name("icon-name"), new Cols(11), new ReadOnly(true), new TextContent(node.name), new AppendTo(caption));
     desktop.appendChild(holder);
 
-    let tooltipTimer, tooltipX, tooltipY;
-    holder.addEventListener("mouseenter", desktopIconTooltip);
-    holder.addEventListener("mouseleave", desktopIconTooltip);
-    holder.addEventListener("mousemove", desktopIconTooltip);
-
-    function desktopIconTooltip(event) {
-        if (event.type == "mouseenter") {
-            tooltipTimer = new Date();
-            const tooltip = createElement("div", new ClassList("icon-tooltip"), new AppendTo(this), new TextContent(getIconTooltipText(node)));
-            setTimeout(() => {
-                const tooltip = this.querySelector(".icon-tooltip");
-                if (tooltip) {
-                    tooltip.style.left = tooltipX + "px";
-                    tooltip.style.top = "calc(1.5rem + " + tooltipY + "px)";
-                    tooltip.classList.add("active");
-                }
-            }, 1000);
-        } else if (event.type === "mousemove") {
-            if (new Date() - tooltipTimer <= 1000) {
-                tooltipX = event.clientX;
-                tooltipY = event.clientY;
-            }
-        }
-        else if (event.type == "mouseleave") {
-            const tooltip = this.querySelector(".icon-tooltip");
-            if (tooltip.classList.contains("active")) {
-                tooltip.classList.remove("active");
-                setTimeout(() => tooltip.remove(), 250);
-            } else {
-                tooltip.remove();
-            }
-        }
-    }
-
+    desktopIconTooltip(holder, node);
     desktopIconSelect(holder);
     desktopIconOpen(holder);
     desktopIconContextMenu(holder);
     desktopIconEditName(caption);
+}
+
+function desktopIconContextMenu(element) {
+    element.addEventListener('contextmenu', function (event) {
+        cl("Open ContextMenu from Desktop\n", element);
+        event.preventDefault();
+        const tooltip = element.querySelector(".icon-tooltip");
+        if (tooltip) {
+            tooltip.classList.remove("active");
+            setTimeout(() => tooltip.remove(), 250);
+        }
+        closeAllDesktopContextMenus();
+
+        const container = createElement("div", new ClassList("context-menu", "open", "no-select"));
+
+        const open = createElement("span", new TextContent("Otevřít"), new AppendTo(container));
+        const edit = createElement("span", new TextContent("Upravit"), new AppendTo(container));
+        const print = createElement("span", new TextContent("Tisknout"), new AppendTo(container));
+
+        const hr1 = createElement("hr", new AppendTo(container));
+
+        const copy = createElement("span", new TextContent("Kopírovat"), new AppendTo(container));
+        const download = createElement("span", new TextContent("Stáhnout"), new AppendTo(container));
+
+        const hr2 = createElement("hr", new AppendTo(container));
+
+        const remove = createElement("span", new TextContent("Odstranit"), new AppendTo(container));
+        const rename = createElement("span", new TextContent("Přejmenovat"), new AppendTo(container));
+
+        const hr3 = createElement("hr", new AppendTo(container));
+
+        const properties = createElement("span", new TextContent("Vlastnosti"), new AppendTo(container));
+
+        container.style.left = event.clientX + "px";
+        container.style.bottom = desktop.getBoundingClientRect().height - event.clientY + "px";
+
+        element.appendChild(container);
+    });
 }
 
 async function fetchAndLoadImage(imagePath) {

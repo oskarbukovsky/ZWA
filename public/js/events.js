@@ -17,7 +17,7 @@ class ElementEvents {
         const id = icon.dataset.id;
         const selector = windows.querySelector('[data-id="' + id + '"]');
         if (icon.classList.contains("active")) {
-            deselectAllApps(); 
+            deselectAllApps();
             selector.classList.add("minimized");
         } else {
             selector.classList.remove("minimized");
@@ -34,6 +34,7 @@ window.addEventListener('blur', () => {
         closeDesktopCalendar();
         deselectDesktopIcon();
         deselectAllApps();
+        closeAllDesktopContextMenus();
         let app = myConfObj.lastIframe;
         while (!app?.classList?.contains("windows-app")) {
             app = app.parentElement;
@@ -61,6 +62,9 @@ window.addEventListener("click", (event) => {
     deselectDesktopIcon();
     if (!bubbleToClass(event, "windows-app") && !bubbleToClass(event, "navbar-icon")) {
         deselectAllApps();
+    }
+    if (!bubbleToClass(event, "context-menu")) {
+        closeAllDesktopContextMenus();
     }
 })
 
@@ -101,12 +105,12 @@ document.querySelectorAll(".calendar-navigation span").forEach(icon => {
 });
 
 const appIframeLoaded = () => {
-    cl("loaded");
+    cl("loaded iframe");
     navbarHolder.classList.add("running");
     navbarHolder.classList.add("active");
 };
 
-window.onmessage = function(event) {
+window.onmessage = function (event) {
     cl("receivedFromIframe: ", event);
 };
 
@@ -144,32 +148,78 @@ window.document.body.addEventListener("drop", (event) => {
     }
 });
 
-// function desktopIconTooltip(event) {
-//     if (event.type == "mouseenter") {
-//         cl(node);
-//         tooltipTimer = new Date();
-//         const tooltip = createElement("div", new ClassList("icon-tooltip"), new AppendTo(this), new TextContent(getIconTooltipText(node)));
-//         setTimeout(() => {
-//             const tooltip = this.querySelector(".icon-tooltip");
-//             if (tooltip) {
-//                 tooltip.style.left = tooltipX + "px";
-//                 tooltip.style.top = "calc(1.5rem + " + tooltipY + "px)";
-//                 tooltip.classList.add("active");
-//             }
-//         }, 1000);
-//     } else if (event.type === "mousemove") {
-//         if (new Date() - tooltipTimer <= 1000) {
-//             tooltipX = event.clientX;
-//             tooltipY = event.clientY;
-//         }
-//     }
-//     else if (event.type == "mouseleave") {
-//         const tooltip = this.querySelector(".icon-tooltip");
-//         if (tooltip.classList.contains("active")) {
-//             tooltip.classList.remove("active");
-//             setTimeout(() => tooltip.remove(), 250);
-//         } else {
-//             tooltip.remove();
-//         }
-//     }
-// }
+function desktopIconOpen(element) {
+    element.addEventListener("dblclick", (event) => {
+        closeAllDesktopContextMenus();
+        // cl("Open Window from Desktop\n", holder);
+        let dbStore = localDatabase.getStore("vNodes");
+
+        let idRequest = dbStore.get(element.childNodes[1].dataset.id);
+        // cl("holder.childNodes[1].dataset.id: ", holder.childNodes[1].dataset.id);
+        idRequest.onsuccess = function () {
+            let data = idRequest.result;
+            // cl("get success: ", data);
+            data.timeRead = Date.now();
+
+            let putRequest = dbStore.put(data);
+            putRequest.onsuccess = function () {
+                // cl("put success: ", putRequest);
+            }
+
+            //TODO Sync with server
+
+            appOpen(data);
+        }
+        event.preventDefault();
+    });
+}
+
+function desktopIconEditName(element) {
+    element.addEventListener("dblclick", (event) => {
+        closeAllDesktopContextMenus();
+        let element = event.toElement;
+        if (element.readOnly) {
+            textSelect(element, 0, element.value.lastIndexOf('.'))
+            element.readOnly = !element.readOnly
+        }
+        event.stopPropagation();
+    });
+    element.addEventListener("focusout", (event) => {
+        // cl("srcElement deprecated; Event: ", event)
+        event.target.readOnly = true;
+        textDeSelect()
+    });
+}
+
+function deselectDesktopIcon() {
+    document.querySelectorAll("figure.icon.icon-selected").forEach((el) => {
+        el.classList.remove("icon-selected");
+    });
+    // navbar.querySelector(".navbar-time").children[0].classList.remove("open");
+    // navbar.querySelector(".navbar-search").children[0].classList.remove("open");
+}
+
+const is_key_down = (() => {
+    const state = {};
+    window.addEventListener('keyup', (event) => {
+        state[event.key] = false;
+        // cl(e.key + " " + state[e.key]);
+    });
+    window.addEventListener('keydown', (event) => {
+        state[event.key] = true;
+        // cl(e.key + " " + state[e.key]);
+    });
+    return (key) => state.hasOwnProperty(key) && state[key] || false;
+})();
+
+function desktopIconSelect(element) {
+    element.addEventListener("click", (event) => {
+        if (!is_key_down('Control')) {
+            deselectDesktopIcon();
+        }
+        element.classList.toggle("icon-selected");
+        closeDesktopCalendar();
+        closeAllDesktopContextMenus();
+        event.stopPropagation();
+    })
+}

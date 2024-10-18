@@ -37,6 +37,25 @@
 	opacity: 1;
 }
 
+.icon .context-menu {
+	position: absolute;
+	background-color: rgba(249, 249, 249, 1);
+	color: #000;
+	white-space: pre;
+	border-radius: 3px;
+	box-shadow: 3px 3px 5px 0px rgba(0, 12, 26, 0.2);
+	padding: 2px 6px;
+	pointer-events: none;
+	transition: opacity 225ms ease-in-out;
+	opacity: 0;
+	display: flex;
+	flex-flow: column;
+}
+
+.icon .context-menu.open {
+	opacity: 1;
+}
+
 #desktop > .icon:hover {
 	border-radius: 3px;
 	background-color: #ececec32;
