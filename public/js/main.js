@@ -205,11 +205,11 @@ function addDesktopIcon(node) {
     desktopIconTooltip(holder, node);
     desktopIconSelect(holder);
     desktopIconOpen(holder);
-    desktopIconContextMenu(holder);
+    desktopIconContextMenu(holder, node);
     desktopIconEditName(caption);
 }
 
-function desktopIconContextMenu(element) {
+function desktopIconContextMenu(element, node) {
     element.addEventListener('contextmenu', function (event) {
         cl("Open ContextMenu from Desktop\n", element);
         event.preventDefault();
@@ -248,9 +248,12 @@ function desktopIconContextMenu(element) {
         const properties = createElement("span", new TextContent("Vlastnosti"), new AppendTo(container));
 
         container.style.left = event.clientX + 1 + "px";
-        container.style.bottom = desktop.getBoundingClientRect().height - event.clientY + 1 + "px";
-
         element.appendChild(container);
+        let bottom = desktop.getBoundingClientRect().height - event.clientY + 1;
+        if (container.getBoundingClientRect().height >= event.clientY) {
+            bottom = desktop.getBoundingClientRect().height - container.getBoundingClientRect().height - 1;
+        }
+        container.style.bottom = bottom + "px";
     });
 }
 
