@@ -39,28 +39,50 @@
 
 .icon .context-menu {
 	position: absolute;
-	background-color: rgba(249, 249, 249, 1);
-	color: #000;
+	background-color: rgba(48, 48, 48, 1);
+	color: #fff;
 	white-space: pre;
 	border-radius: 3px;
-	box-shadow: 3px 3px 5px 0px rgba(0, 12, 26, 0.2);
-	padding: 2px 6px;
-	pointer-events: none;
+	box-shadow: 2px 2px 8px 0px rgba(0, 12, 26, 0.2);
+	border: 1px solid rgba(64, 64, 64, 1);
+	padding: 3px 2px;
+	/* pointer-events: none; */
 	transition: opacity 225ms ease-in-out;
 	opacity: 0;
 	display: flex;
 	flex-flow: column;
+	font-size: 0.925em;
 }
 
 .icon .context-menu.open {
 	opacity: 1;
 }
 
-#desktop > .icon:hover {
-	border-radius: 3px;
-	background-color: #ececec32;
+.context-menu > * {
+	padding: 3px 24px;
 }
 
+.context-menu hr {
+	margin-top: 4px;
+	border: transparent;
+	border-top: 1px solid rgba(64, 64, 64, 1);
+	position: relative;
+}
+
+.context-menu > span {
+	border-radius: 2px;
+	transition: background-color 125ms linear;
+}
+
+.context-menu > span:hover {
+	background-color: rgba(54, 54, 54, 1);
+}
+
+#desktop > .icon:hover {
+	background-color: rgba(236, 236, 236, 0.196);
+}
+
+#desktop .icon:has(.context-menu:hover):hover,
 #desktop > .icon-selected {
 	border-radius: 3px;
 	background-color: #ececec56;

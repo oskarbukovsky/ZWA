@@ -220,6 +220,13 @@ function desktopIconContextMenu(element) {
         }
         closeAllDesktopContextMenus();
 
+        if (!is_key_down('Control')) {
+            deselectDesktopIcon();
+        }
+        element.classList.toggle("icon-selected");
+        closeDesktopCalendar();
+        closeAllDesktopContextMenus();
+
         const container = createElement("div", new ClassList("context-menu", "open", "no-select"));
 
         const open = createElement("span", new TextContent("Otevřít"), new AppendTo(container));
@@ -240,8 +247,8 @@ function desktopIconContextMenu(element) {
 
         const properties = createElement("span", new TextContent("Vlastnosti"), new AppendTo(container));
 
-        container.style.left = event.clientX + "px";
-        container.style.bottom = desktop.getBoundingClientRect().height - event.clientY + "px";
+        container.style.left = event.clientX + 1 + "px";
+        container.style.bottom = desktop.getBoundingClientRect().height - event.clientY + 1 + "px";
 
         element.appendChild(container);
     });
