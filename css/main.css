@@ -1,0 +1,98 @@
+body,
+:not(:root):fullscreen::backdrop {
+	width: 100vw;
+	height: 100vh;
+	font-size: 12px;
+	background: linear-gradient(rgb(35, 15, 214), transparent),
+		linear-gradient(to top left, rgb(123, 1, 128), transparent),
+		linear-gradient(to top right, rgb(28, 177, 65), transparent),
+		linear-gradient(
+			320deg,
+			hsl(240deg 100% 20%) 0%,
+			hsl(234deg 97% 26%) 26%,
+			hsl(229deg 95% 32%) 43%,
+			hsl(226deg 96% 38%) 58%,
+			hsl(223deg 97% 44%) 76%,
+			hsl(221deg 100% 50%) 100%
+		);
+	background-blend-mode: screen;
+	background-image: url("../media/ui/wallpapers/win-11.jpg");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	overflow: hidden;
+	font-family: "Segoe UI Variable Static Text", sans-serif;
+}
+
+.working-area {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: calc(100vh - var(--navbar-height) - 1px);
+}
+
+.no-select {
+	user-select: none;
+}
+
+.errors {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgb(104, 23, 23);
+	z-index: 999;
+	text-align: center;
+	align-content: center;
+	white-space: pre-wrap;
+	z-index: 999999;
+}
+
+.errors:before {
+	color: #f00;
+	font-size: 32px;
+}
+
+.errors:after {
+	color: #efefefef;
+	font-size: 20px;
+	position: relative;
+	left: -0.4em;
+}
+
+.hidden {
+	display: none !important;
+}
+
+.test {
+	top: 400px !important;
+	left: 300px !important;
+}
+
+.errors.db-error:before {
+	content: "Chyba";
+}
+
+.errors.db-error:after {
+	content: var(--db-error);
+}
+
+.uploading {
+	display: none;
+}
+
+.uploading.upload {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	color: #fff;
+	width: 100vw;
+	height: 100vh;
+	background: rgba(0, 0, 255, 0.20);
+	text-align: center;
+	align-content: center;
+	z-index: 99999;
+}
