@@ -52,6 +52,7 @@
 	display: flex;
 	flex-flow: column;
 	font-size: 0.925em;
+	z-index: 10;
 }
 
 .icon .context-menu.open {
