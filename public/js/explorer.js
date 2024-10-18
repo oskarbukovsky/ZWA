@@ -10,4 +10,4 @@ window.onmessage = function(event) {
     alert(event.data);
 };
 
-parent.postMessage("Tu máš taťko", "*")
+window.top.postMessage("Tu máš taťko", "*")

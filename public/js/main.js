@@ -28,6 +28,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     getBattery();
 
     requestAnimationFrame(clock);
+    requestAnimationFrame(clockTooltip);
 
     cl("|📙 Clearing database")
     await deleteDb();
@@ -200,6 +201,40 @@ function addDesktopIcon(node) {
     const caption = createElement("figcaption", new Data("id", node.id), new AppendTo(holder));
     const textarea = createElement("textarea", new Name("icon-name"), new Cols(11), new ReadOnly(true), new TextContent(node.name), new AppendTo(caption));
     desktop.appendChild(holder);
+
+    let tooltipTimer, tooltipX, tooltipY;
+    holder.addEventListener("mouseenter", desktopIconTooltip);
+    holder.addEventListener("mouseleave", desktopIconTooltip);
+    holder.addEventListener("mousemove", desktopIconTooltip);
+
+    function desktopIconTooltip(event) {
+        if (event.type == "mouseenter") {
+            tooltipTimer = new Date();
+            const tooltip = createElement("div", new ClassList("icon-tooltip"), new AppendTo(this), new TextContent(getIconTooltipText(node)));
+            setTimeout(() => {
+                const tooltip = this.querySelector(".icon-tooltip");
+                if (tooltip) {
+                    tooltip.style.left = tooltipX + "px";
+                    tooltip.style.top = "calc(1.5rem + " + tooltipY + "px)";
+                    tooltip.classList.add("active");
+                }
+            }, 1000);
+        } else if (event.type === "mousemove") {
+            if (new Date() - tooltipTimer <= 1000) {
+                tooltipX = event.clientX;
+                tooltipY = event.clientY;
+            }
+        }
+        else if (event.type == "mouseleave") {
+            const tooltip = this.querySelector(".icon-tooltip");
+            if (tooltip.classList.contains("active")) {
+                tooltip.classList.remove("active");
+                setTimeout(() => tooltip.remove(), 250);
+            } else {
+                tooltip.remove();
+            }
+        }
+    }
 
     desktopIconSelect(holder);
     desktopIconOpen(holder);

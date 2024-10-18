@@ -96,23 +96,40 @@ function textDeSelect() {
     }
 }
 
-// setInterval(function () {
-//     var dt = new Date();
-//     document.getElementById("datetime").innerHTML = (("0" + dt.getHours()).slice(-2)) + ":" +
-//         (("0" + dt.getMinutes()).slice(-2)) + ":" + (("0" + dt.getSeconds()).slice(-2)) + "<br>" + (("0" + dt.getDate()).slice(-2)) + "." + (("0" +
-//             (dt.getMonth() + 1)).slice(-2)) + "." + (dt.getFullYear());
-// }, 999);
+function clockTooltip() {
+    const datetime = new Date();
+    const date = new Intl.DateTimeFormat("cs-CZ", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    }).format(datetime);
+    const time = new Intl.DateTimeFormat("cs-CZ", {
+        weekday: "short",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+    }).format(datetime) + " (Místní čas)"
+    const element = document.querySelector(".time-tooltip");
+    element.children[0].textContent = date;
+    element.children[1].textContent = time;
+    requestAnimationFrame(clockTooltip);
+}
 
 function clock() {
-    let dateTime = new Intl.DateTimeFormat("cs-CZ", {
-        dateStyle: "short",
-        timeStyle: "medium",
-        hour12: false
-    }).format(new Date()).split(" ");
-    // dateTime[0].replace(dateTime[0].split(".").pop(), "20" + dateTime[0].split(".").pop())
-    // cl(dateTime[0].replace(dateTime[0].split(".").pop(), "20" + dateTime[0].split(".").pop()));
-    document.getElementById("datetime").setAttribute("data-date", dateTime[0].replace(dateTime[0].split(".").pop(), "20" + dateTime[0].split(".").pop()));
-    document.getElementById("datetime").setAttribute("data-time", dateTime[1] + " ");
+    const datetime = new Date();
+    const date = new Intl.DateTimeFormat("cs-CZ", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+    }).format(datetime).replaceAll(" ", "")
+    const time = new Intl.DateTimeFormat("cs-CZ", {
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+    }).format(datetime)
+    const element = document.querySelector("#datetime");
+    element.setAttribute("data-date", date);
+    element.setAttribute("data-time", time + " ");
     requestAnimationFrame(clock);
 }
 
@@ -251,11 +268,48 @@ function openDb() {
     };
 }
 
+function getSizeInNormalUnits(size) {
+    cl("// TODO");
+    return size;
+}
+
+function getTimeForTooltip(datetime) {
+    const date = new Intl.DateTimeFormat("cs-CZ", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+    }).format(datetime).replaceAll(" ", "")
+    const time = new Intl.DateTimeFormat("cs-CZ", {
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+    }).format(datetime);
+    return date + " " + time;
+
+}
+
+function getIconTooltipText(node) {
+    switch (node.type) {
+        case "folder":
+        case "images":
+        case "documents":
+            return node.name + "\r\nDatum vytvoření: " + getTimeForTooltip(node.timeCreate) + "\r\nVelikost: " + getSizeInNormalUnits(node.size);
+        case "file":
+            return node.name + "\r\n" + node.description + "\r\nVelikost: " + getSizeInNormalUnits(node.size) + "\r\nDatum změny: " + getTimeForTooltip(node.timeEdit);
+        case "link":
+            return "Odkaz na: " + node.data[0];
+        default:
+            return "Soubor";
+    }
+}
+
 function getDestination(node) {
     if (node.type == "link") {
         switch (node.data[0].split(":\/\/").shift()) {
             case "vLinkTrash":
                 return "user-data/" + node.owner + node.data[0] + node.name;
+            case "admin":
+                return "administration.html";
             case "vComputer":
                 return "explorer.html?folder=user-data/" + node.owner;
             default:
@@ -280,6 +334,8 @@ function getIcon(node) {
                             return "./media/file-icons/trash.webp";
                         case "vComputer":
                             return "./media/file-icons/computer.webp";
+                        case "admin":
+                            return "./media/file-icons/admin.webp";
                         default:
                             return "./media/file-icons/unknown.webp"
                     }
@@ -425,7 +481,7 @@ function desktopIconSelect(element) {
 }
 
 function selectApp(id) {
-    deselectAllApps(id); 
+    deselectAllApps(id);
     windows.querySelector('[data-id="' + id + '"]').classList.add("active");
     navbar.querySelector('[data-id="' + id + '"]').classList.add("active");
 }
@@ -731,7 +787,7 @@ function getBattery() {
                 batteryIcon.textContent = iconsCharging[scaleValue(battery.level, [0, 1], [0, 5])];
             } else {
                 batteryTooltip.textContent = "Stav baterie: zbývá " + (battery.level * 100).toFixed() + "%"
-                if(battery.dischargingTime > 0 && isFinite(battery.dischargingTime)) {
+                if (battery.dischargingTime > 0 && isFinite(battery.dischargingTime)) {
                     batteryTooltip.textContent += " (" + (battery.dischargingTime / 3600).toFixed() + "h" + ((battery.dischargingTime / 60) % 60).toFixed() + "m)"
                 }
                 batteryIcon.textContent = icons[scaleValue(battery.level, [0, 1], [0, 7])];

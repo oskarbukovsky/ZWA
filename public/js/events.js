@@ -143,3 +143,33 @@ window.document.body.addEventListener("drop", (event) => {
         handleFileUpload(files)
     }
 });
+
+// function desktopIconTooltip(event) {
+//     if (event.type == "mouseenter") {
+//         cl(node);
+//         tooltipTimer = new Date();
+//         const tooltip = createElement("div", new ClassList("icon-tooltip"), new AppendTo(this), new TextContent(getIconTooltipText(node)));
+//         setTimeout(() => {
+//             const tooltip = this.querySelector(".icon-tooltip");
+//             if (tooltip) {
+//                 tooltip.style.left = tooltipX + "px";
+//                 tooltip.style.top = "calc(1.5rem + " + tooltipY + "px)";
+//                 tooltip.classList.add("active");
+//             }
+//         }, 1000);
+//     } else if (event.type === "mousemove") {
+//         if (new Date() - tooltipTimer <= 1000) {
+//             tooltipX = event.clientX;
+//             tooltipY = event.clientY;
+//         }
+//     }
+//     else if (event.type == "mouseleave") {
+//         const tooltip = this.querySelector(".icon-tooltip");
+//         if (tooltip.classList.contains("active")) {
+//             tooltip.classList.remove("active");
+//             setTimeout(() => tooltip.remove(), 250);
+//         } else {
+//             tooltip.remove();
+//         }
+//     }
+// }
