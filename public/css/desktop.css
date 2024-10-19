@@ -40,7 +40,7 @@
 .icon .context-menu {
 	position: absolute;
 	background-color: rgba(48, 48, 48, 1);
-	color: #fff;
+	color: rgba(255, 255, 255, 0.91);
 	white-space: pre;
 	border-radius: 3px;
 	box-shadow: 2px 2px 8px 0px rgba(0, 12, 26, 0.2);
@@ -51,7 +51,7 @@
 	opacity: 0;
 	display: flex;
 	flex-flow: column;
-	font-size: 0.925em;
+	font-size: 0.95em;
 	z-index: 10;
 }
 
@@ -76,7 +76,7 @@
 }
 
 .context-menu > span:hover {
-	background-color: rgba(54, 54, 54, 1);
+	background-color: rgba(58, 58, 58, 1);
 }
 
 #desktop > .icon:hover {
