@@ -148,7 +148,7 @@ window.document.body.addEventListener("drop", (event) => {
     }
 });
 
-function desktopIconOpen(element) {
+function desktopIconOpener(element) {
     element.addEventListener("dblclick", (event) => {
         closeAllDesktopContextMenus();
         // cl("Open Window from Desktop\n", holder);

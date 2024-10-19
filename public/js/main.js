@@ -205,7 +205,7 @@ function addDesktopIcon(node) {
 
     desktopIconTooltip(holder, node);
     desktopIconSelect(holder);
-    desktopIconOpen(holder);
+    desktopIconOpener(holder);
     desktopIconContextMenu(holder, node);
     desktopIconEditName(caption);
 }
@@ -219,18 +219,17 @@ function desktopIconContextMenu(element, node) {
             tooltip.classList.remove("active");
             setTimeout(() => tooltip.remove(), 250);
         }
-        closeAllDesktopContextMenus();
-
-        if (!is_key_down('Control')) {
-            deselectDesktopIcon();
-        }
-        element.classList.toggle("icon-selected");
+        closeMainMenu();
+        closeSearchbarMenu()
         closeDesktopCalendar();
+        deselectDesktopIcon();
+        deselectAllApps();
         closeAllDesktopContextMenus();
 
         const container = createElement("div", new ClassList("context-menu", "open", "no-select"));
 
         const open = createElement("span", new TextContent("Otevřít"), new AppendTo(container));
+        open.addEventListener("click", () => appOpen(node));
         const edit = createElement("span", new TextContent("Upravit"), new AppendTo(container));
         const print = createElement("span", new TextContent("Tisknout"), new AppendTo(container));
 
