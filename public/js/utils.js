@@ -557,7 +557,7 @@ function desktopIconTooltip(element, node) {
             tooltipTimer = new Date();
             const tooltip = createElement("div", new ClassList("icon-tooltip", "no-select"), new AppendTo(element), new TextContent(getIconTooltipText(node)));
             setTimeout(() => {
-                if (tooltip && desktop.querySelectorAll(".context-menu").length == 0) {
+                if (tooltip && desktop.querySelectorAll(".context-menu").length == 0 && element.querySelectorAll("textarea:not(:read-only)").length == 0) {
                     tooltip.style.left = tooltipX + "px";
                     tooltip.style.top = "calc(1.5rem + " + tooltipY + "px)";
                     tooltip.classList.add("active");
