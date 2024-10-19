@@ -44,7 +44,8 @@ window.addEventListener("DOMContentLoaded", async () => {
             openDbError(dbOpenTimeout);
             return;
         }
-        scheduler.yield();
+        // Tricky thing to force newest browsers ! :D Maybe not the best idea for testing 
+        // scheduler.yield();
     }
 
     cl("|📙 Processing userIdentifier...");
