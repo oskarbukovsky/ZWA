@@ -402,7 +402,6 @@ function dragApp(element) {
         if (!app.classList.contains("maximized")) {
             doDrag(app);
         } else {
-            cl(event);
             const sizes = element.querySelector(".app-header").getBoundingClientRect();
             const max = element.style.width ? Number(element.style.width.replace("px", "")) : 400 - 5;
             let scaled = scaleValue(event.clientX, [0, sizes.width], [0, element.style.width ? Number(element.style.width.replace("px", "")) : 400]);

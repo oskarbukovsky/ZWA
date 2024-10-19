@@ -25,6 +25,10 @@ class ElementEvents {
             selector.style.zIndex = getLowestMaxAppZIndex();
         }
     };
+
+    static NoPropagation(event) {
+        event.stopPropagation();
+    }
 }
 
 window.addEventListener('blur', () => {

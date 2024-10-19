@@ -9,6 +9,9 @@
 // https://play.chessbase.com/en/howto/embedfritz
 // https://playpager.com/embed/chess/index.html
 
+// No CORS extension
+// https://chromewebstore.google.com/detail/cors-unblock/lfhmikememgdcahcdlaciloancbhjino
+
 // TODO: no html css?
 
 // const sheet = new CSSStyleSheet();
@@ -150,12 +153,11 @@ function appOpen(node) {
     const iconHolder = createElement("div", new ClassList("app-icon"), new AppendTo(v1));
     const icon = createElement("img", new Src(getIcon(node)), new AppendTo(iconHolder));
     const title = createElement("div", new TextContent(node.name), new AppendTo(v1));
-    const controls = createElement("div", new ClassList("app-controls"), new AppendTo(header));
+    const controls = createElement("div", new ClassList("app-controls"), new AppendTo(header), new ElementEvent("mousedown", ElementEvents.NoPropagation));
     const minimize = createElement("div", new ClassList("minimize"), new AppendTo(controls));
     const maximize = createElement("div", new ClassList("maximize"), new AppendTo(controls));
     const close = createElement("div", new ClassList("close"), new AppendTo(controls));
     const content = createElement("div", new ClassList("app-content"), new AppendTo(holder));
-
 
     windows.appendChild(holder);
 
@@ -173,7 +175,7 @@ function appOpen(node) {
         new ElementEvent("load", appIframeLoaded), new ElementEvent("mouseover", ElementEvents.appIframeMouseOver), new ElementEvent("mouseout", ElementEvents.appIframeMouseOut),
         new AppendTo(content));
 
-    // iframe.contentWindow.postMessage('hello', '*');
+    iframe.contentWindow.postMessage('hello', '*');
 
     // let detector = document.createElement("div");
     // detector.classList.add("detect");
