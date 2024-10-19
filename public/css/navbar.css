@@ -23,7 +23,7 @@
 }
 
 #navbar > .navbar-menu {
-	min-width: 56px;
+	min-width: 50px;
 	background: rgba(255, 0, 0, var(--navbar-dev));
 }
 
@@ -58,7 +58,7 @@
 } */
 
 #navbar > .navbar-search {
-	min-width: 42.5px;
+	min-width: 40px;
 	background: rgba(0, 255, 0, var(--navbar-dev));
 	background-image: url("../media/ui/search.webp");
 	background-repeat: no-repeat;
@@ -179,7 +179,7 @@
 	background-color: rgba(41,46,47,0.9);
 	border-radius: 8px;
 	padding: 8px 10px;
-	font-size: 1.2em;
+	font-size: 0.65rem;
 	text-shadow: 2px 1px 3px rgba(0, 0, 0, 0.5);
 	box-shadow: 1px 1px 4px -1px rgb(0 12 26 / 50%);
 	text-wrap: nowrap;
@@ -199,7 +199,7 @@
 }
 
 #navbar > .navbar-time {
-	width: 97px;
+	width: 90px;
 	background: rgba(0, 255, 0, var(--navbar-dev));
 	align-content: center;
 }
@@ -213,7 +213,7 @@
 	background-color: rgba(41,46,47,0.9);
 	border-radius: 8px;
 	padding: 8px 10px;
-	font-size: 1em;
+	font-size: 0.65rem;
 	text-shadow: 2px 1px 3px rgba(0, 0, 0, 0.5);
 	box-shadow: 1px 1px 4px -1px rgb(0 12 26 / 50%);
 	text-wrap: nowrap;
