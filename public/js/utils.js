@@ -402,22 +402,29 @@ function dragApp(element) {
         if (!app.classList.contains("maximized")) {
             doDrag(app);
         } else {
-            //TODO: need some extra work, do later
-
-            // app.classList.remove("maximized");
-            // doDrag(app);
-            // app.classList.add("dragging");
-            // pos3 = event.clientX;
-            // pos4 = event.clientY;
-            // document.onmouseup = closeDragElement;
-            // document.onmousemove = elementDrag;
+            cl(event);
+            const sizes = element.querySelector(".app-header").getBoundingClientRect();
+            const max = element.style.width ? Number(element.style.width.replace("px", "")) : 400 - 5;
+            let scaled = scaleValue(event.clientX, [0, sizes.width], [0, element.style.width ? Number(element.style.width.replace("px", "")) : 400]);
+            if (scaled < 5) {
+                scaled = 5;
+            } else if (scaled > max - 5) {
+                scaled = max - 5;
+            }
+            document.onmouseup = closeDragElement;
+            document.onmousemove = (event) => {
+                element.style.left = (event.clientX - scaled) + "px";
+                element.style.top = (event.clientY - (sizes.height / 2)) + "px";
+                app.classList.remove("maximized");
+                doDrag(app);
+                elementDrag(event);
+            };
         }
     }
 
     function doDrag(app) {
         app.classList.add("dragging");
         deselectAllApps();
-        // cl("selecting: ", app.dataset.id);
         selectApp(app.dataset.id);
         app.style.zIndex = getLowestMaxAppZIndex();
         pos3 = event.clientX;
@@ -432,7 +439,6 @@ function dragApp(element) {
         pos2 = pos4 - event.clientY;
         pos3 = event.clientX;
         pos4 = event.clientY;
-
         element.style.top = (element.offsetTop - pos2) + "px";
         element.style.left = (element.offsetLeft - pos1) + "px";
     }
