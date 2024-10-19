@@ -18,6 +18,7 @@
 	justify-content: flex-start;
 	align-items: center;
 	flex-flow: column;
+	border-radius: 3px;
 }
 
 .icon .icon-tooltip {
@@ -51,7 +52,7 @@
 	opacity: 0;
 	display: flex;
 	flex-flow: column;
-	font-size: 0.95em;
+	font-size: 0.725rem;
 	z-index: 10;
 }
 
@@ -85,7 +86,6 @@
 
 #desktop .icon:has(.context-menu:hover):hover,
 #desktop > .icon-selected {
-	border-radius: 3px;
 	background-color: #ececec56;
 }
 
@@ -128,7 +128,7 @@ textarea {
 	border: 0;
 	margin: -2px;
 	padding: 2px 4px 4px 4px;
-	font-size: 11px;
+	font-size: 0.6rem;
 	color: #000;
 	field-sizing: content;
 	box-sizing: border-box;
@@ -142,9 +142,9 @@ textarea {
 	height: 2lh;
 }
 
-textarea:focus:not(:read-only) {
-	/* margin-top: 0; */
-}
+/* textarea:focus:not(:read-only) {
+	margin-top: 0;
+} */
 
 textarea:read-only::selection {
 	background: transparent;

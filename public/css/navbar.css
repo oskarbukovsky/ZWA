@@ -167,6 +167,7 @@
 
 .navbar-volume .battery > span {
 	transform: rotate(90deg) scaleX(1.3);
+	font-size: 1.4rem;
 }
 
 .battery > .battery-tooltip {
@@ -191,9 +192,10 @@
     opacity: 1;
 }
 
-.navbar-volume span {
+.navbar-volume .volume > span {
 	height: fit-content;
 	width: fit-content;
+	font-size: 1.4rem;
 }
 
 #navbar > .navbar-time {
@@ -318,7 +320,7 @@
 }
 
 #datetime {
-	font-size: 12px;
+	font-size: 0.675rem;
 	text-shadow: 2px 1px 3px rgba(0, 0, 0, 0.5);
 	display: block;
 	text-align: end;
@@ -328,16 +330,21 @@
 #datetime:before {
 	content: attr(data-time);
 }
+
 #datetime:after {
 	content: attr(data-date);
+}
+
+#notifications {
+	font-size: 1.25rem;
 }
 
 .calendar-container {
 	position: absolute;
 	bottom: calc(10px + var(--navbar-height));
-	right: -342px;
+	right: -312px;
 	background: rgba(20, 61, 117, 0.7);
-	width: 340px;
+	width: 310px;
 	height: max-content;
 	border: 1px solid rgb(55, 55, 55);
 	box-shadow: 1px 1px 4px -1px rgb(0 12 26 / 50%);
@@ -391,7 +398,7 @@ header .calendar-navigation span:hover {
 
 header .calendar-current-date {
 	font-weight: 500;
-	font-size: 1.3em;
+	font-size: 0.85rem;
 	font-weight: 600;
 }
 
@@ -415,7 +422,7 @@ header .calendar-current-date {
 
 .calendar-body li {
 	width: calc(100% / 7);
-	font-size: 1.07em;
+	font-size: 0.75rem;
 	/* color: #414141; */
 }
 
@@ -425,7 +432,7 @@ header .calendar-current-date {
 
 .calendar-body .calendar-weekdays li {
 	font-weight: 400;
-	font-size: 1.1em;
+	font-size: 0.8rem;
 }
 
 .calendar-body .calendar-dates li {
