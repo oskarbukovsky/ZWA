@@ -9,6 +9,11 @@ body {
 	user-select: none;
 	color: #fff;
 	overflow: hidden;
+	font-family: "Segoe UI Variable Static Text", sans-serif;
+	text-shadow: 2px 1px 3px rgb(0, 0, 0);
+}
+:root {
+	font-size: 18px;
 }
 
 hr {
@@ -42,6 +47,8 @@ body > .container {
 	width: 100%;
 	height: 100%;
 	/* background-color: green; */
+	min-width: 0;
+	min-height: 0;
 }
 
 .container > .sidebar {
@@ -63,6 +70,12 @@ body > .container {
 	padding-left: 12px;
 	--content-width: calc(100% - 12px - var(--explorer-side-size));
 	width: var(--content-width);
+	overflow-y: scroll;
+	overflow-x: hidden;
+	min-width: 0;
+	min-height: 0;
+	z-index: 1;
+	/* padding: 10px; */
 }
 
 :root {
@@ -80,6 +93,10 @@ body > .container {
 	justify-content: space-between;
 	min-height: 25px;
 	align-items: center;
+	position: fixed;
+	width: calc(var(--content-width) - 19px);
+	background-color: rgb(25, 25, 25);
+	font-size: 0.7rem;
 }
 
 #sorting > * {
@@ -105,8 +122,11 @@ body > .container {
 }
 
 #files {
+	padding-top: 25px;
 	display: flex;
 	flex-flow: column;
+	min-height: 0;
+	font-size: 0.65rem;
 }
 
 #files > .file {
@@ -114,7 +134,7 @@ body > .container {
 	flex-flow: row;
 	justify-content: space-between;
 	align-items: center;
-	height: var(--files-size-row);
+	min-height: var(--files-size-row);
 }
 
 #files > .file:hover,
@@ -159,4 +179,62 @@ body > .container {
 }
 #files > .file > :nth-child(4) {
 	width: var(--sorting-size-size);
+}
+
+::-webkit-scrollbar {
+	width: 15px;
+	height: 15px;
+	background: linear-gradient(
+		180deg,
+		rgba(23, 23, 23, 1) 0%,
+		rgba(23, 23, 23, 1) 94%,
+		rgba(28, 28, 28, 0) 100%
+	);
+	transition: all 2225ms ease-in-out;
+}
+::-webkit-scrollbar-thumb {
+	background-color: rgba(139, 139, 139, 0.9);
+	border-radius: 10px;
+	border: 6px solid transparent;
+	background-clip: padding-box;
+	background-position: center;
+	background-repeat: no-repeat;
+	transition: all 2225ms ease-in-out;
+}
+
+/* TODO: add bigger thumb if hover on buttons */
+
+::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:active {
+	border: 4px solid transparent;
+	background-color: rgb(128, 128, 128, 0.9);
+	transition: all 2225ms ease-in-out;
+}
+::-webkit-scrollbar-button {
+	width: 15px;
+	height: 15px;
+	border: 3px solid transparent;
+	background-clip: padding-box;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+::-webkit-scrollbar-button:start:decrement {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9'%3E%3Cpath fill='%238b8b8b' d='m5.7 1.7 3.1 4.2c.6.9-.1 2.1-1.2 2.1H1.4C.3 8-.4 6.8.2 5.9l3.1-4.2c.5-.9 1.9-.9 2.4 0z' /%3E%3C/svg%3E");
+}
+::-webkit-scrollbar-button:start:increment {
+	display: none;
+}
+::-webkit-scrollbar-button:end:increment {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9'%3E%3Cpath fill='%238b8b8b' d='m5.7 7.3 3.1-4.2C9.4 2.2 8.7 1 7.6 1H1.4C.3 1-.4 2.2.2 3.1l3.1 4.2c.5.9 1.9.9 2.4 0z' /%3E%3C/svg%3E");
+}
+::-webkit-scrollbar-button:end:decrement {
+	display: none;
+}
+
+::-webkit-scrollbar-button:start:active:decrement {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9'%3E%3Cpath fill='%23606060' d='m5.7 1.7 3.1 4.2c.6.9-.1 2.1-1.2 2.1H1.4C.3 8-.4 6.8.2 5.9l3.1-4.2c.5-.9 1.9-.9 2.4 0z' /%3E%3C/svg%3E");
+}
+::-webkit-scrollbar-button:end:active:increment {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9'%3E%3Cpath fill='%23606060' d='m5.7 7.3 3.1-4.2C9.4 2.2 8.7 1 7.6 1H1.4C.3 1-.4 2.2.2 3.1l3.1 4.2c.5.9 1.9.9 2.4 0z' /%3E%3C/svg%3E");
 }
