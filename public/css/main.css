@@ -2,7 +2,7 @@ body,
 :not(:root):fullscreen::backdrop {
 	width: 100vw;
 	height: 100vh;
-	font-size: 12px;
+	/* font-size: 14px; */
 	background: linear-gradient(rgb(35, 15, 214), transparent),
 		linear-gradient(to top left, rgb(123, 1, 128), transparent),
 		linear-gradient(to top right, rgb(28, 177, 65), transparent),
@@ -22,6 +22,9 @@ body,
 	background-size: cover;
 	overflow: hidden;
 	font-family: "Segoe UI Variable Static Text", sans-serif;
+}
+:root {
+	font-size: 18px;
 }
 
 .working-area {

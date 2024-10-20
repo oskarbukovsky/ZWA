@@ -6,12 +6,15 @@ body {
 	width: 100vw;
 	height: 100vh;
 	margin: 0;
+	user-select: none;
+	color: #fff;
+	overflow: hidden;
 }
 
 hr {
-    border: 1px solid rgb(56 56 56);
-    border-bottom: transparent;
-    width: 85%;
+	border: 1px solid rgb(56 56 56);
+	border-bottom: transparent;
+	width: 85%;
 }
 
 body > .header {
@@ -42,7 +45,7 @@ body > .container {
 }
 
 .container > .sidebar {
-	width: var(--explorer-side-size);
+	min-width: var(--explorer-side-size);
 	height: 100%;
 	/* background-color: aqua; */
 	border-right: 2px solid rgba(48, 48, 48, 0.7);
@@ -54,8 +57,106 @@ body > .container {
 	display: flex;
 	flex-direction: column;
 	flex-wrap: nowrap;
-	width: 100%;
 	height: 100%;
 	/* background-color: lime; */
 	box-shadow: 0 0 1px 2px rgba(28, 28, 28, 0.7) inset;
+	padding-left: 12px;
+	--content-width: calc(100% - 12px - var(--explorer-side-size));
+	width: var(--content-width);
+}
+
+:root {
+	--sorting-size-name: 40%;
+	--sorting-size-change: 25%;
+	--sorting-size-type: 20%;
+	--sorting-size-size: 15%;
+
+	--files-size-row: 48px;
+}
+
+#sorting {
+	display: flex;
+	flex-flow: row;
+	justify-content: space-between;
+	min-height: 25px;
+	align-items: center;
+}
+
+#sorting > * {
+	border-right: 1px solid rgba(99, 99, 99, 0.9);
+	padding-left: 8px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+#sorting > :nth-child(1) {
+	width: var(--sorting-size-name);
+}
+#sorting > :nth-child(2) {
+	width: var(--sorting-size-change);
+}
+#sorting > :nth-child(3) {
+	width: var(--sorting-size-type);
+}
+#sorting > :nth-child(4) {
+	width: var(--sorting-size-size);
+	border: none;
+}
+
+#files {
+	display: flex;
+	flex-flow: column;
+}
+
+#files > .file {
+	display: flex;
+	flex-flow: row;
+	justify-content: space-between;
+	align-items: center;
+	height: var(--files-size-row);
+}
+
+#files > .file:hover,
+#files > .file.selected {
+	background-color: rgba(80, 80, 80, 0.9);
+}
+
+.file > * {
+	padding-left: 10px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.file > .name {
+	align-items: center;
+	display: flex;
+	margin-left: -10px;
+}
+
+.file img {
+	height: calc(var(--files-size-row) * 0.375);
+	width: auto;
+	padding-left: 6px;
+}
+
+.file > .name > span {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	padding-left: 4px;
+}
+
+#files > .file > :nth-child(1) {
+	width: calc(var(--sorting-size-name) + 10px);
+}
+#files > .file > :nth-child(2) {
+	width: var(--sorting-size-change);
+}
+#files > .file > :nth-child(3) {
+	width: var(--sorting-size-type);
+}
+#files > .file > :nth-child(4) {
+	width: var(--sorting-size-size);
 }

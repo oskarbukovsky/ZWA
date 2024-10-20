@@ -199,7 +199,7 @@
 }
 
 #navbar > .navbar-time {
-	width: 90px;
+	width: 99px;
 	background: rgba(0, 255, 0, var(--navbar-dev));
 	align-content: center;
 }
@@ -321,7 +321,7 @@
 
 #datetime {
 	font-size: 0.675rem;
-	text-shadow: 2px 1px 3px rgba(0, 0, 0, 0.5);
+	text-shadow: 2px 1px 3px rgba(0, 0, 0, 1);
 	display: block;
 	text-align: end;
 	white-space: pre-wrap;

@@ -7,7 +7,6 @@ window.onmessage = function(event) {
     parent = event.source
     console.log(event.source);
     console.log("receivedFromParent: ", event);
-    alert(event.data);
 };
 
 window.top.postMessage("Tu máš taťko", "*")

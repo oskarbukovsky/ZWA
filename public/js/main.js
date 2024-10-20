@@ -152,7 +152,7 @@ function appOpen(node) {
     const v1 = createElement("div", new ClassList("app-v1"), new AppendTo(header));
     const iconHolder = createElement("div", new ClassList("app-icon"), new AppendTo(v1));
     const icon = createElement("img", new Src(getIcon(node)), new AppendTo(iconHolder));
-    const title = createElement("div", new TextContent(node.name), new AppendTo(v1));
+    const title = createElement("div", new TextContent(node.name), new ClassList("app-title"), new AppendTo(v1));
     const controls = createElement("div", new ClassList("app-controls"), new AppendTo(header), new ElementEvent("mousedown", ElementEvents.NoPropagation));
     const minimize = createElement("div", new ClassList("minimize"), new AppendTo(controls));
     const maximize = createElement("div", new ClassList("maximize"), new AppendTo(controls));
