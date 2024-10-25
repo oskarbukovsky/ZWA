@@ -9,8 +9,14 @@
 
 	--explorer-side-size: 176px;
 	font-size: 16px;
-}
 
+	--sorting-size-name: 45%;
+	--sorting-size-change: 25%;
+	--sorting-size-type: 20%;
+	--sorting-size-size: 10%;
+
+	--files-size-row: 1;
+}
 
 * {
 	margin: 0;

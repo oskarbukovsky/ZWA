@@ -13,7 +13,7 @@
 }
 #navbar > div {
 	margin: 0px;
-	width: calc(var(--navbar-height) - 3px);
+	width: var(--navbar-height);
 	height: var(--navbar-height);
 	background: linear-gradient(
 		90deg,
@@ -23,7 +23,7 @@
 }
 
 #navbar > .navbar-menu {
-	min-width: 50px;
+	min-width: 55px;
 	background: rgba(255, 0, 0, var(--navbar-dev));
 }
 
@@ -58,7 +58,7 @@
 } */
 
 #navbar > .navbar-search {
-	min-width: 40px;
+	min-width: 45px;
 	background: rgba(0, 255, 0, var(--navbar-dev));
 	background-image: url("../media/ui/search.webp");
 	background-repeat: no-repeat;
@@ -179,7 +179,7 @@
 	background-color: rgba(41,46,47,0.9);
 	border-radius: 8px;
 	padding: 8px 10px;
-	font-size: 0.75rem;
+	font-size: 0.8rem;
 	text-shadow: 2px 1px 3px rgba(0, 0, 0, 0.5);
 	box-shadow: 1px 1px 4px -1px rgb(0 12 26 / 50%);
 	text-wrap: nowrap;
@@ -238,7 +238,8 @@
 	margin: 3px 2px;
 	background-color: transparent;
 	border-radius: 4px;
-	height: calc(100% - 7px);
+	height: calc(100% - 6px);
+	width: calc(var(--navbar-height) - 4px);
 	padding-bottom: 1px;
 	transition: background-color 100ms ease-in-out;
 	z-index: 10000;

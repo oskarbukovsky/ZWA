@@ -13,6 +13,14 @@ const myConfObj = {
 
 const resizingElementsPrefixes = ["n", "e", "s", "w", "nw", "ne", "sw", "se"];
 
+const sizePrefixes = {
+    "B": 1,
+    "kB": 1000,
+    "MB": 1000 * 1000,
+    "GB": 1000 * 1000 * 1000,
+    "TB": 1000 * 1000 * 1000 * 1000
+};
+
 // document.addEventListener("load", () => {
 //     const input = document.querySelector("input[type=file]");
 //     const uploadElement = document.querySelector(".uploading");

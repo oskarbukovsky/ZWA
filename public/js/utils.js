@@ -793,3 +793,27 @@ function isValidFileType(file) {
     const allowedTypes = ["image/jpeg", "image/png", "image/gif"]
     return allowedTypes.includes(file.type)
 }
+
+const is_key_down = (() => {
+    const state = {};
+    window.addEventListener('keyup', (event) => {
+        state[event.key] = false;
+        // cl(event.key + " " + state[event.key]);
+    });
+    window.addEventListener('keydown', (event) => {
+        state[event.key] = true;
+        // cl(event.key + " " + state[event.key]);
+    });
+    return (key) => state.hasOwnProperty(key) && state[key] || false;
+})();
+
+function sizeNumberToString(size) {
+    let prefix = 0;
+    let stage = Object.values(sizePrefixes)[1];
+    while (size / stage >= 1) {
+        size /= stage;
+        prefix++;
+    }
+    cl(size, prefix);
+    return "" + size + " " + Object.keys(sizePrefixes)[prefix];
+};

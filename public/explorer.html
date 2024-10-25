@@ -7,12 +7,14 @@
     <link rel="stylesheet" type="text/css" href="css/variables.css">
     <link rel="stylesheet" type="text/css" href="css/explorer.css">
     <link href="https://fonts.cdnfonts.com/css/segoe-ui-variable-static-display" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,200,0,0">
     <link rel="icon" href="media/favicon.png" type="image/gif" sizes="256x256">
     <title>Explorer</title>
     <script src="js/classes.js"></script>
     <script src="js/setup.js"></script>
     <script src="js/utils.js"></script>
-    <script src="js/explorer.js"></script>
+    <script defer src="js/explorer.js"></script>
 </head>
 
 <body class="no-select">
@@ -24,9 +26,18 @@
         </div>
         <div class="content">
             <div id="sorting">
-                <div class="name">Název</div>
+                <div class="name by-this descending">Název</div>
+                <div class="resize">
+                    <div class="drag"></div>
+                </div>
                 <div class="change">Datum změny</div>
+                <div class="resize">
+                    <div class="drag"></div>
+                </div>
                 <div class="type">Typ</div>
+                <div class="resize">
+                    <div class="drag"></div>
+                </div>
                 <div class="size">Velikost</div>
             </div>
             <div id="files">
@@ -102,10 +113,229 @@
                     <span class="type">Textový dokument</span>
                     <span class="size">8 kB</span>
                 </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">Nový textový dokument.txt</span>
+                    </div>
+                    <span class="change">1.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">1 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">Nový dokument.txt</span>
+                    </div>
+                    <span class="change">8.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">2 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">Textový dokument.txt</span>
+                    </div>
+                    <span class="change">4.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">3 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">1234567890.txt</span>
+                    </div>
+                    <span class="change">9.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">4 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">Abcdef.txt</span>
+                    </div>
+                    <span class="change">15.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">5 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">Nový textový.txt</span>
+                    </div>
+                    <span class="change">25.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">6 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">dokument.txt</span>
+                    </div>
+                    <span class="change">30.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">7 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">Nový dokument.txt</span>
+                    </div>
+                    <span class="change">20.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">8 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">Nový textový dokument.txt</span>
+                    </div>
+                    <span class="change">1.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">1 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">Nový dokument.txt</span>
+                    </div>
+                    <span class="change">8.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">2 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">Textový dokument.txt</span>
+                    </div>
+                    <span class="change">4.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">3 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">1234567890.txt</span>
+                    </div>
+                    <span class="change">9.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">4 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">Abcdef.txt</span>
+                    </div>
+                    <span class="change">15.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">5 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">Nový textový.txt</span>
+                    </div>
+                    <span class="change">25.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">6 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">dokument.txt</span>
+                    </div>
+                    <span class="change">30.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">7 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">Nový dokument.txt</span>
+                    </div>
+                    <span class="change">20.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">8 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">Nový textový dokument.txt</span>
+                    </div>
+                    <span class="change">1.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">1 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">Nový dokument.txt</span>
+                    </div>
+                    <span class="change">8.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">2 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">Textový dokument.txt</span>
+                    </div>
+                    <span class="change">4.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">3 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">1234567890.txt</span>
+                    </div>
+                    <span class="change">9.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">4 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">Abcdef.txt</span>
+                    </div>
+                    <span class="change">15.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">5 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">Nový textový.txt</span>
+                    </div>
+                    <span class="change">25.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">6 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">dokument.txt</span>
+                    </div>
+                    <span class="change">30.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">7 kB</span>
+                </div>
+                <div class="file">
+                    <div class="name">
+                        <img src="media/file-icons/text.webp" alt="file-icon" class="icon">
+                        <span class="name">Nový dokument.txt</span>
+                    </div>
+                    <span class="change">20.10.2024 15:56</span>
+                    <span class="type">Textový dokument</span>
+                    <span class="size">8 kB</span>
+                </div>
             </div>
         </div>
     </div>
-    <div class="footer"></div>
+    <div id="footer">
+        <span class="total">Počet položek:</span>
+        <span class="selected"></span>
+    </div>
 </body>
 
 </html>

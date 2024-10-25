@@ -1,0 +1,41 @@
+h1 {
+	color: lime;
+}
+
+footer a.link,
+footer a:hover,
+footer a:visited,
+footer a:active,
+footer a {
+	font-size: 20px;
+	color: red;
+}
+
+
+body > div {
+    border: 10px solid orchid;
+    border-radius: 20px;
+    margin: 20px;
+    padding: 30px;
+    box-shadow: 0 0 13px 12px #f4ff00, inset 0 0 13px 12px #0014ffc7;
+}
+
+header{
+    background-color: rgba(39, 218, 224, 0.2);
+}
+
+nav > ol > li {
+    background-color: orange;
+}
+
+article > p::first-line {
+    font-size: 2em;
+}
+
+article > p::first-letter {
+    font-size: 3em;
+}
+
+article > p:nth-letter(2n) {
+    color: green;
+}

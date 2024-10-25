@@ -84,6 +84,7 @@ body,
 
 .uploading {
 	display: none;
+	pointer-events: none;
 }
 
 .uploading.upload {

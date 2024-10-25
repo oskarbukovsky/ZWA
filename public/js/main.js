@@ -212,53 +212,6 @@ function addDesktopIcon(node) {
     desktopIconEditName(caption);
 }
 
-function desktopIconContextMenu(element, node) {
-    element.addEventListener('contextmenu', function (event) {
-        cl("Open ContextMenu from Desktop\n", element);
-        event.preventDefault();
-        const tooltip = element.querySelector(".icon-tooltip");
-        if (tooltip) {
-            tooltip.classList.remove("active");
-            setTimeout(() => tooltip.remove(), 250);
-        }
-        closeMainMenu();
-        closeSearchbarMenu()
-        closeDesktopCalendar();
-        deselectDesktopIcon();
-        deselectAllApps();
-        closeAllDesktopContextMenus();
-
-        const container = createElement("div", new ClassList("context-menu", "open", "no-select"));
-
-        const open = createElement("span", new TextContent("Otevřít"), new AppendTo(container));
-        open.addEventListener("click", () => appOpen(node));
-        const edit = createElement("span", new TextContent("Upravit"), new AppendTo(container));
-        const print = createElement("span", new TextContent("Tisknout"), new AppendTo(container));
-
-        const hr1 = createElement("hr", new AppendTo(container));
-
-        const copy = createElement("span", new TextContent("Kopírovat"), new AppendTo(container));
-        const download = createElement("span", new TextContent("Stáhnout"), new AppendTo(container));
-
-        const hr2 = createElement("hr", new AppendTo(container));
-
-        const remove = createElement("span", new TextContent("Odstranit"), new AppendTo(container));
-        const rename = createElement("span", new TextContent("Přejmenovat"), new AppendTo(container));
-
-        const hr3 = createElement("hr", new AppendTo(container));
-
-        const properties = createElement("span", new TextContent("Vlastnosti"), new AppendTo(container));
-
-        container.style.left = event.clientX + 1 + "px";
-        element.appendChild(container);
-        let bottom = desktop.getBoundingClientRect().height - event.clientY + 1;
-        if (container.getBoundingClientRect().height >= event.clientY) {
-            bottom = desktop.getBoundingClientRect().height - container.getBoundingClientRect().height - 1;
-        }
-        container.style.bottom = bottom + "px";
-    });
-}
-
 async function fetchAndLoadImage(imagePath) {
     try {
         let response = await fetch(imagePath);

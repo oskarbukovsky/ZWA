@@ -39,6 +39,7 @@ window.addEventListener('blur', () => {
         deselectDesktopIcon();
         deselectAllApps();
         closeAllDesktopContextMenus();
+        uploadElement.classList.remove("upload");
         let app = myConfObj.lastIframe;
         while (!app?.classList?.contains("windows-app")) {
             app = app.parentElement;
@@ -70,6 +71,7 @@ window.addEventListener("click", (event) => {
     if (!bubbleToClass(event, "context-menu")) {
         closeAllDesktopContextMenus();
     }
+    uploadElement.classList.remove("upload");
 })
 
 navbar.querySelector(".navbar-menu").addEventListener("click", (event) => {
@@ -129,11 +131,11 @@ function appResizeUp() {
     appResizing.status = [false];
 }
 
-window.document.body.addEventListener("dragover", (event) => {
+desktop.addEventListener("dragover", (event) => {
     event.preventDefault();
 });
 
-window.document.body.addEventListener("dragenter", (event) => {
+desktop.addEventListener("dragenter", (event) => {
     event.preventDefault();
     uploadElement.classList.add("upload");
 });
@@ -142,7 +144,7 @@ uploadElement.addEventListener('dragleave', (event) => {
     uploadElement.classList.remove("upload");
 });
 
-window.document.body.addEventListener("drop", (event) => {
+desktop.addEventListener("drop", (event) => {
     uploadElement.classList.remove("upload");
     event.preventDefault();
     const files = event.dataTransfer.files;
@@ -203,22 +205,63 @@ function deselectDesktopIcon() {
     // navbar.querySelector(".navbar-search").children[0].classList.remove("open");
 }
 
-const is_key_down = (() => {
-    const state = {};
-    window.addEventListener('keyup', (event) => {
-        state[event.key] = false;
-        // cl(e.key + " " + state[e.key]);
+function desktopIconContextMenu(element, node) {
+    element.addEventListener('contextmenu', function (event) {
+        cl("Open ContextMenu from Desktop\n", element);
+        
+        deselectDesktopIcon();
+        element.classList.add("icon-selected");
+
+        event.preventDefault();
+        const tooltip = element.querySelector(".icon-tooltip");
+        if (tooltip) {
+            tooltip.classList.remove("active");
+            setTimeout(() => tooltip.remove(), 250);
+        }
+        closeMainMenu();
+        closeSearchbarMenu()
+        closeDesktopCalendar();
+        deselectAllApps();
+        closeAllDesktopContextMenus();
+
+        const container = createElement("div", new ClassList("context-menu", "open", "no-select"));
+
+        const open = createElement("span", new TextContent("Otevřít"), new AppendTo(container));
+        open.addEventListener("click", () => appOpen(node));
+        const edit = createElement("span", new TextContent("Upravit"), new AppendTo(container));
+        const print = createElement("span", new TextContent("Tisknout"), new AppendTo(container));
+        print.addEventListener("click", () => {
+            const iframe = createElement("iframe", new ClassList("hidden"), new Src(getDestination(node)), new AppendTo(document.body), new ElementEvent("afterprint", () => self.close));
+            cl("Printing: ", iframe);
+            iframe.contentWindow.print();
+        });
+        const hr1 = createElement("hr", new AppendTo(container));
+
+        const copy = createElement("span", new TextContent("Kopírovat"), new AppendTo(container));
+        const download = createElement("span", new TextContent("Stáhnout"), new AppendTo(container));
+
+        const hr2 = createElement("hr", new AppendTo(container));
+
+        const remove = createElement("span", new TextContent("Odstranit"), new AppendTo(container));
+        const rename = createElement("span", new TextContent("Přejmenovat"), new AppendTo(container));
+
+        const hr3 = createElement("hr", new AppendTo(container));
+
+        const properties = createElement("span", new TextContent("Vlastnosti"), new AppendTo(container));
+
+        container.style.left = event.clientX + 1 + "px";
+        element.appendChild(container);
+        let bottom = desktop.getBoundingClientRect().height - event.clientY + 1;
+        if (container.getBoundingClientRect().height >= event.clientY) {
+            bottom = desktop.getBoundingClientRect().height - container.getBoundingClientRect().height - 1;
+        }
+        container.style.bottom = bottom + "px";
     });
-    window.addEventListener('keydown', (event) => {
-        state[event.key] = true;
-        // cl(e.key + " " + state[e.key]);
-    });
-    return (key) => state.hasOwnProperty(key) && state[key] || false;
-})();
+}
 
 function desktopIconSelect(element) {
     element.addEventListener("click", (event) => {
-        if (!is_key_down('Control')) {
+        if (!is_key_down("Control")) {
             deselectDesktopIcon();
         }
         element.classList.toggle("icon-selected");

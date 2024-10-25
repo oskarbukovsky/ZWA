@@ -9,3 +9,12 @@
 		content: "Příliš malé rozlišení monitoru";
 	}
 }
+
+@media print {
+	@page { 
+        size: landscape;
+    }
+    body { 
+        writing-mode: tb-rl;
+    }
+}
