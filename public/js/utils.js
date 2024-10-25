@@ -349,7 +349,7 @@ function getIcon(node) {
 function bubbleToClass(event, className) {
     event.preventDefault();
     let app = event.target;
-    while (!app?.classList?.contains(className)) {
+    while (app && app.classList && !app?.classList?.contains(className)) {
         app = app.parentElement;
         if (app === null) {
             return false;
@@ -376,8 +376,8 @@ function maximizeApp(maximizeButton, header) {
     });
 }
 
-function closeApp(closeButton) {
-    closeButton.addEventListener("click", (event) => {
+function closeApp(target, forced = false) {
+    function close(event) {
         let app = bubbleToClass(event, "windows-app");
         app.classList.add("closing");
         setTimeout(() => {
@@ -390,7 +390,12 @@ function closeApp(closeButton) {
                 navbarIcon.remove();
             }, 250);
         }
-    });
+    }
+    if (forced === true) {
+        close(target);
+        return;
+    }
+    target.onclick = close;
 }
 
 function dragApp(element) {

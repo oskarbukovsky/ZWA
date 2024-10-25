@@ -100,6 +100,6 @@ document.addEventListener("keydown", (event) => {
         }
         allFiles.forEach((element) => { element.classList.add("selected"); });
         countSelectedFiles();
-        cl("Ctrl + A");
+        // cl("Ctrl + A");
     }
 });

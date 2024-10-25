@@ -150,6 +150,10 @@
 	width: fit-content;
 }
 
+#navbar > .navbar-volume > .navbar-button-content {
+	width: fit-content;
+}
+
 .navbar-battery > .navbar-button-content {
 	display: flex;
 	flex-flow: row;
@@ -318,6 +322,7 @@
 	align-items: center;
 	color: #fff;
 	padding-right: 4px;
+	width: fit-content;
 }
 
 #datetime {

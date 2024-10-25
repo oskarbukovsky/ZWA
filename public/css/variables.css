@@ -16,6 +16,9 @@
 	--sorting-size-size: 10%;
 
 	--files-size-row: 1;
+
+	--brightness: 0%;
+	--blue-filter: 100%;
 }
 
 * {

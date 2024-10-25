@@ -154,6 +154,20 @@ desktop.addEventListener("drop", (event) => {
     }
 });
 
+document.addEventListener("keydown", (event) => {
+    if (event.ctrlKey && (event.key == "a" || event.key == "A")) {
+        deselectDesktopIcon();
+        closeMainMenu();
+        closeSearchbarMenu()
+        closeDesktopCalendar();
+        deselectAllApps();
+        closeAllDesktopContextMenus();
+        desktop.querySelectorAll(".icon").forEach((element) => {
+            element.classList.add("icon-selected");
+        });
+    }
+});
+
 function desktopIconOpener(element) {
     element.addEventListener("dblclick", (event) => {
         closeAllDesktopContextMenus();

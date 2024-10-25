@@ -95,8 +95,28 @@ body,
 	color: #fff;
 	width: 100vw;
 	height: 100vh;
-	background: rgba(0, 0, 255, 0.20);
+	background: rgba(0, 0, 255, 0.2);
 	text-align: center;
 	align-content: center;
 	z-index: 99999;
+}
+
+.blue-light-filter,
+.brightness {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	pointer-events: none;
+	mix-blend-mode: multiply;
+	z-index: 11000;
+}
+
+.brightness {
+	background-color: hwb(0 0% 100% / calc(1 * var(--brightness)));
+}
+
+.blue-light-filter {
+	background: rgba(255, 255, 160, calc(1 * var(--blue-filter)));
 }
