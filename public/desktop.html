@@ -2,25 +2,17 @@
 <html lang="cs">
 
 <head>
-    <title>Desktop</title>
-
+    <title>Plocha</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/desktop/desktop.css">
+
+    <link rel="icon" href="media/favicon.png" type="image/png" sizes="256x256">
     <meta name="author" content="Jan Oskar Bukovský">
     <meta name="description" content="ZWA project">
     <meta name="Content-Type" content="text/html">
-
-    <link rel="stylesheet" type="text/css" href="css/variables.css">
-    <link rel="stylesheet" type="text/css" href="css/main.css">
-    <link rel="stylesheet" type="text/css" href="css/desktop.css">
-    <link rel="stylesheet" type="text/css" href="css/navbar.css">
-    <link rel="stylesheet" type="text/css" href="css/windows.css">
-    <link rel="stylesheet" type="text/css" href="css/media.css">
-    <link href="https://fonts.cdnfonts.com/css/segoe-ui-variable-static-display" rel="stylesheet">
-    <link rel="icon" href="media/favicon.png" type="image/png" sizes="256x256">
-
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,200,0,0">
 
     <script src="js/classes.js"></script>
     <script src="js/utils.js"></script>
@@ -30,8 +22,11 @@
     <script defer src="js/main.js"></script>
 
     <noscript>
-        <link rel="stylesheet" type="text/css" href="css/noscript.css">
+        <link rel="stylesheet" type="text/css" href="css/desktop/noscript.css">
     </noscript>
+
+    <link rel="prefetch" href="explorer.html">
+    <link rel="prefetch" href="administration.html">
 </head>
 
 <body>
@@ -42,18 +37,43 @@
     <div id="navbar" class="no-select">
         <div class="navbar-menu">
             <div class="navbar-button-content"></div>
-            <div class="main-menu"></div>
+            <div class="main-menu navbar-popup"></div>
         </div>
         <div class="navbar-search">
             <div class="navbar-button-content searchbar"></div>
-            <div class="search-menu"></div>
+            <div class="search-menu navbar-popup"></div>
         </div>
         <div class="navbar-spacer"></div>
-        <div class="navbar-volume navbar-battery">
+        <div class="navbar-screen navbar-volume navbar-battery">
             <div class="navbar-button-content">
-                <div class="volume">
+                <div class="navbar-screen">
+                    <span class="material-symbols-rounded">
+                        light_mode
+                    </span>
+                </div>
+                <!-- <div class="volume">
                     <span class="material-symbols-rounded">
                         volume_up
+                    </span>
+                </div> -->
+            </div>
+            <div class="screen-menu navbar-popup">
+                <div class="slider-brightness">
+                    <span class="material-symbols-rounded">
+                        sunny
+                    </span>
+                    <input type="range" min="0" max="100" step="1" value="100">
+                    <span class="material-symbols-rounded">
+                        brightness_6
+                    </span>
+                </div>
+                <div class="slider-blue-light-filter">
+                    <span class="material-symbols-rounded">
+                        routine
+                    </span>
+                    <input type="range" min="0" max="100" step="1" value="0">
+                    <span class="material-symbols-rounded fill">
+                        bedtime
                     </span>
                 </div>
             </div>
@@ -92,8 +112,8 @@
                 </div>
             </div>
             <div class="time-tooltip">
-                <span></span>
-                <span></span>
+                <span>time</span>
+                <span>date</span>
             </div>
         </div>
         <div class="navbar-minimize"></div>

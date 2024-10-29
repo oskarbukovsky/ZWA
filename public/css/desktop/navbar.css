@@ -29,7 +29,7 @@
 
 #navbar > .navbar-menu > .navbar-button-content {
 	margin-left: 11px;
-	background-image: url("../media/ui/main-menu.webp");
+	background-image: url(../../media/ui/main-menu.webp);
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: 97%;
@@ -60,7 +60,7 @@
 #navbar > .navbar-search {
 	min-width: 45px;
 	background: rgba(0, 255, 0, var(--navbar-dev));
-	background-image: url("../media/ui/search.webp");
+	background-image: url(../../media/ui/search.webp);
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
 	background-size: 115%;
@@ -74,62 +74,126 @@
 
 /* #navbar > .navbar-search:hover {
 	background-image: url("../media/ui/search-hover.webp");
-} */
+	} */
+
+.navbar-popup {
+	position: absolute;
+	border-radius: 6px;
+	background-color: rgba(16, 55, 122, 0.8);
+	backdrop-filter: blur(8px);
+	border: 1px solid rgb(55, 55, 55);
+	box-shadow: 1px 1px 4px -1px rgb(0 12 26 / 50%);
+	border-radius: 6px;
+	transition: bottom 150ms linear, min-height 110ms linear 15ms,
+		height 110ms linear 15ms, opacity 100ms linear 15ms;
+	opacity: 0;
+	z-index: 11000;
+}
+
+.navbar-popup.open {
+	opacity: 1;
+	transition: bottom 150ms linear, min-height 200ms ease-in-out 15ms,
+		height 200ms ease-in-out 15ms, opacity 100ms linear 15ms;
+}
 
 .navbar-search > .search-menu {
-	position: absolute;
 	bottom: calc(var(--navbar-height) - 1px);
 	left: 11px;
 	min-width: 775px;
 	min-height: 0px;
 	height: 0px;
-	border-radius: 6px;
-	background-color: rgba(16, 55, 122, 0.8);
-	backdrop-filter: blur(8px);
-	border: 1px solid rgb(55, 55, 55);
-	box-shadow: 1px 1px 4px -1px rgb(0 12 26 / 50%);
-	border-radius: 6px;
-	transition: bottom 150ms linear, min-height 110ms linear 15ms,
-		height 110ms linear 15ms, opacity 100ms linear 15ms;
-	opacity: 0;
-	z-index: 11000;
 }
 
 .navbar-search > .search-menu.open {
 	bottom: calc(var(--navbar-height) + 11px);
-	opacity: 1;
 	min-height: 600px;
 	height: 67vh;
-	transition: bottom 150ms linear, min-height 200ms ease-in-out 15ms,
-		height 200ms ease-in-out 15ms, opacity 100ms linear 15ms;
 }
 
 .navbar-menu > .main-menu {
-	position: absolute;
 	bottom: calc(var(--navbar-height) - 1px);
 	left: 11px;
 	min-width: 640px;
 	min-height: 0px;
 	height: 0px;
-	border-radius: 6px;
-	background-color: rgba(16, 55, 122, 0.8);
-	backdrop-filter: blur(8px);
-	border: 1px solid rgb(55, 55, 55);
-	box-shadow: 1px 1px 4px -1px rgb(0 12 26 / 50%);
-	border-radius: 6px;
-	transition: bottom 150ms linear, min-height 110ms linear 15ms,
-		height 110ms linear 15ms, opacity 100ms linear 15ms;
-	opacity: 0;
-	z-index: 11000;
 }
 
 .navbar-menu > .main-menu.open {
 	bottom: calc(var(--navbar-height) + 11px);
-	opacity: 1;
 	min-height: 600px;
 	height: 67vh;
-	transition: bottom 150ms linear, min-height 200ms ease-in-out 15ms,
-		height 200ms ease-in-out 15ms, opacity 100ms linear 15ms;
+}
+
+#navbar > .navbar-screen {
+	position: relative;
+	top: 0;
+	left: 0;
+}
+
+.navbar-screen .screen-menu {
+	bottom: calc(var(--navbar-height) - 1px);
+	right: -103px;
+	min-width: 360px;
+	min-height: 0px;
+	height: 0px;
+	display: flex;
+	flex-flow: column;
+	pointer-events: none;
+	padding: 8px;
+}
+
+.navbar-screen .screen-menu.open {
+	bottom: calc(var(--navbar-height) + 11px);
+	min-height: 96px;
+	pointer-events: all;
+}
+
+.screen-menu > .slider-brightness,
+.screen-menu > .slider-blue-light-filter {
+	display: flex;
+	flex-flow: row;
+	align-items: center;
+	padding: 12px;
+	gap: 12px;
+}
+
+.screen-menu input[type="range"] {
+	width: 100%;
+	-webkit-appearance: none;
+	appearance: none;
+	height: 4px;
+	border-radius: 6px;
+	background: rgb(148, 166, 191);
+	outline: none;
+	padding: 0;
+	margin: 0;
+}
+
+.screen-menu input[type="range"]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	background: rgb(64, 189, 255);
+	border: 5px solid rgba(69, 69, 69, 1);
+	cursor: pointer;
+	transition: border-width 90ms ease-in-out, background 50ms linear;
+}
+
+.screen-menu input[type="range"]:hover::-webkit-slider-thumb {
+	border-width: 4px;
+	background: rgb(64, 177, 236);
+}
+
+#navbar .screen-menu input[type="range"]::-webkit-slider-thumb:hover {
+	border-width: 3px;
+	background: rgb(69, 196, 255);
+}
+
+#navbar .screen-menu input[type="range"]::-webkit-slider-thumb:active {
+	border-width: 4px;
+	background: rgb(69, 196, 255);
 }
 
 #navbar > .navbar-spacer {
@@ -180,7 +244,7 @@
 	bottom: var(--navbar-height);
 	width: fit-content;
 	height: fit-content;
-	background-color: rgba(41,46,47,0.9);
+	background-color: rgba(41, 46, 47, 0.9);
 	border-radius: 8px;
 	padding: 8px 10px;
 	font-size: 0.8rem;
@@ -193,7 +257,7 @@
 
 .battery:has(span:hover) > .battery-tooltip {
 	transition: opacity 175ms ease-in-out 500ms;
-    opacity: 1;
+	opacity: 1;
 }
 
 .navbar-volume .volume > span {
@@ -214,7 +278,7 @@
 	bottom: calc(7px + var(--navbar-height));
 	width: fit-content;
 	height: fit-content;
-	background-color: rgba(41,46,47,0.9);
+	background-color: rgba(41, 46, 47, 0.9);
 	border-radius: 8px;
 	padding: 8px 10px;
 	font-size: 0.65rem;
@@ -228,9 +292,10 @@
 	flex-flow: column;
 	gap: 10px;
 }
-.navbar-time:has(.datetime:hover):not(:has(.calendar-container.open)) > .time-tooltip {
+.navbar-time:has(.datetime:hover):not(:has(.calendar-container.open))
+	> .time-tooltip {
 	transition: opacity 175ms ease-in-out 500ms;
-    opacity: 1;
+	opacity: 1;
 }
 
 #navbar > .navbar-minimize {
@@ -305,6 +370,7 @@
 #navbar > div.navbar-menu:hover .navbar-button-content,
 #navbar > div.navbar-menu:has(.main-menu.open) .navbar-button-content,
 #navbar > div.navbar-search:has(.search-menu.open) .navbar-button-content,
+#navbar > div.navbar-screen:has(.screen-menu.open) .navbar-button-content,
 #navbar > div.navbar-time:has(.calendar-container.open) .navbar-button-content {
 	background-color: hsl(0deg 0% 50% / 15%);
 }

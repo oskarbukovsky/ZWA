@@ -551,6 +551,10 @@ function closeMainMenu() {
     navbar.querySelector(".main-menu").classList.remove("open");
 }
 
+function closeScreenMenu() {
+    navbar.querySelector(".screen-menu").classList.remove("open");
+}
+
 function desktopIconTooltip(element, node) {
     let tooltipTimer, tooltipX, tooltipY;
     element.addEventListener("mouseenter", desktopIconTooltipLogic);
@@ -819,6 +823,128 @@ function sizeNumberToString(size) {
         size /= stage;
         prefix++;
     }
-    cl(size, prefix);
+    // cl(size, prefix);
     return "" + size + " " + Object.keys(sizePrefixes)[prefix];
 };
+
+
+// class Slider {
+//     constructor (rangeElement, options) {
+//       this.rangeElement = rangeElement
+//       // this.valueElement = valueElement
+//       this.options = options
+
+//       // Attach a listener to "change" event
+//       this.rangeElement.addEventListener('change', this.updateSlider.bind(this))
+//     }
+
+//     // Initialize the slider
+//     init() {
+//       this.rangeElement.setAttribute('min', options.min)
+//       this.rangeElement.setAttribute('max', options.max)
+//       this.rangeElement.value = options.cur
+
+//       this.updateSlider()
+//     }
+
+//     // Format the money
+//     asMoney(value) {
+//       return '$' + parseFloat(value)
+//         .toLocaleString('en-US', { maximumFractionDigits: 2 })
+//     }
+
+//     generateBackground(rangeElement) {   
+//       if (this.rangeElement.value === this.options.min) {
+//         return
+//       }
+
+//       let percentage =  (this.rangeElement.value - this.options.min) / (this.options.max - this.options.min) * 100
+//       return 'background: linear-gradient(to right, #50299c, #7a00ff ' + percentage + '%, #d3edff ' + percentage + '%, #dee1e2 100%)'
+//     }
+
+//     updateSlider (newValue) {
+//         cl("update")
+//       // this.valueElement.innerHTML = this.asMoney(this.rangeElement.value)
+//       this.rangeElement.style = this.generateBackground(this.rangeElement.value)
+//     }
+//   }
+
+//   document.addEventListener("load", () => {
+//   let rangeElement = navbar.querySelector(".screen-menu > .slider-brightness > input")
+//   let valueElement = document.querySelector('.range .range__value span') 
+
+//   let options = {
+//     min: 2000,
+//     max: 75000,
+//     cur: 37500
+//   }
+
+//   if (rangeElement) {
+//     let slider = new Slider(rangeElement, options)
+
+//     slider.init()
+//   }
+
+// });
+
+
+
+
+
+// class Slider {
+//     constructor(rangeElement, options) {
+//         this.rangeElement = rangeElement
+//         // this.valueElement = valueElement
+//         this.options = options
+
+//         // Attach a listener to "change" event
+//         this.rangeElement.addEventListener('input', this.updateSlider.bind(this))
+//     }
+
+//     init() {
+//         this.updateSlider()
+//     }
+
+//     generateBackground(rangeElement) {
+//         if (rangeElement.value === this.options.min) {
+//             return;
+//         }
+
+//         let percentage = (rangeElement.value - Number(rangeElement.min)) / (Number(rangeElement.max) - Number(rangeElement.min)) * 100;
+//         return 'background: linear-gradient(to right, #50299c, #7a00ff ' + percentage + '%, #d3edff ' + percentage + '%, #dee1e2 100%)';
+//     }
+
+//     updateSlider(newValue) {
+//         // this.valueElement.innerHTML = this.asMoney(this.rangeElement.value)
+//         this.rangeElement.style = this.generateBackground(this.rangeElement.value)
+//     }
+// }
+
+// function updateSlider(rangeElement) {
+//     if (rangeElement.value === this.options.min) {
+//         return;
+//     }
+//     let percentage = (rangeElement.value - Number(rangeElement.min)) / (Number(rangeElement.max) - Number(rangeElement.min)) * 100;
+//     rangeElement.style = 'background: linear-gradient(to right, #50299c, #7a00ff ' + percentage + '%, #d3edff ' + percentage + '%, #dee1e2 100%)';
+// }
+
+// document.addEventListener("load", () => {
+
+//     let rangeElement = navbar.querySelector(".screen-menu > .slider-brightness > input")
+
+//     rangeElement.addEventListener("change", (event) => {
+//         cl(event)
+//         if (rangeElement.value === this.options.min) {
+//             return;
+//         }
+//         let percentage = (rangeElement.value - Number(rangeElement.min)) / (Number(rangeElement.max) - Number(rangeElement.min)) * 100;
+//         rangeElement.style = 'background: linear-gradient(to right, #50299c, #7a00ff ' + percentage + '%, #d3edff ' + percentage + '%, #dee1e2 100%)';
+//     })
+
+// });
+
+function updateSlider(rangeElement) {
+    const percentage = (rangeElement.value - Number(rangeElement.min)) / (Number(rangeElement.max) - Number(rangeElement.min)) * 100;
+    rangeElement.style = 'background: linear-gradient(to right, rgb(64, 189, 255), rgb(64, 189, 255) ' + percentage + '%, rgb(148, 166, 191) ' + percentage + '%, rgb(148, 166, 191) 100%)';
+    return percentage;
+}

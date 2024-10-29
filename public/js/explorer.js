@@ -4,12 +4,13 @@ const folder = urlParams.get("folder");
 let parent;
 
 window.onmessage = function (event) {
-    parent = event.source
-    console.log(event.source);
-    console.log("receivedFromParent: ", event);
+    // console.log(event);
+    if (event.origin != location.origin) {
+        cl("📕 Origins do not match!!!")
+        return;
+    }
+    console.log("receivedFromParent: ", event.data);
 };
-
-window.top.postMessage("Tu máš taťko", "*")
 
 document.querySelector("#sorting > .name").addEventListener("click", (event) => {
     sort(event.target);
@@ -41,7 +42,7 @@ function sort(sortBy) {
         sortBy.classList.remove("ascending");
         sortBy.classList.add("descending");
     }
-    cl("Sorting by: " + sortBy.classList[0] + " - " + sortBy.classList[2]);
+    // cl("Sorting by: " + sortBy.classList[0] + " - " + sortBy.classList[2]);
     switch (sortBy.classList[0]) {
         case "name":
             // sort by name
@@ -67,6 +68,7 @@ function deselectAll() {
 }
 
 function countSelectedFiles() {
+    cl("counting");
     const selected = document.querySelectorAll("#files > .selected");
     if (selected.length > 0) {
         let totalSelectedSize = 0;
@@ -75,8 +77,10 @@ function countSelectedFiles() {
         selectedSizes.forEach((element) => {
             totalSelectedSize += element[0] * sizePrefixes[element[1]];
         });
-        cl("Selected size: ", selectedSizes, "Total: ", totalSelectedSize);
+        // cl("Selected size: ", selectedSizes, "Total: ", totalSelectedSize);
         document.querySelector("#footer > .selected").textContent = "Počet vybraných položek: " + selected.length + "; " + sizeNumberToString(totalSelectedSize);
+    } else {
+        document.querySelector("#footer > .selected").textContent = "";
     }
 }
 
@@ -102,4 +106,14 @@ document.addEventListener("keydown", (event) => {
         countSelectedFiles();
         // cl("Ctrl + A");
     }
+});
+
+files.querySelectorAll(".file").forEach((element) => {
+    element.addEventListener("dblclick", (event) => {
+        window.top.postMessage(["appOpen", "66285580-f084-43fd-b3aa-308399055455"]);
+    });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    countSelectedFiles();
 });

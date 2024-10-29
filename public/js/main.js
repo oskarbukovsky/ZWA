@@ -167,15 +167,14 @@ function appOpen(node) {
     appendBefore(navbarHolder, document.querySelector("#navbar > div.navbar-spacer"));
 
     const appIframeLoaded = () => {
-        cl("loaded");
+        // cl("loaded");
         navbarHolder.classList.add("running");
         navbarHolder.classList.add("active");
+        // iframe.contentWindow.postMessage("toIframe", location.origin);
     };
     const iframe = createElement("iframe", new Src(getDestination(node)),
         new ElementEvent("load", appIframeLoaded), new ElementEvent("mouseover", ElementEvents.appIframeMouseOver), new ElementEvent("mouseout", ElementEvents.appIframeMouseOut),
         new AppendTo(content));
-
-    iframe.contentWindow.postMessage('hello', '*');
 
     // let detector = document.createElement("div");
     // detector.classList.add("detect");

@@ -1,5 +1,5 @@
 :root {
-	--image-of-the-day: url("../media/login/black.webp");
+	--image-of-the-day: url(../../media/login/black.webp);
 }
 
 /* background-image: url("../media/last.webp"); */

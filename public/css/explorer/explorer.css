@@ -28,6 +28,7 @@ body > .header {
 	min-height: 46px;
 	/* background-color: red; */
 	border-bottom: 2px solid rgba(48, 48, 48, 0.7);
+	display: none;
 }
 
 body > #footer {

@@ -1,3 +1,38 @@
+@import url(./desktop.css);
+@import url(./navbar.css);
+@import url(./media.css);
+@import url(./windows.css);
+
+body,
+:not(:root):fullscreen::backdrop {
+	width: 100vw;
+	height: 100vh;
+	background: linear-gradient(rgb(35, 15, 214), transparent),
+		linear-gradient(to top left, rgb(123, 1, 128), transparent),
+		linear-gradient(to top right, rgb(28, 177, 65), transparent),
+		linear-gradient(
+			320deg,
+			hsl(240deg 100% 20%) 0%,
+			hsl(234deg 97% 26%) 26%,
+			hsl(229deg 95% 32%) 43%,
+			hsl(226deg 96% 38%) 58%,
+			hsl(223deg 97% 44%) 76%,
+			hsl(221deg 100% 50%) 100%
+		);
+	background-blend-mode: screen;
+	background-image: url(../../media/ui/wallpapers/win-11.jpg);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	overflow: hidden;
+	font-family: "Segoe UI Variable Static Text", sans-serif;
+}
+
+* {
+	background: transparent;
+	background-color: transparent;
+}
+
 #desktop {
 	display: flex;
 	flex-wrap: wrap;
@@ -19,6 +54,7 @@
 	align-items: center;
 	flex-flow: column;
 	border-radius: 3px;
+	z-index: 1;
 }
 
 .icon .icon-tooltip {
@@ -98,7 +134,7 @@
 }
 
 #desktop > .icon img:before {
-	background-image: url("../media/file-icons/unknown.webp");
+	background-image: url(../../media/file-icons/unknown.webp);
 	position: relative;
 	width: 48px;
 	height: 48px;
@@ -143,10 +179,6 @@ textarea {
 	height: 2lh;
 }
 
-/* textarea:focus:not(:read-only) {
-	margin-top: 0;
-} */
-
 textarea:read-only::selection {
 	background: transparent;
 }
@@ -169,9 +201,4 @@ textarea:not(:read-only),
 #desktop > figure.icon-selected:focus-within textarea {
 	display: block;
 	height: fit-content;
-	/* display: -webkit-box;
-	-webkit-box-orient: vertical;
-	-webkit-line-clamp: 2;
-	line-clamp: 2;
-	height: 2lh; */
 }

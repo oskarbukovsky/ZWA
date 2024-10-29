@@ -1,30 +1,13 @@
-body,
-:not(:root):fullscreen::backdrop {
-	width: 100vw;
-	height: 100vh;
-	/* font-size: 14px; */
-	background: linear-gradient(rgb(35, 15, 214), transparent),
-		linear-gradient(to top left, rgb(123, 1, 128), transparent),
-		linear-gradient(to top right, rgb(28, 177, 65), transparent),
-		linear-gradient(
-			320deg,
-			hsl(240deg 100% 20%) 0%,
-			hsl(234deg 97% 26%) 26%,
-			hsl(229deg 95% 32%) 43%,
-			hsl(226deg 96% 38%) 58%,
-			hsl(223deg 97% 44%) 76%,
-			hsl(221deg 100% 50%) 100%
-		);
-	background-blend-mode: screen;
-	background-image: url("../media/ui/wallpapers/win-11.jpg");
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: cover;
-	overflow: hidden;
-	font-family: "Segoe UI Variable Static Text", sans-serif;
-}
+@import url(./variables.css);
+@import url(./fonts.css);
+
 :root {
 	font-size: 18px;
+}
+
+* {
+	margin: 0;
+	padding: 0;
 }
 
 .working-area {
@@ -36,6 +19,7 @@ body,
 }
 
 .no-select {
+	-webkit-user-select: none;
 	user-select: none;
 }
 

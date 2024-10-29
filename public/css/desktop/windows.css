@@ -182,24 +182,24 @@
 }
 
 .app-controls > .minimize {
-	content: url("../media/ui/app-minimize.svg");
+	content: url(../../media/ui/app-minimize.svg);
 	width: auto;
 	height: var(--app-controls-size);
 }
 .app-controls > .maximize {
-	content: url("../media/ui/app-maximize.svg");
+	content: url(../../media/ui/app-maximize.svg);
 	width: auto;
 	height: var(--app-controls-size);
 }
 
 .maximized .app-controls > .maximize {
-	content: url("../media/ui/app-restore.svg");
+	content: url(../../media/ui/app-restore.svg);
 	width: auto;
 	height: var(--app-controls-size);
 }
 
 .app-controls > .close {
-	content: url("../media/ui/app-close.svg");
+	content: url(../../media/ui/app-close.svg);
 	width: auto;
 	height: var(--app-controls-size);
 }

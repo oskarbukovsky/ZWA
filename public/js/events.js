@@ -36,6 +36,7 @@ window.addEventListener('blur', () => {
         closeMainMenu();
         closeSearchbarMenu()
         closeDesktopCalendar();
+        closeScreenMenu();
         deselectDesktopIcon();
         deselectAllApps();
         closeAllDesktopContextMenus();
@@ -63,6 +64,9 @@ window.addEventListener("click", (event) => {
     if (!(bubbleToClass(event, "calendar-container") || bubbleToClass(event, "datetime"))) {
         closeDesktopCalendar();
     }
+    if (!(bubbleToClass(event, "navbar-screen") || bubbleToClass(event, "screen-menu"))) {
+        closeScreenMenu();
+    }
     // bubbleToClass(event, "windows-app")?.classList?.remove("active");
     deselectDesktopIcon();
     if (!bubbleToClass(event, "windows-app") && !bubbleToClass(event, "navbar-icon")) {
@@ -82,6 +86,10 @@ navbar.querySelector(".navbar-menu").addEventListener("click", (event) => {
 
 navbar.querySelector(".navbar-search .navbar-button-content").addEventListener("click", () => {
     navbar.querySelector(".navbar-search > .search-menu").classList.toggle("open");
+});
+
+navbar.querySelector(".navbar-screen .navbar-button-content").addEventListener("click", () => {
+    navbar.querySelector(".navbar-screen .screen-menu").classList.toggle("open");
 });
 
 navbar.querySelector(".navbar-time .navbar-button-content").addEventListener("click", () => {
@@ -116,8 +124,21 @@ const appIframeLoaded = () => {
     navbarHolder.classList.add("active");
 };
 
-window.onmessage = function (event) {
-    cl("receivedFromIframe: ", event);
+window.onmessage = async function (event) {
+    // console.log(event);
+    if (event.origin != location.origin) {
+        cl("📕 Origins do not match!!!")
+        return;
+    }
+    console.log("receivedFromIframe: ", event.data);
+    switch (event.data[0]) {
+        case "appOpen":
+            const node = await localDatabase.getColumn("vNodes", "id", event.data[1]);
+            appOpen(node[0]);
+            break;
+        default:
+            cl("📕 Neznámá zpráva z okna!")
+    }
 };
 
 addEventListener("resize", () => {
@@ -160,6 +181,7 @@ document.addEventListener("keydown", (event) => {
         closeMainMenu();
         closeSearchbarMenu()
         closeDesktopCalendar();
+        closeScreenMenu();
         deselectAllApps();
         closeAllDesktopContextMenus();
         desktop.querySelectorAll(".icon").forEach((element) => {
@@ -222,7 +244,7 @@ function deselectDesktopIcon() {
 function desktopIconContextMenu(element, node) {
     element.addEventListener('contextmenu', function (event) {
         cl("Open ContextMenu from Desktop\n", element);
-        
+
         deselectDesktopIcon();
         element.classList.add("icon-selected");
 
@@ -235,6 +257,7 @@ function desktopIconContextMenu(element, node) {
         closeMainMenu();
         closeSearchbarMenu()
         closeDesktopCalendar();
+        closeScreenMenu();
         deselectAllApps();
         closeAllDesktopContextMenus();
 
@@ -279,8 +302,29 @@ function desktopIconSelect(element) {
             deselectDesktopIcon();
         }
         element.classList.toggle("icon-selected");
+        closeMainMenu();
+        closeSearchbarMenu()
         closeDesktopCalendar();
+        closeScreenMenu();
         closeAllDesktopContextMenus();
         event.stopPropagation();
     })
 }
+
+window.addEventListener("DOMContentLoaded", () => {
+    let brightness = navbar.querySelector(".screen-menu > .slider-brightness > input")
+    function brightnessChange() {
+        const percentage = updateSlider(brightness);
+        cssVar("--brightness", (95 - percentage) + "%");
+    } 
+    brightness.oninput = brightnessChange;
+    brightnessChange(brightness);
+
+    let blueLightFilter = navbar.querySelector(".screen-menu > .slider-blue-light-filter > input")
+    function blueLightFilterChange() {
+        const percentage = updateSlider(blueLightFilter);
+        cssVar("--blue-filter", percentage + "%");
+    } 
+    blueLightFilter.oninput = blueLightFilterChange;
+    blueLightFilterChange(blueLightFilter);
+});
