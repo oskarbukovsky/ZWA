@@ -175,21 +175,6 @@ desktop.addEventListener("drop", (event) => {
     }
 });
 
-document.addEventListener("keydown", (event) => {
-    if (event.ctrlKey && (event.key == "a" || event.key == "A")) {
-        deselectDesktopIcon();
-        closeMainMenu();
-        closeSearchbarMenu()
-        closeDesktopCalendar();
-        closeScreenMenu();
-        deselectAllApps();
-        closeAllDesktopContextMenus();
-        desktop.querySelectorAll(".icon").forEach((element) => {
-            element.classList.add("icon-selected");
-        });
-    }
-});
-
 function desktopIconOpener(element) {
     element.addEventListener("dblclick", (event) => {
         closeAllDesktopContextMenus();
@@ -296,6 +281,52 @@ function desktopIconContextMenu(element, node) {
     });
 }
 
+document.addEventListener("keydown", async (event) => {
+    if (event.ctrlKey && (event.key == "a" || event.key == "A")) {
+        deselectDesktopIcon();
+        closeMainMenu();
+        closeSearchbarMenu()
+        closeDesktopCalendar();
+        closeScreenMenu();
+        deselectAllApps();
+        closeAllDesktopContextMenus();
+        desktop.querySelectorAll(".icon").forEach((element) => {
+            element.classList.add("icon-selected");
+        });
+        return;
+    }
+    switch (event.key) {
+        case "Escape":
+            closeAllDesktopContextMenus();
+            deselectDesktopIcon();
+            break;
+        case "Enter":
+            desktop.querySelectorAll(".icon-selected > figcaption").forEach(async (element) => {
+                const node = await localDatabase.getColumn("vNodes", "id", element.dataset.id);
+                appOpen(node[0]);
+            });
+            break;
+        case "ArrowUp":
+        case "ArrowLeft":
+            const up = document.querySelector(".icon:has(+ .icon-selected)");
+            if (up) {
+                deselectDesktopIcon();
+                up.classList.add("icon-selected");
+            }
+            break;
+        case "ArrowDown":
+        case "ArrowRight":
+            const down = desktop.querySelector(".icon-selected + *")
+            if (down) {
+                deselectDesktopIcon();
+                down.classList.add("icon-selected");
+            }
+            break;
+        default:
+            return;
+    }
+});
+
 function desktopIconSelect(element) {
     element.addEventListener("click", (event) => {
         if (!is_key_down("Control")) {
@@ -316,7 +347,7 @@ window.addEventListener("DOMContentLoaded", () => {
     function brightnessChange() {
         const percentage = updateSlider(brightness);
         cssVar("--brightness", (95 - percentage) + "%");
-    } 
+    }
     brightness.oninput = brightnessChange;
     brightnessChange(brightness);
 
@@ -324,7 +355,7 @@ window.addEventListener("DOMContentLoaded", () => {
     function blueLightFilterChange() {
         const percentage = updateSlider(blueLightFilter);
         cssVar("--blue-filter", percentage + "%");
-    } 
+    }
     blueLightFilter.oninput = blueLightFilterChange;
     blueLightFilterChange(blueLightFilter);
 });

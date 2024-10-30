@@ -88,6 +88,7 @@
 		height 110ms linear 15ms, opacity 100ms linear 15ms;
 	opacity: 0;
 	z-index: 11000;
+	overflow: hidden;
 }
 
 .navbar-popup.open {

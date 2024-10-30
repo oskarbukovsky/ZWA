@@ -68,7 +68,6 @@ function deselectAll() {
 }
 
 function countSelectedFiles() {
-    cl("counting");
     const selected = document.querySelectorAll("#files > .selected");
     if (selected.length > 0) {
         let totalSelectedSize = 0;
@@ -105,6 +104,58 @@ document.addEventListener("keydown", (event) => {
         allFiles.forEach((element) => { element.classList.add("selected"); });
         countSelectedFiles();
         // cl("Ctrl + A");
+    } else if (event.key == "Escape") {
+        deselectAll();
+        countSelectedFiles();
+    }
+});
+
+
+document.addEventListener("keydown", async (event) => {
+    event.preventDefault();
+    if (event.ctrlKey && (event.key == "a" || event.key == "A")) {
+        const allFiles = document.querySelectorAll("#files > *")
+        if (allFiles) {
+            allFiles[0].classList.remove("last-selected");
+        }
+        allFiles.forEach((element) => { element.classList.add("selected"); });
+        countSelectedFiles();
+        return;
+    }
+    switch (event.key) {
+        case "Escape":
+            deselectAll();
+            countSelectedFiles();
+            break;
+        case "Enter":
+            files.querySelectorAll(".selected").forEach((element) => {
+                // const node = await localDatabase.getColumn("vNodes", "id", element.dataset.id);
+                // appOpen(node[0]);
+                window.top.postMessage(["appOpen", "66285580-f084-43fd-b3aa-308399055455"]);
+            });
+            break;
+        case "ArrowUp":
+        case "ArrowLeft":
+            const up = files.querySelector(".file:has(+ .selected)");
+            if (up) {
+                deselectAll();
+                up.classList.add("selected");
+                up.scrollIntoViewIfNeeded(false);
+                countSelectedFiles();
+            }
+            break;
+        case "ArrowDown":
+        case "ArrowRight":
+            const down = files.querySelector(".selected + *")
+            if (down) {
+                deselectAll();
+                down.classList.add("selected");
+                down.scrollIntoViewIfNeeded(false);
+                countSelectedFiles();
+            }
+            break;
+        default:
+            return;
     }
 });
 

@@ -104,7 +104,7 @@ body > .container {
 	width: calc(var(--content-width) - 6px);
 	background-color: rgba(25, 25, 25, 1);
 	font-size: 0.7rem;
-	margin-left: -12px;
+	margin-left: -11px;
 	color: hsl(0, 0%, 90%);
 }
 
@@ -200,6 +200,7 @@ body > .container {
 	min-height: calc(var(--files-size-row) * 32px);
 	border-radius: 2px;
 	border: 1px solid transparent;
+	scroll-margin-top: calc(var(--files-size-row) * 32px);
 }
 
 #files > .file:hover,
