@@ -28,10 +28,10 @@ body,
 	font-family: "Segoe UI Variable Static Text", sans-serif;
 }
 
-* {
+/* * {
 	background: transparent;
 	background-color: transparent;
-}
+} */
 
 #desktop {
 	display: flex;
