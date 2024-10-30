@@ -12,11 +12,11 @@ const vNodes = [new vNode(
     Date.now(),
     0,
     "50eced28-c925-4948-80eb-e4fabe83a41b",
-    new vPermission(false),
+    JSON.stringify(new vPermission(false)),
     userIdentifier.username,
     "Základní složka",
     undefined,
-    []
+    JSON.stringify(new vData())
 ), new vNode(
     "dc7a8dc1-6656-4671-863b-7df885d61388",
     "trash",
@@ -25,11 +25,11 @@ const vNodes = [new vNode(
     Date.now(),
     0,
     "50eced28-c925-4948-80eb-e4fabe83a41b",
-    new vPermission(false),
+    JSON.stringify(new vPermission(false)),
     "Koš",
     "Obsahuje smazané soubory a složky",
     undefined,
-    []
+    JSON.stringify(new vData())
 ), new vNode(
     "704d99cf-0e37-4797-8605-fa844f25efe5",
     "desktop",
@@ -38,11 +38,11 @@ const vNodes = [new vNode(
     Date.now(),
     0,
     "50eced28-c925-4948-80eb-e4fabe83a41b",
-    new vPermission(false),
+    JSON.stringify(new vPermission(false)),
     "Plocha",
     "Obsahuje soubory a složky na ploše",
     undefined,
-    []
+    JSON.stringify(new vData())
 ), new vNode(
     "27106875-6cf7-4666-bcd0-3eec4ddc10af",
     "documents",
@@ -51,11 +51,11 @@ const vNodes = [new vNode(
     Date.now(),
     0,
     "50eced28-c925-4948-80eb-e4fabe83a41b",
-    new vPermission(false),
+    JSON.stringify(new vPermission(false)),
     "Plocha",
     "Složka pro ukládání dokumentů",
     undefined,
-    []
+    JSON.stringify(new vData())
 ), new vNode(
     "13915013-2ea7-423b-9a84-7fb07c9ec9d2",
     "images",
@@ -64,11 +64,11 @@ const vNodes = [new vNode(
     Date.now(),
     0,
     "50eced28-c925-4948-80eb-e4fabe83a41b",
-    new vPermission(false),
+    JSON.stringify(new vPermission(false)),
     "Obrázky",
     "Složka pro ukládání obrázků",
     undefined,
-    []
+    JSON.stringify(new vData())
 ),
 
 new vNode(
@@ -79,11 +79,12 @@ new vNode(
     Date.now(),
     0,
     "50eced28-c925-4948-80eb-e4fabe83a41b",
-    new vPermission(),
+    JSON.stringify(new vPermission()),
     "Koš",
     "Složka pro ukládání dokumentů",
     undefined,
-    ["vLinkTrash://"]
+    // ["vLinkTrash://"]
+    JSON.stringify(new vData(["vLinkTrash://"]))
 ),
 new vNode(
     "0f96d238-cc98-4825-9007-dc6bea0bc753",
@@ -93,11 +94,12 @@ new vNode(
     Date.now(),
     0,
     "50eced28-c925-4948-80eb-e4fabe83a41b",
-    new vPermission(),
+    JSON.stringify(new vPermission()),
     "Nový textový dokument.txt",
     "Typ: Textový dokument",
     undefined,
-    ["/2/"]
+    // ["/2/"]
+    JSON.stringify(new vData(["/2/"]))
 ), new vNode(
     "66285580-f084-43fd-b3aa-308399055455",
     "file",
@@ -106,11 +108,12 @@ new vNode(
     Date.now(),
     0,
     "50eced28-c925-4948-80eb-e4fabe83a41b",
-    new vPermission(),
+    JSON.stringify(new vPermission()),
     "sample.pdf",
     "Typ: PDF dokument",
     undefined,
-    ["/2/"]
+    // ["/2/"]
+    JSON.stringify(new vData(["/2/"]))
 ), new vNode(
     "6c1e65b9-ab3e-426a-b6ba-d0a1a304061b",
     "link",
@@ -119,11 +122,12 @@ new vNode(
     Date.now(),
     0,
     "50eced28-c925-4948-80eb-e4fabe83a41b",
-    new vPermission(),
+    JSON.stringify(new vPermission()),
     "Tento Počítač",
     "Umístění: Tento Počítač",
     undefined,
-    ["vComputer://"]
+    // ["vComputer://"]
+    JSON.stringify(new vData(["vComputer://"]))
 ), new vNode(
     "f7d9830f-90d0-45b4-b612-d46d15a289e6",
     "file",
@@ -132,11 +136,12 @@ new vNode(
     Date.now(),
     0,
     "50eced28-c925-4948-80eb-e4fabe83a41b",
-    new vPermission(),
+    JSON.stringify(new vPermission()),
     "Dokument1.txt",
     "Typ: Textový dokument",
     undefined,
-    ["/2/"]
+    // ["/2/"]
+    JSON.stringify(new vData(["/2/"]))
 ),  new vNode(
     "9e27b8bb-dfeb-404b-bf4e-08fa59744206",
     "link",
@@ -145,11 +150,12 @@ new vNode(
     Date.now(),
     0,
     "50eced28-c925-4948-80eb-e4fabe83a41b",
-    new vPermission(),
+    JSON.stringify(new vPermission()),
     "Administrace",
     "Správa uživatelských profilů",
     undefined,
-    ["admin://"]
+    // ["admin://"]
+    JSON.stringify(new vData(["admin://"]))
 ), 
 new vNode(
     "6c6bc7b9-0678-420b-a27f-bfadff021ece",
@@ -159,11 +165,12 @@ new vNode(
     Date.now(),
     0,
     "50eced28-c925-4948-80eb-e4fabe83a41b",
-    new vPermission(),
+    JSON.stringify(new vPermission()),
     "Testing.txt",
     "Typ: Textový dokument",
     undefined,
-    ["/3/"]
+    // ["/3/"]
+    JSON.stringify(new vData(["/3/"]))
 )
 ];
 

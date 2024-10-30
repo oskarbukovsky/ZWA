@@ -124,12 +124,12 @@ async function processDesktopIcons() {
 
     //TODO: fetch vNodes from data[] of rootId
 
-    let desktopNode = await localDatabase.getColumn("vNodes", "parent", rootId[0].id).then((result) => result.find((node) => node.type === "desktop"));
+    let desktopNode = await localDatabase.getColumn("vNodes", "parent", rootId[0].uuid).then((result) => result.find((node) => node.type === "desktop"));
     // cl("desktopNode: ", desktopNode);
 
     //TODO: fetch vNodes from data[] of desktopNode
 
-    let desktopNodes = await localDatabase.getColumn("vNodes", "parent", desktopNode.id);
+    let desktopNodes = await localDatabase.getColumn("vNodes", "parent", desktopNode.uuid);
 
     // cl("desktopNodes: ", desktopNodes);
 
@@ -142,11 +142,11 @@ function appOpen(node) {
     deselectAllApps();
     cl("opening window", node);
 
-    if (windows.querySelector('[data-id="' + node.id + '"]')) {
+    if (windows.querySelector('[data-id="' + node.uuid + '"]')) {
         cl("app is already open", node);
         return;
     }
-    const holder = createElement("div", new Data("id", node.id), new ClassList("windows-app", "active"));
+    const holder = createElement("div", new Data("id", node.uuid), new ClassList("windows-app", "active"));
     holder.style.zIndex = getLowestMaxAppZIndex();
     const header = createElement("header", new ClassList("app-header"), new AppendTo(holder));
     const v1 = createElement("div", new ClassList("app-v1"), new AppendTo(header));
@@ -161,7 +161,7 @@ function appOpen(node) {
 
     windows.appendChild(holder);
 
-    const navbarHolder = createElement("div", new ClassList("navbar-icon"), new Data("id", node.id), new ElementEvent("click", ElementEvents.navbarIconClick));
+    const navbarHolder = createElement("div", new ClassList("navbar-icon"), new Data("id", node.uuid), new ElementEvent("click", ElementEvents.navbarIconClick));
     const navbarButton = createElement("div", new ClassList("navbar-button-content"), new AppendTo(navbarHolder));
     const navbarIcon = createElement("img", new Src(getIcon(node)), new AppendTo(navbarButton));
     appendBefore(navbarHolder, document.querySelector("#navbar > div.navbar-spacer"));
@@ -189,7 +189,7 @@ function appOpen(node) {
     });
 
     resizeWindow(holder);
-    selectApp(node.id);
+    selectApp(node.uuid);
     dragApp(holder);
     minimizeApp(minimize);
     maximizeApp(maximize, header);
@@ -200,7 +200,7 @@ function appOpen(node) {
 function addDesktopIcon(node) {
     const holder = createElement("figure", new ClassList("icon"));
     const icon = createElement("img", new Src(getIcon(node)), new AppendTo(holder));
-    const caption = createElement("figcaption", new Data("id", node.id), new AppendTo(holder));
+    const caption = createElement("figcaption", new Data("id", node.uuid), new AppendTo(holder));
     const textarea = createElement("textarea", new Name("icon-name"), new Cols(11), new ReadOnly(true), new TextContent(node.name), new AppendTo(caption));
     desktop.appendChild(holder);
 

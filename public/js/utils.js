@@ -163,7 +163,11 @@ function openDb() {
                 function success(event) {
                     return resolve(event);
                 }
-                dbStore.add(item);
+                try {
+                    dbStore.add(item);
+                } catch (error) {
+                    cl("📕 ERROR: ", error, item);
+                }
                 dbStore.transaction.oncomplete = (event) => success(event);
             });
         }
@@ -284,18 +288,18 @@ function getIconTooltipText(node) {
 
 function getDestination(node) {
     if (node.type == "link") {
-        switch (node.data[0].split(":\/\/").shift()) {
+        switch (node.data.data[0].split(":\/\/").shift()) {
             case "vLinkTrash":
-                return "user-data/" + node.owner + node.data[0] + node.name;
+                return "user-data/" + node.owner + node.data.data[0] + node.name;
             case "admin":
                 return "administration.html";
             case "vComputer":
                 return "explorer.html?folder=user-data/" + node.owner;
             default:
-                return "user-data/" + node.owner + node.data[0] + node.name;
+                return "user-data/" + node.owner + node.data.data[0] + node.name;
         }
     } else {
-        return "user-data/" + node.owner + node.data[0] + node.name;
+        return "user-data/" + node.owner + node.data.data[0] + node.name;
     }
 }
 
@@ -307,8 +311,8 @@ function getIcon(node) {
             case "trash":
                 return "./media/file-icons/trash.webp";
             case "link":
-                if (node.data[0]) {
-                    switch (node.data[0].split(":\/\/").shift()) {
+                if (node.data.data[0]) {
+                    switch (node.data.data[0].split(":\/\/").shift()) {
                         case "vLinkTrash":
                             return "./media/file-icons/trash.webp";
                         case "vComputer":
@@ -383,7 +387,7 @@ function closeApp(target, forced = false) {
         setTimeout(() => {
             app.remove();
         }, 250);
-        const navbarIcon = navbar.querySelector('[data-id="' + app.dataset.id + '"]');
+        const navbarIcon = navbar.querySelector('[data-id="' + app.dataset.uuid + '"]');
         if (navbarIcon.dataset.persistent != "false") {
             navbarIcon.classList.add("closing");
             setTimeout(() => {
@@ -429,7 +433,7 @@ function dragApp(element) {
     function doDrag(app) {
         app.classList.add("dragging");
         deselectAllApps();
-        selectApp(app.dataset.id);
+        selectApp(app.dataset.uuid);
         app.style.zIndex = getLowestMaxAppZIndex();
         pos3 = event.clientX;
         pos4 = event.clientY;
@@ -585,6 +589,8 @@ function desktopIconTooltip(element, node) {
             } else {
                 if (tooltip) {
                     tooltip.remove();
+                } else {
+                    cl("unable to remove icon tooltip");
                 }
             }
         }

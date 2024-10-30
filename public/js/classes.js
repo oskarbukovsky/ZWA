@@ -1,5 +1,25 @@
 "use strict";
 
+const htmlSpecialCharsDecode = (text) => {
+    const map = {
+        '&amp;': '&',
+        '&#038;': '&',
+        '&nbsp;': ' ',
+        '&lt;': '<',
+        '&gt;': '>',
+        '&quot;': '"',
+        '&#039;': "'",
+        '&#8217;': '’',
+        '&#8216;': '‘',
+        '&#8211;': '–',
+        '&#8212;': '—',
+        '&#8230;': '…',
+        '&#8221;': '”',
+    };
+
+    return text.replace(/\&[\w\d\#]{2,5}\;/g, (m) => map[m] ?? m);
+};
+
 class ClassList {
     constructor(...args) {
         args.forEach((element, index) => {
@@ -89,7 +109,7 @@ class dbShape {
     constructor(name, columns, keyPath = null) {
         this.name = name;
         this.columns = columns;
-        this.keyPath = keyPath || "id";
+        this.keyPath = keyPath || "uuid";
     }
 }
 
@@ -101,6 +121,12 @@ class vPermission {
     //     this.canDelete = canDelete;
     //     this.canView = canView;
     // }
+}
+
+class vData {
+    constructor(data = []) {
+        this.data = data;
+    }
 }
 
 class userSettings {
@@ -122,24 +148,25 @@ class user {
     }
 }
 class vNode {
-    constructor(id, type, parent, timeCreate, timeEdit, timeRead, owner, permissions = new vPermission(), name, description, size, data = []) {
-        this.id = id;
+    constructor(uuid, type, parent, timeCreate, timeEdit, timeRead, owner, permissions = JSON.stringify(new vPermission()), name, description, size, data = JSON.stringify(new vData())) {
+        this.uuid = uuid;
 
         this.type = type;
         this.parent = parent;
 
-        this.timeCreate = timeCreate;
-        this.timeEdit = timeEdit;
-        this.timeRead = timeRead;
+        this.timeCreate = Number(timeCreate);
+        this.timeEdit = Number(timeEdit);
+        this.timeRead = Number(timeRead);
 
         this.owner = owner;
-        this.permissions = permissions
+        // debugger
+        this.permissions = JSON.parse(htmlSpecialCharsDecode(permissions));
 
         this.name = name;
         this.description = description;
-        this.size = size;
+        this.size = Number(size);
 
-        this.data = data;
+        this.data = JSON.parse(htmlSpecialCharsDecode(data));
     }
 }
 
