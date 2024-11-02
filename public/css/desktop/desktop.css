@@ -40,7 +40,6 @@ body,
 	justify-content: flex-start;
 	align-content: flex-start;
 	align-items: flex-start;
-	overflow: auto;
 }
 
 #desktop > .icon {
@@ -69,6 +68,7 @@ body,
 	transition: opacity 225ms ease-in-out;
 	opacity: 0;
 	font-size: 0.7rem;
+	z-index: 1000;
 }
 
 .icon .icon-tooltip.active {

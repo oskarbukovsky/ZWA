@@ -164,7 +164,7 @@ class vNode {
 
         this.name = name;
         this.description = description;
-        this.size = Number(size);
+        this.size = !isNaN(Number(size)) ? Number(size): 0;
 
         this.data = JSON.parse(htmlSpecialCharsDecode(data));
     }

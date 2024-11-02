@@ -129,7 +129,7 @@ document.addEventListener("keydown", async (event) => {
             break;
         case "Enter":
             files.querySelectorAll(".selected").forEach((element) => {
-                // const node = await localDatabase.getColumn("vNodes", "id", element.dataset.id);
+                // const node = await localDatabase.getColumn("vNodes", "uuid", element.dataset.uuid);
                 // appOpen(node[0]);
                 window.top.postMessage(["appOpen", "66285580-f084-43fd-b3aa-308399055455"]);
             });

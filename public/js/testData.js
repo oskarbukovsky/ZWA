@@ -111,7 +111,7 @@ new vNode(
     JSON.stringify(new vPermission()),
     "sample.pdf",
     "Typ: PDF dokument",
-    undefined,
+    957,
     // ["/2/"]
     JSON.stringify(new vData(["/2/"]))
 ), new vNode(

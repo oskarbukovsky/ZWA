@@ -127,7 +127,7 @@ let appResizing = {
             this.boundingBox = this.app.getBoundingClientRect();
             deselectAllApps();
             this.app.classList.add("active");
-            navbar.querySelector('[data-id="' + this.app.dataset.id + '"]').classList.add("active");
+            navbar.querySelector('[data-uuid="' + this.app.dataset.uuid + '"]').classList.add("active");
             this.app.classList.add("resizing");
             this.app.style.zIndex = getLowestMaxAppZIndex();
             window.addEventListener("mousemove", this.resizingEvent);

@@ -1,6 +1,6 @@
 "use strict";
 
-//TODO document.querySelectorAll("[data-id='66285580-f084-43fd-b3aa-308399055455']");
+//TODO document.querySelectorAll("[data-uuid='66285580-f084-43fd-b3aa-308399055455']");
 
 // https://cdn-factory.marketjs.com/en/trixology-classic-responsive-hd/index.html
 // https://www.onlinegames.io/games/2022/unity2/masked-special-forces/index.html
@@ -142,11 +142,11 @@ function appOpen(node) {
     deselectAllApps();
     cl("opening window", node);
 
-    if (windows.querySelector('[data-id="' + node.uuid + '"]')) {
+    if (windows.querySelector('[data-uuid="' + node.uuid + '"]')) {
         cl("app is already open", node);
         return;
     }
-    const holder = createElement("div", new Data("id", node.uuid), new ClassList("windows-app", "active"));
+    const holder = createElement("div", new Data("uuid", node.uuid), new ClassList("windows-app", "active"));
     holder.style.zIndex = getLowestMaxAppZIndex();
     const header = createElement("header", new ClassList("app-header"), new AppendTo(holder));
     const v1 = createElement("div", new ClassList("app-v1"), new AppendTo(header));
@@ -161,7 +161,7 @@ function appOpen(node) {
 
     windows.appendChild(holder);
 
-    const navbarHolder = createElement("div", new ClassList("navbar-icon"), new Data("id", node.uuid), new ElementEvent("click", ElementEvents.navbarIconClick));
+    const navbarHolder = createElement("div", new ClassList("navbar-icon"), new Data("uuid", node.uuid), new ElementEvent("click", ElementEvents.navbarIconClick));
     const navbarButton = createElement("div", new ClassList("navbar-button-content"), new AppendTo(navbarHolder));
     const navbarIcon = createElement("img", new Src(getIcon(node)), new AppendTo(navbarButton));
     appendBefore(navbarHolder, document.querySelector("#navbar > div.navbar-spacer"));
@@ -200,7 +200,7 @@ function appOpen(node) {
 function addDesktopIcon(node) {
     const holder = createElement("figure", new ClassList("icon"));
     const icon = createElement("img", new Src(getIcon(node)), new AppendTo(holder));
-    const caption = createElement("figcaption", new Data("id", node.uuid), new AppendTo(holder));
+    const caption = createElement("figcaption", new Data("uuid", node.uuid), new AppendTo(holder));
     const textarea = createElement("textarea", new Name("icon-name"), new Cols(11), new ReadOnly(true), new TextContent(node.name), new AppendTo(caption));
     desktop.appendChild(holder);
 

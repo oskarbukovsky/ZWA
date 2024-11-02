@@ -14,8 +14,8 @@ class ElementEvents {
     static navbarIconClick = (event) => {
         setTimeout(() => { }, 20);
         const icon = bubbleToClass(event, "navbar-icon");
-        const id = icon.dataset.id;
-        const selector = windows.querySelector('[data-id="' + id + '"]');
+        const id = icon.dataset.uuid;
+        const selector = windows.querySelector('[data-uuid="' + id + '"]');
         if (icon.classList.contains("active")) {
             deselectAllApps();
             selector.classList.add("minimized");
@@ -49,7 +49,7 @@ window.addEventListener('blur', () => {
             }
         }
         app.classList.add("active");
-        navbar.querySelector('[data-id="' + app.dataset.id + '"]').classList.add("active");
+        navbar.querySelector('[data-uuid="' + app.dataset.uuid + '"]').classList.add("active");
         app.style.zIndex = getLowestMaxAppZIndex();
     }
 });
@@ -133,7 +133,7 @@ window.onmessage = async function (event) {
     console.log("receivedFromIframe: ", event.data);
     switch (event.data[0]) {
         case "appOpen":
-            const node = await localDatabase.getColumn("vNodes", "id", event.data[1]);
+            const node = await localDatabase.getColumn("vNodes", "uuid", event.data[1]);
             appOpen(node[0]);
             break;
         default:
@@ -181,8 +181,8 @@ function desktopIconOpener(element) {
         // cl("Open Window from Desktop\n", holder);
         let dbStore = localDatabase.getStore("vNodes");
 
-        let idRequest = dbStore.get(element.childNodes[1].dataset.id);
-        // cl("holder.childNodes[1].dataset.id: ", holder.childNodes[1].dataset.id);
+        let idRequest = dbStore.get(element.childNodes[1].dataset.uuid);
+        // cl("holder.childNodes[1].dataset.id: ", holder.childNodes[1].dataset.uuid);
         idRequest.onsuccess = function () {
             let data = idRequest.result;
             // cl("get success: ", data);
@@ -302,7 +302,7 @@ document.addEventListener("keydown", async (event) => {
             break;
         case "Enter":
             desktop.querySelectorAll(".icon-selected > figcaption").forEach(async (element) => {
-                const node = await localDatabase.getColumn("vNodes", "id", element.dataset.id);
+                const node = await localDatabase.getColumn("vNodes", "uuid", element.dataset.uuid);
                 appOpen(node[0]);
             });
             break;

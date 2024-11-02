@@ -251,11 +251,6 @@ function openDb() {
     };
 }
 
-function getSizeInNormalUnits(size) {
-    // TODO: convert number to KB, MB, etc.
-    return size;
-}
-
 function getTimeForTooltip(datetime) {
     const date = new Intl.DateTimeFormat("cs-CZ", {
         day: "numeric",
@@ -276,11 +271,11 @@ function getIconTooltipText(node) {
         case "folder":
         case "images":
         case "documents":
-            return node.name + "\r\nDatum vytvoření: " + getTimeForTooltip(node.timeCreate) + "\r\nVelikost: " + getSizeInNormalUnits(node.size);
+            return node.name + "\r\nDatum vytvoření: " + getTimeForTooltip(node.timeCreate) + "\r\nVelikost: " + sizeNumberToString(node.size);
         case "file":
-            return node.name + "\r\n" + node.description + "\r\nVelikost: " + getSizeInNormalUnits(node.size) + "\r\nDatum změny: " + getTimeForTooltip(node.timeEdit);
+            return node.name + "\r\n" + node.description + "\r\nVelikost: " + sizeNumberToString(node.size) + "\r\nDatum změny: " + getTimeForTooltip(node.timeEdit);
         case "link":
-            return "Odkaz na: " + node.data[0];
+            return "Odkaz na: " + node.data.data[0];
         default:
             return "Soubor";
     }
@@ -387,7 +382,7 @@ function closeApp(target, forced = false) {
         setTimeout(() => {
             app.remove();
         }, 250);
-        const navbarIcon = navbar.querySelector('[data-id="' + app.dataset.uuid + '"]');
+        const navbarIcon = navbar.querySelector('[data-uuid="' + app.dataset.uuid + '"]');
         if (navbarIcon.dataset.persistent != "false") {
             navbarIcon.classList.add("closing");
             setTimeout(() => {
@@ -462,10 +457,11 @@ function dragApp(element) {
     }
 }
 
-function selectApp(id) {
-    deselectAllApps(id);
-    windows.querySelector('[data-id="' + id + '"]').classList.add("active");
-    navbar.querySelector('[data-id="' + id + '"]').classList.add("active");
+function selectApp(uuid) {
+    cl(uuid)
+    deselectAllApps();
+    windows.querySelector('[data-uuid="' + uuid + '"]').classList.add("active");
+    navbar.querySelector('[data-uuid="' + uuid + '"]').classList.add("active");
 }
 
 function createElement() {
@@ -830,7 +826,7 @@ function sizeNumberToString(size) {
         prefix++;
     }
     // cl(size, prefix);
-    return "" + size + " " + Object.keys(sizePrefixes)[prefix];
+    return "" + parseFloat(size.toFixed(2)) + " " + Object.keys(sizePrefixes)[prefix];
 };
 
 

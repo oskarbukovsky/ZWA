@@ -2,7 +2,7 @@
 @import url(./fonts.css);
 
 :root {
-	font-size: 18px;
+	font-size: var(--font-size);
 }
 
 * {
