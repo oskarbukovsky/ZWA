@@ -1,5 +1,9 @@
 # zwa
-<iframe src="https://wakaapi.666777123.xyz/api/activity/chart/Admin.svg"></iframe>
+![](https://wakaapi.666777123.xyz/api/activity/chart/Admin.svg)
+<img src="https://wakaapi.666777123.xyz/api/activity/chart/Admin.svg"/> 
+<object data="https://wakaapi.666777123.xyz/api/activity/chart/Admin.svg"/> 
+<iframe src="https://wakaapi.666777123.xyz/api/activity/chart/Admin.svg"/> 
+<embed src="https://wakaapi.666777123.xyz/api/activity/chart/Admin.svg"/> 
 
 
 ## Getting started
