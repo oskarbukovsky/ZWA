@@ -4,61 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>users</title>
+    <title>Testing</title>
+
+    <link rel="icon" href="media/favicon.png" type="image/gif" sizes="256x256">
+
+    <script src="js/classes.js"></script>
+
+    <?php
+    require("db.php");
+    getData("user","users", "username,uuid,icon,settings");
+        ?>
 </head>
 
 <body>
     <?php
-    echo "<table style='border: solid 1px black;'>";
-    echo "<tr><th>uuid</th><th>username</th><th>icon</th><th>settings</th><th>passwordHash</th><th>role</th></tr>";
+    getDataVisual("users","users", "*");
+    ?>
 
-    class TableRows extends RecursiveIteratorIterator
-    {
-        function __construct($it)
-        {
-            parent::__construct($it, self::LEAVES_ONLY);
-        }
-
-        function current()
-        {
-            return "<td style='width:150px;border:1px solid black;'>" . parent::current() . "</td>";
-        }
-
-        function beginChildren()
-        {
-            echo "<tr>";
-        }
-
-        function endChildren()
-        {
-            echo "</tr>" . "\n";
-        }
-    }
-
-    $serverName = "localhost";
-    $username = "bukovja4";
-    $password = "Lucinka1221";
-    $dbname = "bukovja4";
-
-    $vNodes = "vNodes";
-    $users = "users";
-
-    try {
-        $conn = new PDO("mysql:host=$serverName;dbname=$dbname", $username, $password);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $stmt = $conn->prepare("SELECT * FROM $users");
-        $stmt->execute();
-
-        // set the resulting array to associative
-        $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        foreach (new TableRows(new RecursiveArrayIterator($stmt->fetchAll())) as $k => $v) {
-            echo $v;
-        }
-    } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
-    }
+    <?php
     $conn = null;
-    echo "</table>";
     ?>
 </body>
 

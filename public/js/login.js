@@ -1,7 +1,32 @@
 "use strict";
 
+window.addEventListener("load", () => {
+    document.getElementById("loginForm").addEventListener("submit", async (event) => {
+        await authSubmit(event);
+    });
+    document.getElementById("registerForm").addEventListener("submit", async (event) => {
+        await authSubmit(event);
+    });
+});
+
 async function authSubmit(event) {
     event.preventDefault();
+
+    switch (event.target.id) {
+        case "loginForm":
+            if (!await handleLogin()) {
+                return;
+            }
+            break;
+        case "registerForm":
+            if (!await handleRegister()) {
+                return;
+            }
+            break;
+        default:
+            return;
+    }
+
     loginAnimation.classList.remove("hidden");
     authForms.classList.add("hidden");
     loginAnimation.play();
@@ -9,15 +34,24 @@ async function authSubmit(event) {
     event.target.submit();
 }
 
-window.addEventListener("load", () => {
-    document.getElementById("loginForm").addEventListener("submit", async (event) => {
-        await authSubmit(event);
-    }); 
-    document.getElementById("registerForm").addEventListener("submit", async (event) => {
-        await authSubmit(event);
-    }); 
-});
-window.onpageshow = function(event) {
+async function handleLogin() {
+    cl("Login:");
+    loginPassword.value = await sha256Hash(loginPassword.value);
+    return true;
+}
+
+async function handleRegister() {
+    cl("Register:");
+    if (registerPassword.value !== registerPasswordAgain.value) {
+        return false;
+    }
+
+    registerPassword.value = await sha256Hash(registerPassword.value);
+    registerPasswordAgain.value = await sha256Hash(registerPasswordAgain.value);
+    return true;
+}
+
+window.onpageshow = function (event) {
     if (event.persisted) {
         loginAnimation.load();
         loginAnimation.pause();
@@ -29,12 +63,6 @@ window.onpageshow = function(event) {
     }
 };
 
-function sleep(ms) {
-    return new Promise(resolve => {
-        setTimeout(resolve, ms)
-    });
-}
-// var wallpaper ;
 window.addEventListener("DOMContentLoaded", async () => {
     let wallpaperCookie = getCookie("loginWallpaper");
     if (wallpaperCookie === null || !isValidUrl(wallpaperCookie)) {
@@ -48,38 +76,3 @@ window.addEventListener("DOMContentLoaded", async () => {
         console.log("loaded from cookie:", getCookie("loginWallpaper"));
     }
 });
-
-function setCookie(name, value, expiryHours) {
-    const d = new Date();
-    d.setTime(d.getTime() + (expiryHours * 60 * 60 * 1000));
-    let expires = "expires=" + d.toUTCString();
-    document.cookie = name + "=" + value + ";" + expires + ";path=/";
-    return true;
-}
-
-function getCookie(name) {
-    name = name + "=";
-    let ca = document.cookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
-    }
-    return null;
-}
-
-function isValidUrl(string) {
-    let url;
-
-    try {
-        url = new URL(string);
-    } catch (_) {
-        return false;
-    }
-
-    return url.protocol === "http:" || url.protocol === "https:";
-}

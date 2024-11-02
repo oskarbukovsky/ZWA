@@ -1,5 +1,7 @@
 "use strict";
 
+const DEBUG = true;
+
 function getDirectory() {
     if (!window.showDirectoryPicker) {
         alert('Unsupported Browser Notice');
@@ -586,7 +588,7 @@ function desktopIconTooltip(element, node) {
                 if (tooltip) {
                     tooltip.remove();
                 } else {
-                    cl("unable to remove icon tooltip");
+                    cl("unable to remove icon tooltip", event, tooltip);
                 }
             }
         }
@@ -949,4 +951,57 @@ function updateSlider(rangeElement) {
     const percentage = (rangeElement.value - Number(rangeElement.min)) / (Number(rangeElement.max) - Number(rangeElement.min)) * 100;
     rangeElement.style = 'background: linear-gradient(to right, rgb(64, 189, 255), rgb(64, 189, 255) ' + percentage + '%, rgb(148, 166, 191) ' + percentage + '%, rgb(148, 166, 191) 100%)';
     return percentage;
+}
+
+if (!String.prototype.replaceAll) {
+    String.prototype.replaceAll = function (str, newStr) {
+
+        // If a regex pattern
+        if (Object.prototype.toString.call(str).toLowerCase() === '[object regexp]') {
+            return this.replace(str, newStr);
+        }
+
+        // If a string
+        return this.replace(new RegExp(str, 'g'), newStr);
+
+    };
+}
+
+async function sha256Hash(text) {
+    return Array.from(new Uint8Array(await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)))).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+function setCookie(name, value, expiryHours) {
+    const d = new Date();
+    d.setTime(d.getTime() + (expiryHours * 60 * 60 * 1000));
+    let expires = "expires=" + d.toUTCString();
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+    return true;
+}
+
+function getCookie(name) {
+    name = name + "=";
+    let ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return null;
+}
+
+function isValidUrl(string) {
+    let url;
+
+    try {
+        url = new URL(string);
+    } catch (_) {
+        return false;
+    }
+
+    return url.protocol === "http:" || url.protocol === "https:";
 }

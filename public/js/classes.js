@@ -140,11 +140,11 @@ class userSettings {
 
 // crypto.randomUUID()
 class user {
-    constructor(username, uuid, icon, settings = new userSettings()) {
+    constructor(username, uuid, icon, settings = JSON.stringify(new userSettings())) {
         this.username = username;
         this.uuid = uuid;
         this.icon = icon;
-        this.settings = settings;
+        this.settings = JSON.parse(htmlSpecialCharsDecode(settings));
     }
 }
 class vNode {

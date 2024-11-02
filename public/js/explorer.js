@@ -138,7 +138,9 @@ document.addEventListener("keydown", async (event) => {
         case "ArrowLeft":
             const up = files.querySelector(".file:has(+ .selected)");
             if (up) {
-                deselectAll();
+                if (!event.shiftKey) {
+                    deselectAll();
+                }
                 up.classList.add("selected");
                 up.scrollIntoViewIfNeeded(false);
                 countSelectedFiles();
@@ -146,9 +148,11 @@ document.addEventListener("keydown", async (event) => {
             break;
         case "ArrowDown":
         case "ArrowRight":
-            const down = files.querySelector(".selected + *")
+            const down = files.querySelector(".selected:not(:has(~ .selected)) + *")
             if (down) {
-                deselectAll();
+                if (!event.shiftKey) {
+                    deselectAll();
+                }
                 down.classList.add("selected");
                 down.scrollIntoViewIfNeeded(false);
                 countSelectedFiles();

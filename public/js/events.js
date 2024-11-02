@@ -310,15 +310,20 @@ document.addEventListener("keydown", async (event) => {
         case "ArrowLeft":
             const up = document.querySelector(".icon:has(+ .icon-selected)");
             if (up) {
-                deselectDesktopIcon();
+                if (!event.shiftKey) {
+                    deselectDesktopIcon();
+                }
                 up.classList.add("icon-selected");
             }
             break;
         case "ArrowDown":
         case "ArrowRight":
-            const down = desktop.querySelector(".icon-selected + *")
+            // const down = desktop.querySelector(".icon-selected + *")
+            const down = desktop.querySelector(".icon-selected:not(:has(~ .icon-selected)) + *");
             if (down) {
-                deselectDesktopIcon();
+                if (!event.shiftKey) {
+                    deselectDesktopIcon();
+                }
                 down.classList.add("icon-selected");
             }
             break;

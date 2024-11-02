@@ -18,7 +18,7 @@
 
 <body>
     <?php
-    getDataVisual("vNodes", "*");
+    getDataVisual("vNodes", "vNodes", "*");
     ?>
 
     <?php

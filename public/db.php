@@ -11,13 +11,17 @@ try {
     echo "Error: " . $e->getMessage();
 }
 
-function getDataVisual($tablename, $what)
+function getDataVisual($type, $tablename, $what)
 {
     global $conn;
 
     echo "<table style='border: solid 1px black;'>";
-    echo "<tr><th>uuid</th><th>description</th><th>name</th><th>owner</th><th>parent</th><th>permissions</th><th>size</th><th>timeCreate</th><th>timeEdit</th><th>timeRead</th><th>type</th><th>data</th></tr>";
 
+    if ($type == "vNodes") {
+        echo "<tr><th>uuid</th><th>description</th><th>name</th><th>owner</th><th>parent</th><th>permissions</th><th>size</th><th>timeCreate</th><th>timeEdit</th><th>timeRead</th><th>type</th><th>data</th></tr>";
+    } else if ($type == "users") {
+        echo "<tr><th>uuid</th><th>username</th><th>icon</th><th>settings</th><th>passwordHash</th><th>role</th></tr>";
+    }
     class TableRows extends RecursiveIteratorIterator
     {
         function __construct($it)
@@ -74,7 +78,7 @@ function getData($class, $tablename, $what)
 
     echo "<script src=\"data:text/javascript;base64,";
 
-    
+
     $result = "const " . $tablename . " = [";
     foreach ($data as $vNode) {
         $result .= "new " . $class . "(";
