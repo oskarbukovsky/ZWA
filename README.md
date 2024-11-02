@@ -1,5 +1,5 @@
 # zwa
-!["wakatime"](https://wakaapi.666777123.xyz/api/activity/chart/Admin.svg)
+<iframe src="https://wakaapi.666777123.xyz/api/activity/chart/Admin.svg"></iframe>
 
 
 ## Getting started
