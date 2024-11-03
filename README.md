@@ -1,6 +1,6 @@
 # zwa - NetOs 
-![wakaapi](https://wakaapi.666777123.xyz/api/activity/chart/Admin.svg)
-![wakatime](https://wakatime.com/badge/user/a46c1bb0-ea5d-4e5a-afff-10c940e24352/project/8bf7cba1-e918-464e-bf80-c6e741ac077d.svg)
+![TimeGraph](https://wakaapi.666777123.xyz/api/activity/chart/Admin.svg)
+![AllTime](https://img.shields.io/endpoint?url=https://wakaapi.666777123.xyz/api/compat/shields/v1/Admin/interval:all_time&label=All%20time&color=blue)
 
 
 Support
