@@ -12,7 +12,7 @@
 
     <?php
     require("db.php");
-    getData("vNode","vNodes", "uuid,type,parent,timeCreate,timeEdit,timeRead,owner,permissions,name,description,size,data");
+    getDataForJs("vNode","vNodes", "uuid,type,parent,timeCreate,timeEdit,timeRead,owner,permissions,name,description,size,data");
         ?>
 </head>
 

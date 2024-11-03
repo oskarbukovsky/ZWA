@@ -52,7 +52,7 @@ const vNodes = [new vNode(
     0,
     "50eced28-c925-4948-80eb-e4fabe83a41b",
     JSON.stringify(new vPermission(false)),
-    "Plocha",
+    "Dokumenty",
     "Složka pro ukládání dokumentů",
     undefined,
     JSON.stringify(new vData())

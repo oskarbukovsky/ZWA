@@ -12,18 +12,33 @@
 
     <?php
     require("db.php");
-    getData("user","users", "username,uuid,icon,settings");
+    require("utils.php");
+    getDataForJs("user","users", "username,uuid,icon,settings");
         ?>
 </head>
 
 <body>
     <?php
     getDataVisual("users","users", "*");
+    
+    if (userExist("bukovja4")) {
+        echo "bukovja4 does exist";
+    } else {
+        echo "bukovja4 does not exist";
+    }
+    echo "\n";
+    if (userExist("bukovja5")) {
+        echo "bukovja5 does exist";
+    } else {
+        echo "bukovja5 does not exist";
+    }
+    echo "\n". newUuid();
     ?>
 
     <?php
     $conn = null;
     ?>
+
 </body>
 
 </html>

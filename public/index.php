@@ -1,3 +1,12 @@
+<?php
+require("db.php");
+session_start();
+if (sessionIsValid()) {
+    header("Location: desktop.php");
+    die();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="cs">
 
@@ -18,7 +27,7 @@
     <script src="js/login.js"></script>
 
     <link rel="prefetch" href="media/login/bloom.mp4">
-    <link rel="prefetch" href="desktop.html">
+    <link rel="prefetch" href="desktop.php">
     <link rel="preconnect" href="https://peapix.com">
     <link rel="preconnect" href="https://img.peapix.com">
 </head>
@@ -58,8 +67,8 @@
                     title="Jméno musí mít 5-16 znaků, a smí být složeno pouze z a-z, A-Z, 0-9" required>
             </div>
             <div class="input">
-                <input id="registerPassword" type="password" name="password" placeholder="Heslo" autocomplete="new-password"
-                    pattern=".{6,}" title="Heslo musí obsahovat 6 a více znaků" required>
+                <input id="registerPassword" type="password" name="password" placeholder="Heslo"
+                    autocomplete="new-password" pattern=".{6,}" title="Heslo musí obsahovat 6 a více znaků" required>
             </div>
             <div class="input">
                 <input id="registerPasswordAgain" type="password" name="passwordAgain" placeholder="Heslo znovu"
@@ -74,7 +83,13 @@
         </form>
 
         <label for="toggle-login-register">
-            <input type="checkbox" id="toggle-login-register">
+            <?php
+            if (isset($_GET["type"]) && $_GET["type"] == "register") {
+                echo '<input type="checkbox" id="toggle-login-register" checked>';
+            } else {
+                echo '<input type="checkbox" id="toggle-login-register">';
+            }
+            ?>
         </label>
 
     </div>
