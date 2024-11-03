@@ -30,7 +30,7 @@ So, why is this here? Well, the rights are reserved, but what that really means 
 
 #### Notes, License & Copyright
 
-*A Functionally Equivalent Statement is a code fragment which, regardless of whitespace and object names, achieves the same result within the context of a Minecraft mod or addon. Basically you can't copy the code, rename the variables, add whitespace and say it's different. It's not.
+*A Functionally Equivalent Statement is a code fragment which, regardless of whitespace and object names. Basically you can't copy the code, rename the variables, add whitespace and say it's different. It's not.
 
 **A jerk is anyone who attempts to or intends to claim partial or total ownership of the original or repackaged code and/or attempts to or intends to redistribute original or repackaged code without prior express written permission from the owner (Jan Oskar Bukovský).
 
