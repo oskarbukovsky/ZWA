@@ -261,6 +261,7 @@ iframe {
 	pointer-events: none;
 }
 
+body:has(.select-box) > #windows > .windows-app > .app-content:after,
 #windows:has(.resizing) > .windows-app > .app-content:after,
 #windows:has(.dragging) > .windows-app > .app-content:after {
 	position: absolute;

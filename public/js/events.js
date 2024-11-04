@@ -31,13 +31,13 @@ class ElementEvents {
     }
 }
 
-window.addEventListener('blur', () => {
+window.addEventListener("blur", () => {
     if (myConfObj.iframeMouseOver) {
         closeMainMenu();
         closeSearchbarMenu()
         closeDesktopCalendar();
         closeScreenMenu();
-        deselectDesktopIcon();
+        deselectDesktopIcons();
         deselectAllApps();
         closeAllDesktopContextMenus();
         uploadElement.classList.remove("upload");
@@ -68,7 +68,7 @@ window.addEventListener("click", (event) => {
         closeScreenMenu();
     }
     // bubbleToClass(event, "windows-app")?.classList?.remove("active");
-    deselectDesktopIcon();
+    deselectDesktopIcons();
     if (!bubbleToClass(event, "windows-app") && !bubbleToClass(event, "navbar-icon")) {
         deselectAllApps();
     }
@@ -160,7 +160,7 @@ desktop.addEventListener("dragenter", (event) => {
     event.preventDefault();
     uploadElement.classList.add("upload");
 });
-uploadElement.addEventListener('dragleave', (event) => {
+uploadElement.addEventListener("dragleave", (event) => {
     event.preventDefault();
     uploadElement.classList.remove("upload");
 });
@@ -206,7 +206,7 @@ function desktopIconEditName(element) {
         closeAllDesktopContextMenus();
         let element = event.toElement;
         if (element.readOnly) {
-            textSelect(element, 0, element.value.lastIndexOf('.'))
+            textSelect(element, 0, element.value.lastIndexOf("."))
             element.readOnly = !element.readOnly
         }
         event.stopPropagation();
@@ -218,7 +218,8 @@ function desktopIconEditName(element) {
     });
 }
 
-function deselectDesktopIcon() {
+function deselectDesktopIcons() {
+    // cl("deselecting desktop icons");
     document.querySelectorAll("figure.icon.icon-selected").forEach((el) => {
         el.classList.remove("icon-selected");
     });
@@ -227,10 +228,10 @@ function deselectDesktopIcon() {
 }
 
 function desktopIconContextMenu(element, node) {
-    element.addEventListener('contextmenu', function (event) {
+    element.addEventListener("contextmenu", function (event) {
         cl("Open ContextMenu from Desktop\n", element);
 
-        deselectDesktopIcon();
+        deselectDesktopIcons();
         element.classList.add("icon-selected");
 
         event.preventDefault();
@@ -283,7 +284,7 @@ function desktopIconContextMenu(element, node) {
 
 document.addEventListener("keydown", async (event) => {
     if (event.ctrlKey && (event.key == "a" || event.key == "A")) {
-        deselectDesktopIcon();
+        deselectDesktopIcons();
         closeMainMenu();
         closeSearchbarMenu()
         closeDesktopCalendar();
@@ -298,7 +299,7 @@ document.addEventListener("keydown", async (event) => {
     switch (event.key) {
         case "Escape":
             closeAllDesktopContextMenus();
-            deselectDesktopIcon();
+            deselectDesktopIcons();
             break;
         case "Enter":
             desktop.querySelectorAll(".icon-selected > figcaption").forEach(async (element) => {
@@ -311,7 +312,7 @@ document.addEventListener("keydown", async (event) => {
             const up = document.querySelector(".icon:has(+ .icon-selected)");
             if (up) {
                 if (!event.shiftKey) {
-                    deselectDesktopIcon();
+                    deselectDesktopIcons();
                 }
                 up.classList.add("icon-selected");
             }
@@ -322,7 +323,7 @@ document.addEventListener("keydown", async (event) => {
             const down = desktop.querySelector(".icon-selected:not(:has(~ .icon-selected)) + *");
             if (down) {
                 if (!event.shiftKey) {
-                    deselectDesktopIcon();
+                    deselectDesktopIcons();
                 }
                 down.classList.add("icon-selected");
             }
@@ -335,7 +336,7 @@ document.addEventListener("keydown", async (event) => {
 function desktopIconSelect(element) {
     element.addEventListener("click", (event) => {
         if (!is_key_down("Control")) {
-            deselectDesktopIcon();
+            deselectDesktopIcons();
         }
         element.classList.toggle("icon-selected");
         closeMainMenu();
@@ -364,3 +365,80 @@ window.addEventListener("DOMContentLoaded", () => {
     blueLightFilter.oninput = blueLightFilterChange;
     blueLightFilterChange(blueLightFilter);
 });
+
+
+function mouseSelectBox() {
+    let startX, startY;
+    let selectBox;
+    let selecting;
+    let desktopSize;
+
+    window.addEventListener("mousedown", (event) => {
+        if (event.target == desktop) {
+            startX = event.clientX;
+            startY = event.clientY;
+            selectBox = createElement("div", new ClassList("select-box"), new AppendTo(desktop));
+            selecting = true;
+            deselectDesktopIcons();
+            desktopSize = desktop.getBoundingClientRect();
+        }
+    });
+
+    window.addEventListener("mousemove", (event) => {
+        if (selecting) {
+            let mouseX = event.clientX;
+            let mouseY = event.clientY;
+
+            if (mouseX > desktopSize.width - 2) {
+                mouseX = desktopSize.width - 2;
+            }
+            if (mouseX < 0) {
+                mouseX = 0;
+            }
+            if (mouseY > desktopSize.height) {
+                mouseY = desktopSize.height;
+            }
+            if (mouseY < 0) {
+                mouseY = 0;
+            }
+
+            if (mouseX < startX) {
+                selectBox.style.left = mouseX + "px";
+                selectBox.style.width = (startX - mouseX) + "px";
+            } else {
+                selectBox.style.left = startX + "px";
+                selectBox.style.width = (mouseX - startX) + "px";
+            }
+            if (mouseY < startY) {
+                selectBox.style.top = mouseY + "px";
+                selectBox.style.height = (startY - mouseY) + "px";
+            } else {
+                selectBox.style.top = startY + "px";
+                selectBox.style.height = (mouseY - startY) + "px";
+            }
+
+            desktop.querySelectorAll(".icon").forEach((element) => {
+                if (elementsCollide(element, selectBox)) {
+                    element.classList.add("icon-selected");
+                } else {
+                    element.classList.remove("icon-selected");
+                }
+            });
+        }
+    });
+
+    window.addEventListener("mouseup", () => {
+        if (selecting) {
+            selecting = false;
+            selectBox.remove();
+        }
+    });
+
+    window.addEventListener("blur", () => {
+        if (selecting) {
+            selecting = false;
+            selectBox.remove();
+        }
+    });
+
+}

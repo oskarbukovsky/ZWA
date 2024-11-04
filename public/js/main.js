@@ -29,6 +29,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     appResizing.windowResize();
 
     getBattery();
+    mouseSelectBox();
 
     requestAnimationFrame(clock);
     requestAnimationFrame(clockTooltip);
@@ -261,14 +262,14 @@ async function fetchAndLoadImage(imagePath) {
 function readFile(event) {
     let data = new Blob([event.target.result], JSON.parse('{"type":"' + file.type + '"}'));
     let textFile = window.URL.createObjectURL(data);
-    let window2 = window.open(textFile, 'log.' + new Date() + '.txt');
+    let window2 = window.open(textFile, "log." + new Date() + ".txt");
     // window2.onload = e => window.URL.revokeObjectURL(textFile);
 }
 async function changeFile() {
     let file = input.files[0];
     let reader = new FileReader();
     let data = reader.readAsArrayBuffer(file)
-    reader.addEventListener('load', readFile);
+    reader.addEventListener("load", readFile);
 
     input.value = null;
     cl(await uploadFiles(data));
@@ -278,7 +279,7 @@ async function changeFile() {
 
 
 async function uploadFiles(data) {
-    const url = 'https://zwa.toad.cz/~xklima/vypisform.php';
+    const url = "https://zwa.toad.cz/~xklima/vypisform.php";
     const formData = new FormData(data);
 
     const fetchOptions = {

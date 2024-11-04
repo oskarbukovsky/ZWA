@@ -166,7 +166,7 @@ function sessionIsValid()
         // $query->bindParam(":value", $vSession, PDO::PARAM_STR);
         // $query->execute();
         
-        $query = getData("vSessions", "validUntil", ["vSession"], [trim($_SESSION["uuid"])]);
+        $query = getData("vSessions", "validUntil", ["vSession"], [$_SESSION["uuid"]]);
 
         $result = $query->fetchAll();
 
@@ -174,22 +174,21 @@ function sessionIsValid()
             if ($data["validUntil"] > time()) {
                 return true;
             } else {
-                deleteData("vSessions", ["vSession"], [trim($_SESSION["uuid"])]);
+                deleteData("vSessions", ["vSession"], [$_SESSION["uuid"]]);
                 return false;
             }
         }
     } catch (PDOException $e) {
         echo $e->getMessage();
     }
-    $_SESSION['logged'] = false;
-    $_SESSION['uuid'] = "";
+    session_destroy();
     return false;
 }
 
 function sessionSet($username)
 {
-    $_SESSION['logged'] = true;
-    $_SESSION['uuid'] = newUuid();
+    $_SESSION["logged"] = true;
+    $_SESSION["uuid"] = trim(newUuid());
 
     global $conn;
     $sql = "INSERT INTO vSessions (vSession,user,validUntil) VALUES (?,?,?)";

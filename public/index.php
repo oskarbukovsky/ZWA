@@ -6,7 +6,6 @@ if (sessionIsValid()) {
     die();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="cs">
 

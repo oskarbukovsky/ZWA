@@ -4,19 +4,19 @@ const DEBUG = true;
 
 function getDirectory() {
     if (!window.showDirectoryPicker) {
-        alert('Unsupported Browser Notice');
+        alert("Unsupported Browser Notice");
         return;
     }
-    const verify = confirm('Ask user to confirm');
-    if (!verify) return 'File picker canceled.';
+    const verify = confirm("Ask user to confirm");
+    if (!verify) return "File picker canceled.";
     return window.showDirectoryPicker();
 };
 
 async function updateDirectory() {
     const directoryHandle = await getDirectory();
-    cl('directoryHandle', directoryHandle);
+    cl("directoryHandle", directoryHandle);
     for await (let handle of directoryHandle.values()) {
-        cl('handle', handle);
+        cl("handle", handle);
     }
 }
 
@@ -56,8 +56,8 @@ function textSelect(field, start, end) {
     if (field.createTextRange) {
         const selRange = field.createTextRange();
         selRange.collapse(true);
-        selRange.moveStart('character', start);
-        selRange.moveEnd('character', end - start);
+        selRange.moveStart("character", start);
+        selRange.moveEnd("character", end - start);
         selRange.select();
     } else if (field.setSelectionRange) {
         field.setSelectionRange(start, end);
@@ -809,11 +809,11 @@ function isValidFileType(file) {
 
 const is_key_down = (() => {
     const state = {};
-    window.addEventListener('keyup', (event) => {
+    window.addEventListener("keyup", (event) => {
         state[event.key] = false;
         // cl(event.key + " " + state[event.key]);
     });
-    window.addEventListener('keydown', (event) => {
+    window.addEventListener("keydown", (event) => {
         state[event.key] = true;
         // cl(event.key + " " + state[event.key]);
     });
@@ -949,7 +949,7 @@ function sizeNumberToString(size) {
 
 function updateSlider(rangeElement) {
     const percentage = (rangeElement.value - Number(rangeElement.min)) / (Number(rangeElement.max) - Number(rangeElement.min)) * 100;
-    rangeElement.style = 'background: linear-gradient(to right, rgb(64, 189, 255), rgb(64, 189, 255) ' + percentage + '%, rgb(148, 166, 191) ' + percentage + '%, rgb(148, 166, 191) 100%)';
+    rangeElement.style = "background: linear-gradient(to right, rgb(64, 189, 255), rgb(64, 189, 255) " + percentage + "%, rgb(148, 166, 191) " + percentage + "%, rgb(148, 166, 191) 100%)";
     return percentage;
 }
 
@@ -957,12 +957,12 @@ if (!String.prototype.replaceAll) {
     String.prototype.replaceAll = function (str, newStr) {
 
         // If a regex pattern
-        if (Object.prototype.toString.call(str).toLowerCase() === '[object regexp]') {
+        if (Object.prototype.toString.call(str).toLowerCase() === "[object regexp]") {
             return this.replace(str, newStr);
         }
 
         // If a string
-        return this.replace(new RegExp(str, 'g'), newStr);
+        return this.replace(new RegExp(str, "g"), newStr);
 
     };
 }
@@ -981,10 +981,10 @@ function setCookie(name, value, expiryHours) {
 
 function getCookie(name) {
     name = name + "=";
-    let ca = document.cookie.split(';');
+    let ca = document.cookie.split(";");
     for (let i = 0; i < ca.length; i++) {
         let c = ca[i];
-        while (c.charAt(0) == ' ') {
+        while (c.charAt(0) == " ") {
             c = c.substring(1);
         }
         if (c.indexOf(name) == 0) {
@@ -1004,4 +1004,16 @@ function isValidUrl(string) {
     }
 
     return url.protocol === "http:" || url.protocol === "https:";
+}
+
+function elementsCollide(el1, el2) {
+    var rect1 = el1.getBoundingClientRect();
+    var rect2 = el2.getBoundingClientRect();
+
+    return !(
+        rect1.top > rect2.bottom ||
+        rect1.right < rect2.left ||
+        rect1.bottom < rect2.top ||
+        rect1.left > rect2.right
+    );
 }

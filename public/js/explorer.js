@@ -85,7 +85,7 @@ function countSelectedFiles() {
 
 document.querySelectorAll("#files > *").forEach((element) => {
     element.addEventListener("click", () => {
-        if (!is_key_down('Control')) {
+        if (!is_key_down("Control")) {
             deselectAll();
         }
         element.classList.toggle("selected");

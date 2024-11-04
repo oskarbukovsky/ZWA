@@ -86,6 +86,10 @@ form {
 	height: 128px;
 }
 
+.user-icon > img {
+	-webkit-user-drag: none;
+}
+
 div.input {
 	background: rgba(255, 255, 255, 0.25);
 }
@@ -175,14 +179,18 @@ input[type="submit"] {
 	display: none;
 }
 
+label[for="toggle-login-register"] {
+	color: hsla(0, 0%, 95%, 0.925);
+}
+
 #authForms:has(#toggle-login-register:checked)
 	label[for="toggle-login-register"]:before {
-	content: "Přihlásit";
+	content: "Již máš účet ?";
 }
 
 #authForms:not(:has(#toggle-login-register:checked))
 	label[for="toggle-login-register"]:before {
-	content: "Registrovat";
+	content: "Ještě nemáš účet ?";
 }
 
 input,
@@ -201,7 +209,6 @@ input:-webkit-autofill:active {
 /* input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0px 1000px white inset;
 } */
-
 
 /* input:-webkit-autofill,
 input:-webkit-autofill:hover, 
