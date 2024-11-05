@@ -348,7 +348,7 @@ function getIcon(node) {
 }
 
 function bubbleToClass(event, className) {
-    event.preventDefault();
+    // event.preventDefault();
     let app = event.target;
     while (app && app.classList && !app?.classList?.contains(className)) {
         app = app.parentElement;
@@ -400,63 +400,92 @@ function closeApp(target, forced = false) {
 }
 
 function dragApp(element) {
-    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    element.querySelector(".app-header").onmousedown = dragMouseDown;
+    let dragging;
+    let waitForMove;
+    let app;
+    let headerSize;
+    let max;
+    let offsetX;
+    let firstMove;
 
-    function dragMouseDown(event) {
-        let app = bubbleToClass(event, "windows-app");
-        if (!app.classList.contains("maximized")) {
-            doDrag(app);
-        } else {
-            const sizes = element.querySelector(".app-header").getBoundingClientRect();
-            const max = element.style.width ? Number(element.style.width.replace("px", "")) : 400 - 5;
-            let scaled = scaleValue(event.clientX, [0, sizes.width], [0, element.style.width ? Number(element.style.width.replace("px", "")) : 400]);
-            if (scaled < 5) {
-                scaled = 5;
-            } else if (scaled > max - 5) {
-                scaled = max - 5;
+    let maximizedOffsetX;
+
+    function dragStart(event, position) {
+        dragging = true;
+        waitForMove = true;
+
+        app = bubbleToClass(event, "windows-app");
+
+        if (app.classList.contains("maximized")) {
+            const headerSize = element.querySelector(".app-header").getBoundingClientRect();
+            const max = element.style.width ? Number(element.style.width.replace("px", "")) : 400 + 2;
+
+            // TODO: asi odečíst pozici vlevo malého okna ?
+            maximizedOffsetX = scaleValue(position[0], [0, headerSize.width], [0, max]);
+            if (maximizedOffsetX < 5) {
+                maximizedOffsetX = 5;
+            } else if (maximizedOffsetX > max - 5) {
+                maximizedOffsetX = max - 5;
             }
-            document.onmouseup = closeDragElement;
-            document.onmousemove = (event) => {
-                element.style.left = (event.clientX - scaled) + "px";
-                element.style.top = (event.clientY - (sizes.height / 2)) + "px";
+            cl(position[0], [0, headerSize.width], [0, max], maximizedOffsetX);
+
+            waitForMove = true;
+        } else {
+            waitForMove = false;
+            maximizedOffsetX = 0;
+        }
+        firstMove = true;
+    }
+
+    function dragMove(position) {
+        if (dragging) {
+            if (waitForMove) {
+                cl("fullscreen removing");
                 app.classList.remove("maximized");
-                doDrag(app);
-                elementDrag(event);
-            };
+
+                waitForMove = false;
+                return;
+            }
+            app.classList.add("dragging");
+
+
+            if (firstMove) {
+                headerSize = element.querySelector(".app-header").getBoundingClientRect();
+                max = element.style.width ? Number(element.style.width.replace("px", "")) : 400 + 2;
+                offsetX = scaleValue(position[0] - element.offsetLeft, [0, headerSize.width], [0, max]);
+                if (offsetX < 5) {
+                    offsetX = 5;
+                } else if (offsetX > max - 5) {
+                    offsetX = max - 5;
+                }
+                cl(position[0], [0, headerSize.width], [0, max], offsetX);
+                element.style.left = (position[0] - maximizedOffsetX) + "px";
+                firstMove = false;
+            }
+            element.style.left = (position[0] - offsetX) + "px";
+            element.style.top = (position[1] - (headerSize.height / 2)) + "px";
         }
     }
 
-    function doDrag(app) {
-        app.classList.add("dragging");
-        deselectAllApps();
-        selectApp(app.dataset.uuid);
-        app.style.zIndex = getLowestMaxAppZIndex();
-        pos3 = event.clientX;
-        pos4 = event.clientY;
-        document.onmouseup = closeDragElement;
-        document.onmousemove = elementDrag;
-    }
-
-    function elementDrag(event) {
-        event.preventDefault();
-        pos1 = pos3 - event.clientX;
-        pos2 = pos4 - event.clientY;
-        pos3 = event.clientX;
-        pos4 = event.clientY;
-        element.style.top = (element.offsetTop - pos2) + "px";
-        element.style.left = (element.offsetLeft - pos1) + "px";
-    }
-
-    function closeDragElement(event) {
-        let app = bubbleToClass(event, "windows-app");
+    function dragStop() {
         if (app) {
             app.classList.remove("dragging");
-
-            document.onmouseup = null;
-            document.onmousemove = null;
+            // event.preventDefault();
         }
+        dragging = false;
     }
+
+    const appWindow = element.querySelector(".app-header");
+    appWindow.addEventListener("mousedown", (event) => dragStart(event, [event.clientX, event.clientY]));
+    appWindow.addEventListener("touchstart", (event) => dragStart(event, [event.touches[0].clientX, event.touches[0].clientY]), { "passive": false });
+
+    window.addEventListener("mousemove", (event) => dragMove([event.clientX, event.clientY]));
+    window.addEventListener("touchmove", (event) => dragMove([event.touches[0].clientX, event.touches[0].clientY]));
+
+    window.addEventListener("mouseup", dragStop);
+    window.addEventListener("touchend", dragStop);
+    window.addEventListener("blur", dragStop);
+
 }
 
 function selectApp(uuid) {
@@ -729,6 +758,23 @@ function getLowestMaxAppZIndex() {
         indexes.push(element.style.zIndex ? Number(element.style.zIndex) : 0)
     });
     return indexes.sort((a, b) => b - a)[0] + 1;
+}
+
+async function getBluetooth() {
+    if (await navigator.bluetooth.getAvailability()) {
+        const bluetoothNavbar = createElement("div", new ClassList("bluetooth"));
+        const bluetoothIcon = createElement("div", new ClassList("material-symbols-rounded"), new TextContent("bluetooth"), new AppendTo(bluetoothNavbar));
+
+        bluetoothIcon.addEventListener("click", async (event) => {
+            event.stopPropagation();
+            try {
+                await navigator.bluetooth.requestDevice({ "acceptAllDevices": true });
+            } catch (error) {
+            }
+        });
+
+        document.querySelector(".navbar-bluetooth > .navbar-button-content").appendChild(bluetoothNavbar);
+    }
 }
 
 function getBattery() {

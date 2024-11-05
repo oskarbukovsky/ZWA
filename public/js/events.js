@@ -88,7 +88,7 @@ navbar.querySelector(".navbar-search .navbar-button-content").addEventListener("
     navbar.querySelector(".navbar-search > .search-menu").classList.toggle("open");
 });
 
-navbar.querySelector(".navbar-screen .navbar-button-content").addEventListener("click", () => {
+navbar.querySelector(".navbar-screen .navbar-button-content").addEventListener("click", (event) => {
     navbar.querySelector(".navbar-screen .screen-menu").classList.toggle("open");
 });
 
@@ -257,6 +257,9 @@ function desktopIconContextMenu(element, node) {
             const iframe = createElement("iframe", new ClassList("hidden"), new Src(getDestination(node)), new AppendTo(document.body), new ElementEvent("afterprint", () => self.close));
             cl("Printing: ", iframe);
             iframe.contentWindow.print();
+            setTimeout(() => {
+                iframe.remove();
+            }, 300000);
         });
         const hr1 = createElement("hr", new AppendTo(container));
 
@@ -368,26 +371,26 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
 function mouseSelectBox() {
+    let selecting;
     let startX, startY;
     let selectBox;
-    let selecting;
     let desktopSize;
 
-    window.addEventListener("mousedown", (event) => {
-        if (event.target == desktop) {
-            startX = event.clientX;
-            startY = event.clientY;
+    function selectStart(target, position) {
+        if (target == desktop) {
+            startX = position[0];
+            startY = position[1];
             selectBox = createElement("div", new ClassList("select-box"), new AppendTo(desktop));
             selecting = true;
             deselectDesktopIcons();
             desktopSize = desktop.getBoundingClientRect();
         }
-    });
+    }
 
-    window.addEventListener("mousemove", (event) => {
+    function selectMove(position) {
         if (selecting) {
-            let mouseX = event.clientX;
-            let mouseY = event.clientY;
+            let mouseX = position[0];
+            let mouseY = position[1];
 
             if (mouseX > desktopSize.width - 2) {
                 mouseX = desktopSize.width - 2;
@@ -425,20 +428,28 @@ function mouseSelectBox() {
                 }
             });
         }
-    });
+    }
 
-    window.addEventListener("mouseup", () => {
+    function deSelect() {
         if (selecting) {
-            selecting = false;
             selectBox.remove();
         }
-    });
+        selecting = false;
+    }
 
-    window.addEventListener("blur", () => {
-        if (selecting) {
-            selecting = false;
-            selectBox.remove();
-        }
-    });
+    window.addEventListener("mousedown", (event) => selectStart(event.target, [event.clientX, event.clientY]));
+    window.addEventListener("touchstart", (event) => selectStart(event.target, [event.touches[0].clientX, event.touches[0].clientY]));
 
+    window.addEventListener("mousemove", (event) => selectMove([event.clientX, event.clientY]));
+    window.addEventListener("touchmove", (event) => selectMove([event.touches[0].clientX, event.touches[0].clientY]));
+
+    window.addEventListener("mouseup", deSelect);
+    window.addEventListener("touchend", deSelect);
+    window.addEventListener("blur", deSelect);
 }
+
+// window.ontouchstart = function (event) {
+//     if (event.touches.length > 1) { //If there is more than one touch
+//         event.preventDefault();
+//     }
+// }

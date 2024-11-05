@@ -239,6 +239,11 @@
 	font-size: 1.4rem;
 }
 
+.navbar-bluetooth .bluetooth > span {
+	transform: scaleX(1.4);
+	font-size: 1.4rem;
+}
+
 .battery > .battery-tooltip {
 	position: absolute;
 	left: -6em;

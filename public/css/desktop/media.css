@@ -11,10 +11,29 @@
 }
 
 @media print {
-	@page { 
-        size: landscape;
-    }
-    body { 
-        writing-mode: tb-rl;
-    }
+	/* @page {
+		size: landscape;
+	}
+	body {
+		writing-mode: tb-rl;
+		transform: rotate(-90deg);
+	}
+	* {
+		text-shadow: none !important;
+	}
+
+	.windows-app > .app-content:before {
+		content: "" !important;
+	}
+
+	#navbar {
+		border-top: 1px solid #000 !important;
+	} */
+	body > * {
+		display: none !important;
+	}
+
+	body:after {
+		content: "Do NOT print this page !!!";
+	}
 }

@@ -47,14 +47,20 @@ if (!sessionIsValid()) {
     <div id="navbar" class="no-select">
         <div class="navbar-menu">
             <div class="navbar-button-content"></div>
-            <div class="main-menu navbar-popup"></div>
+            <div class="main-menu navbar-popup">
+                <div id="id107cb35be4427"
+                    a='{"t":"r","v":"1.2","lang":"cs","locs":[849],"ssot":"c","sics":"ds","cbkg":"#FFFFFF00","cfnt":"rgba(255,255,255,1)","codd":"#FFFFFF00","cont":"rgba(255,255,255,0.8313725490196079)"}'>
+                    Weather Data Source: <a href="https://sharpweather.com/weather_prague/30_days/">Prague 30 days
+                        weather</a></div>
+                <script async src="https://static1.sharpweather.com/widgetjs/?id=id107cb35be4427"></script>
+            </div>
         </div>
         <div class="navbar-search">
             <div class="navbar-button-content searchbar"></div>
             <div class="search-menu navbar-popup"></div>
         </div>
         <div class="navbar-spacer"></div>
-        <div class="navbar-screen navbar-volume navbar-battery">
+        <div class="navbar-screen navbar-volume navbar-bluetooth navbar-battery">
             <div class="navbar-button-content">
                 <div class="navbar-screen">
                     <span class="material-symbols-rounded">

@@ -28,6 +28,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     appResizing.windowResize();
 
+    await getBluetooth();
     getBattery();
     mouseSelectBox();
 
