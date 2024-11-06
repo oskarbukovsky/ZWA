@@ -129,6 +129,7 @@ body,
 	height: auto;
 	max-height: 48px;
 	margin-top: 3px;
+	-webkit-user-drag: none;
 }
 
 #desktop > .icon img:before {

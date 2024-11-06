@@ -403,38 +403,30 @@ function dragApp(element) {
     let dragging;
     let waitForMove;
     let app;
-    let headerSize;
-    let max;
     let offsetX;
-    let firstMove;
+    const header = element.querySelector(".app-header");
 
     let maximizedOffsetX;
 
     function dragStart(event, position) {
         dragging = true;
         waitForMove = true;
-
         app = bubbleToClass(event, "windows-app");
 
+        const max = stripPx(element, "width", 400 + 2);
+
+        offsetX = scaleValue(position[0] - element.offsetLeft, [0, header.offsetWidth], [0, max]);
+        if (offsetX < 5) {
+            offsetX = 5;
+        } else if (offsetX > max - 5) {
+            offsetX = max - 5;
+        }
         if (app.classList.contains("maximized")) {
-            const headerSize = element.querySelector(".app-header").getBoundingClientRect();
-            const max = element.style.width ? Number(element.style.width.replace("px", "")) : 400 + 2;
-
-            // TODO: asi odečíst pozici vlevo malého okna ?
-            maximizedOffsetX = scaleValue(position[0], [0, headerSize.width], [0, max]);
-            if (maximizedOffsetX < 5) {
-                maximizedOffsetX = 5;
-            } else if (maximizedOffsetX > max - 5) {
-                maximizedOffsetX = max - 5;
-            }
-            cl(position[0], [0, headerSize.width], [0, max], maximizedOffsetX);
-
             waitForMove = true;
         } else {
             waitForMove = false;
-            maximizedOffsetX = 0;
         }
-        firstMove = true;
+        selectApp(element.dataset.uuid);
     }
 
     function dragMove(position) {
@@ -442,28 +434,13 @@ function dragApp(element) {
             if (waitForMove) {
                 cl("fullscreen removing");
                 app.classList.remove("maximized");
-
                 waitForMove = false;
                 return;
             }
             app.classList.add("dragging");
 
-
-            if (firstMove) {
-                headerSize = element.querySelector(".app-header").getBoundingClientRect();
-                max = element.style.width ? Number(element.style.width.replace("px", "")) : 400 + 2;
-                offsetX = scaleValue(position[0] - element.offsetLeft, [0, headerSize.width], [0, max]);
-                if (offsetX < 5) {
-                    offsetX = 5;
-                } else if (offsetX > max - 5) {
-                    offsetX = max - 5;
-                }
-                cl(position[0], [0, headerSize.width], [0, max], offsetX);
-                element.style.left = (position[0] - maximizedOffsetX) + "px";
-                firstMove = false;
-            }
             element.style.left = (position[0] - offsetX) + "px";
-            element.style.top = (position[1] - (headerSize.height / 2)) + "px";
+            element.style.top = (position[1] - (header.offsetHeight / 2)) + "px";
         }
     }
 
@@ -477,7 +454,7 @@ function dragApp(element) {
 
     const appWindow = element.querySelector(".app-header");
     appWindow.addEventListener("mousedown", (event) => dragStart(event, [event.clientX, event.clientY]));
-    appWindow.addEventListener("touchstart", (event) => dragStart(event, [event.touches[0].clientX, event.touches[0].clientY]), { "passive": false });
+    appWindow.addEventListener("touchstart", (event) => dragStart(event, [event.touches[0].clientX, event.touches[0].clientY]), { "passive": true });
 
     window.addEventListener("mousemove", (event) => dragMove([event.clientX, event.clientY]));
     window.addEventListener("touchmove", (event) => dragMove([event.touches[0].clientX, event.touches[0].clientY]));
@@ -489,10 +466,11 @@ function dragApp(element) {
 }
 
 function selectApp(uuid) {
-    cl(uuid)
-    deselectAllApps();
-    windows.querySelector('[data-uuid="' + uuid + '"]').classList.add("active");
+    const appWindow = windows.querySelector('[data-uuid="' + uuid + '"]');
+    appWindow.classList.add("active");
     navbar.querySelector('[data-uuid="' + uuid + '"]').classList.add("active");
+    appWindow.style.zIndex = getLowestMaxAppZIndex();
+    deselectAllApps('[data-uuid="' + uuid + '"]');
 }
 
 function createElement() {
@@ -560,12 +538,11 @@ function closeAllDesktopContextMenus() {
     });
 }
 
-function deselectAllApps() {
-    windows.querySelectorAll(".windows-app").forEach((app) => {
+function deselectAllApps(exceptSelector) {
+    windows.querySelectorAll(".windows-app.active:not(" + exceptSelector + ")").forEach((app) => {
         app.classList.remove("active");
     });
-    navbar.querySelectorAll("div.active").forEach((element) => {
-        // cl("unActivating: ", element);
+    navbar.querySelectorAll("div.active:not(" + exceptSelector + ")").forEach((element) => {
         element.classList.remove("active")
     });
 }
@@ -692,6 +669,8 @@ function resizeWindow(app) {
     resizingElementsPrefixes.forEach((side) => {
         let resizingElement = app.querySelector("." + side + "grip");
         // cl("side: " + side + ", Selector: \"" + "." + side + "grip" + "\"\n", resizingElement);
+
+        // TODO: move appResizing here and whole to events.js
     })
 }
 
@@ -1062,4 +1041,8 @@ function elementsCollide(el1, el2) {
         rect1.bottom < rect2.top ||
         rect1.left > rect2.right
     );
+}
+
+function stripPx(element, styleType, defaultValue) {
+    return element.style[styleType] ? Number(element.style[styleType].replace("px", "")) : defaultValue;
 }

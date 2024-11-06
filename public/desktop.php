@@ -1,6 +1,5 @@
 <?php
 require("db.php");
-session_start();
 if (!sessionIsValid()) {
     // echo "Invalid from desktop";
     header("Location: index.php?event=session-timeout");

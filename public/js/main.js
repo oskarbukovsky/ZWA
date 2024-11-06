@@ -22,6 +22,8 @@
 
 // document.adoptedStyleSheets.push(sheet);
 
+https://ash-speed.hetzner.com/1GB.bin
+
 window.addEventListener("DOMContentLoaded", async () => {
     cl("|📘 Document Ready");
     let time1 = new Date();
@@ -148,8 +150,13 @@ function appOpen(node) {
         cl("app is already open", node);
         return;
     }
-    const holder = createElement("div", new Data("uuid", node.uuid), new ClassList("windows-app", "active"));
+    const holder = createElement("div", new Data("uuid", node.uuid), new ClassList("windows-app"));
     holder.style.zIndex = getLowestMaxAppZIndex();
+    const lastActiveElement = [...windows.querySelectorAll(".windows-app:not(.minimized)")].slice(-1);
+    if (lastActiveElement.length > 0) {
+        holder.style.top = lastActiveElement[0].offsetTop + 15 + "px";
+        holder.style.left = lastActiveElement[0].offsetLeft + 20 + "px";
+    }
     const header = createElement("header", new ClassList("app-header"), new AppendTo(holder));
     const v1 = createElement("div", new ClassList("app-v1"), new AppendTo(header));
     const iconHolder = createElement("div", new ClassList("app-icon"), new AppendTo(v1));
@@ -171,7 +178,6 @@ function appOpen(node) {
     const appIframeLoaded = () => {
         // cl("loaded");
         navbarHolder.classList.add("running");
-        navbarHolder.classList.add("active");
         // iframe.contentWindow.postMessage("toIframe", location.origin);
     };
     const iframe = createElement("iframe", new Src(getDestination(node)),
@@ -191,12 +197,12 @@ function appOpen(node) {
     });
 
     resizeWindow(holder);
-    selectApp(node.uuid);
     dragApp(holder);
     minimizeApp(minimize);
     maximizeApp(maximize, header);
     closeApp(close);
     iframe.contentWindow.postMessage("Tu máš Áj Frejme", "*");
+    selectApp(node.uuid);
 }
 
 function addDesktopIcon(node) {

@@ -1,6 +1,5 @@
 <?php
 require("db.php");
-session_start();
 if (sessionIsValid()) {
     header("Location: desktop.php");
     die();

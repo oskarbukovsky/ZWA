@@ -1,0 +1,55 @@
+
+<!--
+http://zwa.toad.cz/~vlachzd1/07/
+http://zwa.toad.cz/~vlachzd1/07/names.php
+-->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Javascript</title>
+        <script src="07.js"></script>
+        <style>
+            span.error-text     { display: none; color: red; }
+            .error input        {color:red;}
+            .error label        {color:pink;}
+            .error span.error-text  { display: inline;}
+        </style>
+    </head>
+    <body>
+        <form action="" method="post">
+            <p>
+                <label>
+                    Jmeno
+                    <input type="text" name="name" id="name">
+                </label>
+            </p>
+            <p>
+                <label>
+                    Prijmeni
+                    <input type="text" name="surname" id="surname">
+                </label>
+            </p>
+            <p>
+                <label>
+                    Heslo
+                    <input type="password" name="pass1" id="pass1">
+                </label>
+            </p>
+            <p>
+                <label>
+                    Heslo znovu
+                    <input type="password" name="pass2" id="pass2">
+                </label>
+                <span class="error-text">Hesla se neshoduji.</span>
+            </p>
+            <p>
+                <input type="submit" value="Registrovat">
+            </p>
+        </form>
+        <script>
+            initForm();
+        </script>
+    </body>
+</html>

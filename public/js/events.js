@@ -22,7 +22,6 @@ class ElementEvents {
         } else {
             selector.classList.remove("minimized");
             selectApp(id);
-            selector.style.zIndex = getLowestMaxAppZIndex();
         }
     };
 
@@ -54,7 +53,10 @@ window.addEventListener("blur", () => {
     }
 });
 
-window.addEventListener("click", (event) => {
+window.addEventListener("mousedown", deselectBasedOnClick);
+window.addEventListener("touchstart", deselectBasedOnClick);
+
+function deselectBasedOnClick (event) {
     if (!(bubbleToClass(event, "navbar-menu") || bubbleToClass(event, "main-menu"))) {
         closeMainMenu();
     }
@@ -76,7 +78,7 @@ window.addEventListener("click", (event) => {
         closeAllDesktopContextMenus();
     }
     uploadElement.classList.remove("upload");
-})
+}
 
 navbar.querySelector(".navbar-menu").addEventListener("click", (event) => {
     if (event.target != navbar.querySelector(".navbar-menu > .main-menu")) {

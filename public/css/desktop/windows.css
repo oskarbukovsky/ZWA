@@ -140,6 +140,7 @@
 	height: calc(
 		10px + var(--app-controls-size) + var(--app-controls-extra) - 4px
 	);
+	-webkit-user-drag: none;
 	/* background-color: green; */
 	/* margin: 2px; */
 }

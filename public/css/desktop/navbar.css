@@ -327,6 +327,7 @@
 	object-fit: contain;
 	transform: scale(0.75);
 	transition: transform 100ms ease-in-out;
+	-webkit-user-drag: none;
 }
 
 .navbar-button-content:active img {
@@ -573,17 +574,21 @@ header .calendar-current-date {
 #navbar > .navbar-minimize:after {
 	content: "";
 	position: absolute;
-	right: 6px;
+	right: 5px;
 	min-width: calc(var(--navbar-height) * 0.035);
 	border-radius: 16px;
 	top: 50%;
 	transform: translate(0%, -50%);
-	min-height: 35%;
+	min-height: 40%;
 	background-color: transparent;
 	transition: background-color 50ms linear;
 }
 
-#navbar > .navbar-minimize:hover::after {
+#navbar > .navbar-minimize:hover {
+	background-color: rgba(46, 70, 107, 0.25);
+}
+
+#navbar > .navbar-minimize:hover:after {
 	background-color: rgba(142, 155, 175, 0.9);
 }
 

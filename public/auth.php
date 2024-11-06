@@ -2,8 +2,6 @@
 
 require("db.php");
 require("utils.php");
-session_cache_expire(480);
-session_start();
 
 if ((isset($_POST["method"]) && $_POST["method"] == "logout") || (isset($_GET["method"]) && $_GET["method"] == "logout")) {
     if (isset($_SESSION["uuid"])) {

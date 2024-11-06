@@ -1,4 +1,9 @@
 <?php
+ini_set("session.gc_maxlifetime", 30000);
+ini_set("session.cookie_lifetime", 30000);
+session_cache_expire(480);
+session_start();
+
 $serverName = "localhost";
 $username = "bukovja4";
 $password = "Lucinka1221";
