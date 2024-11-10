@@ -4,7 +4,7 @@
 
 const userIdentifier = new user("bukovja4", "50eced28-c925-4948-80eb-e4fabe83a41b", null, JSON.stringify(new userSettings("0.8", "43px", "13px", "9px")));
 
-const vNodes = [new vNode(
+const vNodesOld = [new vNode(
     "10f03bee-a841-44d1-97f4-ba3ae8af4073",
     "root",
     null,

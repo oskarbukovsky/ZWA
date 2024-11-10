@@ -81,7 +81,7 @@ function deselectBasedOnClick (event) {
 }
 
 navbar.querySelector(".navbar-menu").addEventListener("click", (event) => {
-    if (event.target != navbar.querySelector(".navbar-menu > .main-menu")) {
+        if (bubbleToClass(event, "main-menu") != navbar.querySelector(".navbar-menu > .main-menu")) {
         navbar.querySelector(".navbar-menu > .main-menu").classList.toggle("open");
     }
 });

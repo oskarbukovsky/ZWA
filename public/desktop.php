@@ -26,6 +26,9 @@ if (!sessionIsValid()) {
     <script src="js/classes.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/testData.js"></script>
+    <?php
+        getDataForJs("vNode","vNodes", "uuid,type,parent,timeCreate,timeEdit,timeRead,owner,permissions,name,description,size,data");
+    ?>
     <script defer src="js/setup.js"></script>
     <script defer src="js/events.js"></script>
     <script defer src="js/main.js"></script>

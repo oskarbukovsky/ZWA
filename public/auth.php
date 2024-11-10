@@ -7,6 +7,7 @@ if ((isset($_POST["method"]) && $_POST["method"] == "logout") || (isset($_GET["m
     if (isset($_SESSION["uuid"])) {
         deleteData("vSessions", ["vSession"], [$_SESSION["uuid"]]);
     }
+    session_unset();
     session_destroy();
     header("Location: index.php?event=logout");
     die();

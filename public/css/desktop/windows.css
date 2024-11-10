@@ -141,6 +141,7 @@
 		10px + var(--app-controls-size) + var(--app-controls-extra) - 4px
 	);
 	-webkit-user-drag: none;
+	transform: scale(0.8);
 	/* background-color: green; */
 	/* margin: 2px; */
 }

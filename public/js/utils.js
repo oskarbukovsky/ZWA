@@ -292,6 +292,9 @@ function getDestination(node) {
                 return "administration.html";
             case "vComputer":
                 return "explorer.html?folder=user-data/" + node.owner;
+            case "http":
+            case "https":
+                return node.data.data[0];
             default:
                 return "user-data/" + node.owner + node.data.data[0] + node.name;
         }
@@ -316,6 +319,13 @@ function getIcon(node) {
                             return "./media/file-icons/computer.webp";
                         case "admin":
                             return "./media/file-icons/admin.webp";
+                        case "http":
+                        case "https":
+                            const link = node.data.data[0].match("(?<=:\/\/).*?(?=(\/|$))");
+                            if (link[0]) {
+                                return "https://favicone.com/" + link[0] + "?s=128"
+                                // return "https://www.google.com/s2/favicons?domain=" + link[0] + "&sz=128"
+                            }
                         default:
                             return "./media/file-icons/unknown.webp"
                     }
@@ -565,40 +575,39 @@ function closeScreenMenu() {
 
 function desktopIconTooltip(element, node) {
     let tooltipTimer, tooltipX, tooltipY;
-    element.addEventListener("mouseenter", desktopIconTooltipLogic);
-    element.addEventListener("mouseleave", desktopIconTooltipLogic);
-    element.addEventListener("mousemove", desktopIconTooltipLogic);
-    function desktopIconTooltipLogic(event) {
-        if (event.type == "mouseenter") {
-            tooltipTimer = new Date();
-            const tooltip = createElement("div", new ClassList("icon-tooltip", "no-select"), new AppendTo(element), new TextContent(getIconTooltipText(node)));
-            setTimeout(() => {
-                if (tooltip && desktop.querySelectorAll(".context-menu").length == 0 && element.querySelectorAll("textarea:not(:read-only)").length == 0) {
-                    tooltip.style.left = tooltipX + "px";
-                    tooltip.style.top = "calc(1.5rem + " + tooltipY + "px)";
-                    tooltip.classList.add("active");
-                }
-            }, 900);
-        } else if (event.type === "mousemove") {
-            if (new Date() - tooltipTimer <= 900) {
-                tooltipX = event.clientX;
-                tooltipY = event.clientY;
+
+    element.addEventListener("mouseenter", () => {
+        tooltipTimer = new Date();
+        const tooltip = createElement("div", new ClassList("icon-tooltip", "no-select"), new AppendTo(element), new TextContent(getIconTooltipText(node)));
+        setTimeout(() => {
+            if (tooltip && desktop.querySelectorAll(".context-menu").length == 0 && element.querySelectorAll("textarea:not(:read-only)").length == 0) {
+                tooltip.style.left = tooltipX + "px";
+                tooltip.style.top = "calc(1.5rem + " + tooltipY + "px)";
+                tooltip.classList.add("active");
             }
+        }, 900);
+    });
+
+    element.addEventListener("mousemove", () => {
+        if (new Date() - tooltipTimer <= 900) {
+            tooltipX = event.clientX;
+            tooltipY = event.clientY;
         }
-        else if (event.type == "mouseleave") {
-            const tooltip = element.querySelector(".icon-tooltip");
-            if (tooltip && tooltip.classList.contains("active")) {
+    });
+
+    element.addEventListener("mouseleave", () => {
+        const tooltip = element.querySelector(".icon-tooltip");
+        if (tooltip) {
+            if (tooltip.classList.contains("active")) {
                 tooltip.classList.remove("active");
                 setTimeout(() => tooltip.remove(), 250);
             } else {
-                if (tooltip) {
-                    tooltip.remove();
-                } else {
-                    cl("unable to remove icon tooltip", event, tooltip);
-                }
+                tooltip.remove();
             }
+        } else {
+            cl("unable to remove icon tooltip", event, tooltip);
         }
-    }
+    });
 }
 
 // var rgb = getAverageRGB(document.getElementById('i'));

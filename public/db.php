@@ -170,9 +170,8 @@ function sessionIsValid()
         // $query = $conn->prepare($sql);
         // $query->bindParam(":value", $vSession, PDO::PARAM_STR);
         // $query->execute();
-        
-        $query = getData("vSessions", "validUntil", ["vSession"], [$_SESSION["uuid"]]);
 
+        $query = getData("vSessions", "validUntil", ["vSession"], [$_SESSION["uuid"]]);
         $result = $query->fetchAll();
 
         foreach ($result as $data) {
@@ -242,20 +241,25 @@ function createDefaultFiles($ownerUuid)
     global $conn;
     $sql = "INSERT INTO vNodes (uuid, type, parent, timeCreate, timeEdit, timeRead, owner, permissions, name, description, data) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 
+
     $query = $conn->prepare($sql);
-    $rootUuid = newUuid();
-    $query->execute(array($rootUuid, "root", null, time(), time(), time(), $ownerUuid, '{"canDelete":false}', "Základní složka", "", '{"data":[]}'));
+    $query->execute(array($ownerUuid, "root", null, time(), time(), time(), $ownerUuid, '{"canDelete":false}', "Základní složka", "", '{"data":[]}'));
+    mkdir(dirname(__FILE__) . "/user-data/" . $ownerUuid . "/");
 
     $query = $conn->prepare($sql);
     $desktopUuid = newUuid();
-    $query->execute(array($desktopUuid, "desktop", $rootUuid, time(), time(), time(), $ownerUuid, '{"canDelete":false}', "Plocha", "Obsahuje soubory a složky na ploše", '{"data":[]}'));
+    $query->execute(array($desktopUuid, "desktop", $ownerUuid, time(), time(), time(), $ownerUuid, '{"canDelete":false}', "Plocha", "Obsahuje soubory a složky na ploše", '{"data":[]}'));
+    mkdir(dirname(__FILE__) . "/user-data/" . $ownerUuid . "/" . $desktopUuid . "/");
 
     $query = $conn->prepare($sql);
-    $query->execute(array(newUuid(), "documents", $rootUuid, time(), time(), time(), $ownerUuid, '{"canDelete":false}', "Dokumenty", "Složka pro ukládání dokumentů", '{"data":[]}'));
+    $documentsUuid = newUuid();
+    $query->execute(array($documentsUuid, "documents", $ownerUuid, time(), time(), time(), $ownerUuid, '{"canDelete":false}', "Dokumenty", "Složka pro ukládání dokumentů", '{"data":[]}'));
+    mkdir(dirname(__FILE__) . "/user-data/" . $ownerUuid . "/" . $documentsUuid . "/");
 
     $query = $conn->prepare($sql);
-    $query->execute(array(newUuid(), "images", $rootUuid, time(), time(), time(), $ownerUuid, '{"canDelete":false}', "Obrázky", "Složka pro ukládání obrázků", '{"data":[]}'));
-
+    $imagesUuid = newUuid();
+    $query->execute(array($imagesUuid, "images", $ownerUuid, time(), time(), time(), $ownerUuid, '{"canDelete":false}', "Obrázky", "Složka pro ukládání obrázků", '{"data":[]}'));
+    mkdir(dirname(__FILE__) . "/user-data/" . $ownerUuid . "/" . $imagesUuid);
 
     $query = $conn->prepare($sql);
     $query->execute(array(newUuid(), "link", $desktopUuid, time(), time(), time(), $ownerUuid, '{"canDelete":false}', "Tento Počítač", "Umístění: Tento Počítač", '{"data":["vComputer://"]}'));
@@ -264,10 +268,15 @@ function createDefaultFiles($ownerUuid)
     $query->execute(array(newUuid(), "link", $desktopUuid, time(), time(), time(), $ownerUuid, '{"canDelete":false}', "Administrace", "", '{"data":["admin://"]}'));
 
     $query = $conn->prepare($sql);
-    $query->execute(array(newUuid(), "file", $desktopUuid, time(), time(), time(), $ownerUuid, '{"canDelete":true}', "Nový textový dokument.txt", "Typ: Textový dokument", '{"data":[]}'));
+    $query->execute(array(newUuid(), "file", $desktopUuid, time(), time(), time(), $ownerUuid, '{"canDelete":true}', "Nový textový dokument.txt", "Typ: Textový dokument", '{"data":["/' . $desktopUuid . '/"]}'));
+    copy(dirname(__FILE__) . "/user-data/defaults/Nový textový dokument.txt", dirname(__FILE__) . "/user-data/" . $ownerUuid . "/" . $desktopUuid . "/Nový textový dokument.txt");
 
     $query = $conn->prepare($sql);
-    $query->execute(array(newUuid(), "file", $desktopUuid, time(), time(), time(), $ownerUuid, '{"canDelete":true}', "sample.pdf", "Typ: PDF dokument", '{"data":["/2/"]}'));
+    $query->execute(array(newUuid(), "file", $desktopUuid, time(), time(), time(), $ownerUuid, '{"canDelete":true}', "sample.pdf", "Typ: PDF dokument", '{"data":["/' . $desktopUuid . '/"]}'));
+    copy(dirname(__FILE__) . "/user-data/defaults/sample.pdf", dirname(__FILE__) . "/user-data/" . $ownerUuid . "/" . $desktopUuid . "/sample.pdf");
+
+    $query = $conn->prepare($sql);
+    $query->execute(array(newUuid(), "link", $desktopUuid, time(), time(), time(), $ownerUuid, '{"canDelete":false}', "Mapy", "OpenStreetMaps", '{"data":["https://www.openstreetmap.org"]}'));
 }
 
 function loginAuth($username, $password)
