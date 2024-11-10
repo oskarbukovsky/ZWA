@@ -35,6 +35,21 @@ class ClassList {
     };
 }
 
+class SandBox {
+    constructor(...args) {
+        args.forEach((element, index) => {
+            this[index] = element;
+        });
+    }
+
+    [Symbol.iterator]() {
+        var index = -1;
+        return {
+            next: () => ({ value: this[++index], done: !(index in this) })
+        };
+    };
+}
+
 class Id {
     constructor(id) {
         this.id = id;
@@ -148,7 +163,7 @@ class user {
     }
 }
 class vNode {
-    constructor(uuid, type, parent, timeCreate, timeEdit, timeRead, owner, permissions = JSON.stringify(new vPermission()), name, description, size, data = JSON.stringify(new vData())) {
+    constructor(uuid, type, parent, timeCreate, timeEdit, timeRead, owner, permissions = JSON.stringify(new vPermission()), name, description, size, data = JSON.stringify(new vData()), icon) {
         this.uuid = uuid;
 
         this.type = type;
@@ -167,6 +182,8 @@ class vNode {
         this.size = !isNaN(Number(size)) ? Number(size): 0;
 
         this.data = JSON.parse(htmlSpecialCharsDecode(data));
+
+        this.icon = icon;
     }
 }
 

@@ -56,7 +56,7 @@ window.addEventListener("blur", () => {
 window.addEventListener("mousedown", deselectBasedOnClick);
 window.addEventListener("touchstart", deselectBasedOnClick);
 
-function deselectBasedOnClick (event) {
+function deselectBasedOnClick(event) {
     if (!(bubbleToClass(event, "navbar-menu") || bubbleToClass(event, "main-menu"))) {
         closeMainMenu();
     }
@@ -81,7 +81,7 @@ function deselectBasedOnClick (event) {
 }
 
 navbar.querySelector(".navbar-menu").addEventListener("click", (event) => {
-        if (bubbleToClass(event, "main-menu") != navbar.querySelector(".navbar-menu > .main-menu")) {
+    if (bubbleToClass(event, "main-menu") != navbar.querySelector(".navbar-menu > .main-menu")) {
         navbar.querySelector(".navbar-menu > .main-menu").classList.toggle("open");
     }
 });
@@ -129,7 +129,7 @@ const appIframeLoaded = () => {
 window.onmessage = async function (event) {
     // console.log(event);
     if (event.origin != location.origin) {
-        cl("📕 Origins do not match!!!")
+        cl("!📕 Origins do not match!!!")
         return;
     }
     console.log("receivedFromIframe: ", event.data);
@@ -139,7 +139,7 @@ window.onmessage = async function (event) {
             appOpen(node[0]);
             break;
         default:
-            cl("📕 Neznámá zpráva z okna!")
+            cl("!📕 Neznámá zpráva z okna!")
     }
 };
 
@@ -204,9 +204,28 @@ function desktopIconOpener(element) {
 }
 
 function desktopIconEditName(element) {
+    function enterToSave(event) {
+        event.stopImmediatePropagation();
+        if (event.key == "Enter") {
+            event.preventDefault();
+            stopEdit(event);
+        }
+    }
+
+    function stopEdit(event) {
+        event.target.readOnly = true;
+        textDeSelect();
+        try {
+            event.target.removeEventListener("keydown", enterToSave);
+        } catch (e) {
+            cl("error: ", e);
+        }
+    }
+
     element.addEventListener("dblclick", (event) => {
         closeAllDesktopContextMenus();
         let element = event.toElement;
+        element.addEventListener("keydown", enterToSave);
         if (element.readOnly) {
             textSelect(element, 0, element.value.lastIndexOf("."))
             element.readOnly = !element.readOnly
@@ -215,8 +234,9 @@ function desktopIconEditName(element) {
     });
     element.addEventListener("focusout", (event) => {
         // cl("srcElement deprecated; Event: ", event)
-        event.target.readOnly = true;
-        textDeSelect()
+        // event.target.readOnly = true;
+        // textDeSelect()
+        stopEdit(event);
     });
 }
 

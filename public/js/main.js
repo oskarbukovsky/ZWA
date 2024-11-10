@@ -43,7 +43,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     cl("|📙 Opening indexedDB")
     openDb();
 
-    const dbOpenTimeout = 10;
+    const dbOpenTimeout = 1;
     let time1Db = new Date();
     while (!localDatabase) {
         await sleep(4);
@@ -180,10 +180,14 @@ function appOpen(node) {
         navbarHolder.classList.add("running");
         // iframe.contentWindow.postMessage("toIframe", location.origin);
     };
-    const iframe = createElement("iframe", new Src(getDestination(node)),
+    let sandBox = new SandBox();
+    if (!getDestination(node).includes(".pdf")) {
+        sandBox = new SandBox("allow-scripts", "allow-popups", "allow-same-origin")
+    }
+    const iframe = createElement("iframe", new Src(getDestination(node)), sandBox,
         new ElementEvent("load", appIframeLoaded), new ElementEvent("mouseover", ElementEvents.appIframeMouseOver), new ElementEvent("mouseout", ElementEvents.appIframeMouseOut),
         new AppendTo(content));
-
+    iframe.allow = "accelerometer *; attribution-reporting *; autoplay *; bluetooth *; browsing-topics *; camera *; compute-pressure *; display-capture *; encrypted-media *; fullscreen *; gamepad *; gyroscope *; hid *; identity-credentials-get *; idle-detection *; local-fonts *; magnetometer *; microphone *; microphone *; otp-credentials *; payment *; picture-in-picture *; publickey-credentials-create *; publickey-credentials-get *; screen-wake-lock *; serial *; storage-access *; usb *; web-share *; window-management *; window-management"
     // let detector = document.createElement("div");
     // detector.classList.add("detect");
     // content.appendChild(detector);

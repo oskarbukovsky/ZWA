@@ -139,11 +139,11 @@ function deleteDb() {
 }
 
 function openDbError(timeout) {
-    cl("! Nedaří se připojit k databázi v časovém limitu: " + timeout + "s");
-    cssVar("--db-error", '"Nedaří se připojit k databázi v časovém limitu ' + timeout + 's: \\a Zavřete ostatní okna s aplikací"');
+    cl("!📕 Nedaří se připojit k databázi v časovém limitu: " + timeout + "s");
+    cssVar("--db-error", '"Nedaří se připojit k databázi [V časovém limitu ' + timeout + 's]: \\a Zavřete ostatní okna s aplikací"');
     const errorsElement = document.querySelector(".errors");
     errorsElement.classList.remove("hidden")
-    errorsElement.document.querySelector(".errors").classList.add("db-error");
+    errorsElement.classList.add("db-error");
 }
 
 function openDb() {
@@ -168,7 +168,7 @@ function openDb() {
                 try {
                     dbStore.add(item);
                 } catch (error) {
-                    cl("📕 ERROR: ", error, item);
+                    cl("!📕 ERROR: ", error, item);
                 }
                 dbStore.transaction.oncomplete = (event) => success(event);
             });
@@ -287,23 +287,24 @@ function getDestination(node) {
     if (node.type == "link") {
         switch (node.data.data[0].split(":\/\/").shift()) {
             case "vLinkTrash":
-                return "user-data/" + node.owner + node.data.data[0] + node.name;
+                return location.origin + "/~bukovja4/public/user-data/" + node.owner + node.data.data[0] + node.name;
             case "admin":
-                return "administration.html";
+                return location.origin + "/~bukovja4/public/administration.html";
             case "vComputer":
-                return "explorer.html?folder=user-data/" + node.owner;
+                return location.origin + "/~bukovja4/public/explorer.html?folder=user-data/" + node.owner;
             case "http":
             case "https":
                 return node.data.data[0];
             default:
-                return "user-data/" + node.owner + node.data.data[0] + node.name;
+                return location.origin + "/~bukovja4/public/user-data/" + node.owner + node.data.data[0] + node.name;
         }
     } else {
-        return "user-data/" + node.owner + node.data.data[0] + node.name;
+        return location.origin + "/~bukovja4/public/user-data/" + node.owner + node.data.data[0] + node.name;
     }
 }
 
 function getIcon(node) {
+    cl(node);
     if (node.icon) {
         return node.icon;
     } else {
@@ -529,6 +530,11 @@ function createElement() {
                 break;
             case ElementEvent:
                 element.addEventListener(parameter.type, parameter.handler);
+                break;
+            case SandBox:
+                for (let className of parameter) {
+                    element.sandbox.add(className);
+                }
                 break;
             case AppendTo:
                 parameter.element.appendChild(element);
