@@ -182,7 +182,7 @@ function appOpen(node) {
     };
     let sandBox = new SandBox();
     if (!getDestination(node).includes(".pdf")) {
-        sandBox = new SandBox("allow-scripts", "allow-popups", "allow-same-origin")
+        sandBox = new SandBox("allow-downloads", "allow-forms", "allow-modals", "allow-orientation-lock", "allow-pointer-lock", "allow-popups", "allow-popups-to-escape-sandbox", "allow-presentation", "allow-same-origin", "allow-scripts", "allow-storage-access-by-user-activation", "allow-top-navigation", "allow-top-navigation-by-user-activation", "allow-top-navigation-to-custom-protocols")
     }
     const iframe = createElement("iframe", new Src(getDestination(node)), sandBox,
         new ElementEvent("load", appIframeLoaded), new ElementEvent("mouseover", ElementEvents.appIframeMouseOver), new ElementEvent("mouseout", ElementEvents.appIframeMouseOut),
