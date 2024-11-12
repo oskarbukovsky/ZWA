@@ -2,6 +2,10 @@
 	--image-of-the-day: url(../../media/login/black.webp);
 }
 
+::-ms-reveal {
+    display: none;
+}
+
 /* background-image: url("../media/last.webp"); */
 body {
 	margin: 0;

@@ -1061,3 +1061,10 @@ function elementsCollide(el1, el2) {
 function stripPx(element, styleType, defaultValue) {
     return element.style[styleType] ? Number(element.style[styleType].replace("px", "")) : defaultValue;
 }
+
+Object.defineProperty(String.prototype, 'capitalize', {
+    value: function () {
+        return this.charAt(0).toUpperCase() + this.slice(1);
+    },
+    enumerable: false
+});

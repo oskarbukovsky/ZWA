@@ -22,9 +22,17 @@
 
 // document.adoptedStyleSheets.push(sheet);
 
-https://ash-speed.hetzner.com/1GB.bin
+// https://ash-speed.hetzner.com/1GB.bin
 
 window.addEventListener("DOMContentLoaded", async () => {
+    await navigator.gpu.requestAdapter().then((gpu) => {
+        cl("|📗OS:  " + (navigator.platform.includes("MacIntel") ? ("MacIntel") : (navigator.platform.includes("Win32") ? ((navigator.userAgent.includes("Win64") ? ("Win64") : ("Win32"))) : (navigator.platform))));
+        cl("|📗CPU: " + (navigator.hardwareConcurrency >= 8 ? "8/8+" : navigator.hardwareConcurrency) + " cores");
+        cl("|📗GPU: " + gpu.info.vendor.capitalize() + " " + gpu.info.architecture.capitalize());
+        cl("|📗RAM: " + (navigator.deviceMemory >= 8 ? "8/8+" : navigator.deviceMemory) + " GB");
+        cl("|📗NET: " + (navigator.connection.downlink >= 10 ? "10+Mb/s" : navigator.connection.downlink + "Mb/s"));
+    })
+
     cl("|📘 Document Ready");
     let time1 = new Date();
 
@@ -43,7 +51,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     cl("|📙 Opening indexedDB")
     openDb();
 
-    const dbOpenTimeout = 1;
+    const dbOpenTimeout = 3;
     let time1Db = new Date();
     while (!localDatabase) {
         await sleep(4);
@@ -67,7 +75,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     cl("|📙 Starting up calendar...");
     setupCalendar();
 
-    cl("|📘 Finished in " + (new Date() - time1) + "ms");
+    cl("|📘 JS Finished in " + (new Date() - time1) + "ms");
+    cl("|📘 Finish from navigation start " + (new Date() - performance.timing.navigationStart) + "ms");
     // 📕📙📗📘
 
     //Temporary FPS/frameTime/ram usage counter
