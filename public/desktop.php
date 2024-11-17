@@ -27,7 +27,13 @@ if (!sessionIsValid()) {
     <script src="js/utils.js"></script>
     <script src="js/testData.js"></script>
     <?php
-        getDataForJs("vNode","vNodes", "uuid,type,parent,timeCreate,timeEdit,timeRead,owner,permissions,name,description,size,data,icon");
+    $querySessions = getData("vSessions", "user", ["vSession"], [$_SESSION["uuid"]]);
+    $DBSessionUser = $querySessions->fetchAll();
+
+    $queryUsers = getData("users", "uuid", ["username"], [$DBSessionUser[0]["user"]]);
+    $DBUser = $queryUsers->fetchAll();
+
+    getDataForJs("vNode", "vNodes", "uuid,type,parent,timeCreate,timeEdit,timeRead,owner,permissions,name,description,size,data,icon", ["owner"], [$DBUser[0]["uuid"]]);
     ?>
     <script defer src="js/setup.js"></script>
     <script defer src="js/events.js"></script>

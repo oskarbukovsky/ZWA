@@ -67,7 +67,7 @@ function getDataVisual($type, $tablename, $what)
 function getData($tableName, $what, $where, $input)
 {
     global $conn;
-    $sql = "SELECT " . $what . " FROM " . $tableName . " WHERE";
+    $sql = "SELECT $what FROM $tableName WHERE";
     // echo $sql;
     foreach ($where as $key => $value) {
         $sql .= " " . $value . "=:" . $value;
@@ -87,7 +87,7 @@ function getData($tableName, $what, $where, $input)
 function deleteData($tableName, $where, $input)
 {
     global $conn;
-    $sql = "DELETE FROM " . $tableName . " WHERE";
+    $sql = "DELETE FROM $tableName WHERE";
     foreach ($where as $key => $value) {
         $sql .= " " . $value . "=:" . $value;
     }
@@ -102,10 +102,17 @@ function deleteData($tableName, $where, $input)
     }
 }
 
-function getDataForJs($class, $tablename, $what)
+function getDataForJs($class, $tablename, $what, $where, $input)
 {
     global $conn;
-    $query = $conn->prepare("SELECT $what FROM $tablename");
+    $sql = "SELECT $what FROM $tablename WHERE";
+    foreach ($where as $key => $value) {
+        $sql .= " " . $value . "=:" . $value;
+    }
+    $query = $conn->prepare($sql);
+    foreach ($where as $key => $value) {
+        $query->bindParam(":" . $value, $input[$key], PDO::PARAM_STR);
+    }
 
     try {
         $query->execute();
@@ -240,7 +247,6 @@ function createDefaultFiles($ownerUuid)
 {
     global $conn;
     $sql = "INSERT INTO vNodes (uuid, type, parent, timeCreate, timeEdit, timeRead, owner, permissions, name, description, size, data, icon) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
-
 
     $query = $conn->prepare($sql);
     $query->execute(array($ownerUuid, "root", null, time(), time(), time(), $ownerUuid, '{"canDelete":false}', "Základní složka", "", 0, '{"data":[]}', null));

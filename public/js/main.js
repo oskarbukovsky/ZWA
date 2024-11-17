@@ -26,7 +26,7 @@
 
 window.addEventListener("DOMContentLoaded", async () => {
     await navigator.gpu.requestAdapter().then((gpu) => {
-        cl("|📗OS:  " + (navigator.platform.includes("MacIntel") ? ("MacIntel") : (navigator.platform.includes("Win32") ? ((navigator.userAgent.includes("Win64") ? ("Win64") : ("Win32"))) : (navigator.platform))));
+        cl("|📗OS : " + (navigator.platform.includes("MacIntel") ? ("MacIntel") : (navigator.platform.includes("Win32") ? ((navigator.userAgent.includes("Win64") ? ("Win64") : ("Win32"))) : (navigator.platform))));
         cl("|📗CPU: " + (navigator.hardwareConcurrency >= 8 ? "8/8+" : navigator.hardwareConcurrency) + " cores");
         cl("|📗GPU: " + gpu.info.vendor.capitalize() + " " + gpu.info.architecture.capitalize());
         cl("|📗RAM: " + (navigator.deviceMemory >= 8 ? "8/8+" : navigator.deviceMemory) + " GB");
@@ -137,12 +137,12 @@ async function processDesktopIcons() {
 
     //TODO: fetch vNodes from data[] of rootId
 
-    let desktopNode = await localDatabase.getColumn("vNodes", "parent", rootId[0].uuid).then((result) => result.find((node) => node.type === "desktop"));
+    let desktopNode = await localDatabase.getColumn("vNodes", "parent", rootId[0]?.uuid).then((result) => result.find((node) => node.type === "desktop"));
     // cl("desktopNode: ", desktopNode);
 
     //TODO: fetch vNodes from data[] of desktopNode
 
-    let desktopNodes = await localDatabase.getColumn("vNodes", "parent", desktopNode.uuid);
+    let desktopNodes = await localDatabase.getColumn("vNodes", "parent", desktopNode?.uuid);
 
     // cl("desktopNodes: ", desktopNodes);
 
@@ -190,7 +190,7 @@ function appOpen(node) {
         // iframe.contentWindow.postMessage("toIframe", location.origin);
     };
     let sandBox = new SandBox();
-    if (!getDestination(node).includes(".pdf")) {
+    if (!node.name.includes(".pdf")) {
         sandBox = new SandBox("allow-downloads", "allow-forms", "allow-modals", "allow-orientation-lock", "allow-pointer-lock", "allow-popups", "allow-popups-to-escape-sandbox", "allow-presentation", "allow-same-origin", "allow-scripts", "allow-storage-access-by-user-activation", "allow-top-navigation", "allow-top-navigation-by-user-activation", "allow-top-navigation-to-custom-protocols")
     }
     const iframe = createElement("iframe", new Src(getDestination(node)), sandBox,

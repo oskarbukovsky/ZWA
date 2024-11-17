@@ -296,15 +296,16 @@ function getDestination(node) {
             case "https":
                 return node.data.data[0];
             default:
-                return location.origin + "/~bukovja4/public/user-data/" + node.owner + node.data.data[0] + node.name;
+                cl("should not happen");
+                // return location.origin + "/~bukovja4/public/user-data/" + node.owner + node.data.data[0] + node.name;
         }
     } else {
-        return location.origin + "/~bukovja4/public/user-data/" + node.owner + node.data.data[0] + node.name;
+        return location.origin + "/~bukovja4/public/viewer.php?uuid=" + node.uuid;
+        // return location.origin + "/~bukovja4/public/user-data/" + node.owner + node.data.data[0] + node.name;
     }
 }
 
 function getIcon(node) {
-    cl(node);
     if (node.icon) {
         return node.icon;
     } else {
