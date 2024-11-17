@@ -1,6 +1,6 @@
 "use strict";
 
-window.addEventListener("load", () => {
+window.addEventListener("DOMContentLoaded", () => {
     document.getElementById("loginForm").addEventListener("submit", async (event) => {
         await authSubmit(event);
     });
@@ -30,7 +30,7 @@ async function authSubmit(event) {
     loginAnimation.classList.remove("hidden");
     authForms.classList.add("hidden");
     loginAnimation.play();
-    await sleep(5250);
+    await sleep(3125);
     event.target.submit();
 }
 

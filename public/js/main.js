@@ -73,7 +73,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     await processDesktopIcons();
 
     cl("|📙 Starting up calendar...");
-    setupCalendar();
+    updateCalendar();
 
     cl("|📘 JS Finished in " + (new Date() - time1) + "ms");
     cl("|📘 Finish from navigation start " + (new Date() - performance.timing.navigationStart) + "ms");
@@ -91,9 +91,11 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 //TODO: custom získávání columns např. pro permissions a settings
 
-window.addEventListener("contextmenu", (event) => {
-    // event.preventDefault();
-});
+if (!DEBUG) {
+    window.addEventListener("contextmenu", (event) => {
+        event.preventDefault();
+    });
+}
 
 async function processUserIdentifier() {
     let time1 = new Date();

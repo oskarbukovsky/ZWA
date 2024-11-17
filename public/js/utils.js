@@ -2,47 +2,21 @@
 
 const DEBUG = true;
 
-function getDirectory() {
-    if (!window.showDirectoryPicker) {
-        alert("Unsupported Browser Notice");
-        return;
+function cl() {
+    if (DEBUG) {
+        console.log(...arguments);
     }
-    const verify = confirm("Ask user to confirm");
-    if (!verify) return "File picker canceled.";
-    return window.showDirectoryPicker();
-};
+}
 
-async function updateDirectory() {
-    const directoryHandle = await getDirectory();
-    cl("directoryHandle", directoryHandle);
-    for await (let handle of directoryHandle.values()) {
-        cl("handle", handle);
-    }
+function sleep(ms) {
+    return new Promise(resolve => {
+        setTimeout(resolve, ms)
+    });
 }
 
 function bool(value) {
     return (/true/).test(value);
 }
-
-// const isElementLoaded2 = async selector => {
-//     while (document.querySelector(selector) === null) {
-//         await new Promise(resolve => requestAnimationFrame(resolve))
-//     }
-//     return document.querySelector(selector);
-// };
-
-// const isElementLoaded = async selector => {
-//     while (selector === null) {
-//         await new Promise(resolve => requestAnimationFrame(resolve))
-//     }
-//     return selector;
-// };
-
-
-// function auto_grow(element) {
-//     element.style.height = "1px !important";
-//     element.style.height = (element.scrollHeight) + "px !important";
-// }
 
 function cssVar(variableName, value = null) {
     if (value !== null) {
@@ -114,18 +88,6 @@ function clock() {
     requestAnimationFrame(clock);
 }
 
-function cl() {
-    if (DEBUG) {
-        console.log(...arguments);
-    }
-}
-
-function sleep(ms) {
-    return new Promise(resolve => {
-        setTimeout(resolve, ms)
-    });
-}
-
 function deleteDb() {
     let time1 = new Date();
     return new Promise((resolve) => {
@@ -152,7 +114,6 @@ function openDb() {
     const errorsElement = document.querySelector(".errors");
 
     localDatabaseRequest.onsuccess = function (event) {
-        // cl("DB Success: ", event);
         localDatabase = this.result;
 
         localDatabase.getStore = function (store, readonly_readwrite = "readwrite") {
@@ -201,10 +162,6 @@ function openDb() {
                 }
             });
         }
-        // localDatabase.stores = new Map();
-        // [...localDatabase.objectStoreNames].forEach((el) => {
-        //     localDatabase.stores.set(el, localDatabase.transaction(el, "readwrite").objectStore(el));
-        // })
         localDatabase.onclose = function (event) {
             cl("! Spojení s databází bylo přerušeno: ", event);
             cssVar("--db-error", '"Spojení s lokální databází bylo přerušeno"');
@@ -240,15 +197,12 @@ function openDb() {
     };
 
     localDatabaseRequest.onupgradeneeded = function (event) {
-        // cl("DB Upgrade: ", event);
         let dbStore;
         dbStores.forEach((currentStore) => {
-            // cl("Creating with key: ", currentStore?.keyPath);
             dbStore = event.currentTarget.result.createObjectStore(currentStore.name, { keyPath: currentStore.keyPath, autoIncrement: false });
             currentStore.columns.forEach((column) => {
                 dbStore.createIndex(column, column, { unique: false });
             });
-            // dbStore.createIndex("test", ['type','colour','ageRange'], { unique: false });
         });
     };
 }
@@ -265,7 +219,6 @@ function getTimeForTooltip(datetime) {
         second: "numeric",
     }).format(datetime);
     return date + " " + time;
-
 }
 
 function getIconTooltipText(node) {
@@ -459,7 +412,6 @@ function dragApp(element) {
     function dragStop() {
         if (app) {
             app.classList.remove("dragging");
-            // event.preventDefault();
         }
         dragging = false;
     }
@@ -545,7 +497,7 @@ function createElement() {
                 parameter.element.appendChild(element);
                 break;
             default:
-                cl("Element construction error: " + parameter);
+                cl("Element construction error: ", parameter);
                 break;
         }
     }
@@ -621,74 +573,9 @@ function desktopIconTooltip(element, node) {
     });
 }
 
-// var rgb = getAverageRGB(document.getElementById('i'));
-// document.body.style.backgroundColor = 'rgb('+rgb.r+','+rgb.g+','+rgb.b+')';
-
-// function getAverageRGB(imgEl) {
-
-// var blockSize = 5, // only visit every 5 pixels
-//     defaultRGB = {r:0,g:0,b:0}, // for non-supporting envs
-//     canvas = document.createElement('canvas'),
-//     context = canvas.getContext && canvas.getContext('2d'),
-//     data, width, height,
-//     i = -4,
-//     length,
-//     rgb = {r:0,g:0,b:0},
-//     count = 0;
-
-// if (!context) {
-//     return defaultRGB;
-// }
-
-// height = canvas.height = imgEl.naturalHeight || imgEl.offsetHeight || imgEl.height;
-// width = canvas.width = imgEl.naturalWidth || imgEl.offsetWidth || imgEl.width;
-
-// context.drawImage(imgEl, 0, 0);
-
-// try {
-//     data = context.getImageData(0, 0, width, height);
-// } catch(e) {
-//     /* security error, img on diff domain */alert('x');
-//     return defaultRGB;
-// }
-
-// length = data.data.length;
-
-// while ( (i += blockSize * 4) < length ) {
-//     ++count;
-//     rgb.r += data.data[i];
-//     rgb.g += data.data[i+1];
-//     rgb.b += data.data[i+2];
-// }
-
-// // ~~ used to floor values
-// rgb.r = ~~(rgb.r/count);
-// rgb.g = ~~(rgb.g/count);
-// rgb.b = ~~(rgb.b/count);
-
-// return rgb;
-
-// }
-
-// function get_average_rgb(img) {
-//     var context = document.createElement('canvas').getContext('2d');
-//     if (typeof img == 'string') {
-//         var src = img;
-//         img = new Image;
-//         img.setAttribute('crossOrigin', ''); 
-//         img.src = src;
-//     }
-//     context.imageSmoothingEnabled = true;
-//     context.drawImage(img, 0, 0, 1, 1);
-//     return context.getImageData(0, 0, 1, 1).data.slice(0,3);
-// }
-
-
 function resizeWindow(app) {
-    // cl("Preparing resizing: ", app);
     resizingElementsPrefixes.forEach((side) => {
         let resizingElement = app.querySelector("." + side + "grip");
-        // cl("side: " + side + ", Selector: \"" + "." + side + "grip" + "\"\n", resizingElement);
 
         // TODO: move appResizing here and whole to events.js
     })
@@ -698,7 +585,7 @@ function appendBefore(element, beforeWhat) {
     return beforeWhat.parentNode.insertBefore(element, beforeWhat);;
 }
 
-function manipulateCalendar() {
+function updateCalendar() {
     const months = [
         "leden",
         "únor",
@@ -737,14 +624,7 @@ function manipulateCalendar() {
     }
 
     document.querySelector(".calendar-current-date").textContent = months[month] + " " + year;
-
     document.querySelector(".calendar-dates").innerHTML = lit;
-}
-function setupCalendar() {
-
-    // Function to generate the calendar
-
-    manipulateCalendar();
 }
 
 function getLowestMaxAppZIndex() {
@@ -784,26 +664,12 @@ function getBattery() {
 
         const batteryNavbar = createElement("div", new ClassList("battery"));
         const batteryIcon = createElement("span", new ClassList("material-symbols-rounded"), new AppendTo(batteryNavbar));
-
         const batteryTooltip = createElement("div", new ClassList("battery-tooltip"), new AppendTo(batteryNavbar));
 
         if (!battery.charging || battery.chargingTime !== 0) {
             document.querySelector(".navbar-battery > .navbar-button-content").appendChild(batteryNavbar);
             updateBatteryInfo();
         }
-
-        battery.addEventListener("chargingchange", () => {
-            updateBatteryInfo();
-        });
-        battery.addEventListener("levelchange", () => {
-            updateBatteryInfo();
-        });
-        battery.addEventListener("chargingtimechange", () => {
-            updateBatteryInfo();
-        });
-        battery.addEventListener("dischargingtimechange", () => {
-            updateBatteryInfo();
-        });
 
         function updateBatteryInfo() {
             if (battery.charging) {
@@ -820,8 +686,12 @@ function getBattery() {
                 batteryIcon.textContent = icons[scaleValue(battery.level, [0, 1], [0, 7])];
             }
         }
-    });
 
+        battery.addEventListener("chargingchange", updateBatteryInfo);
+        battery.addEventListener("levelchange", updateBatteryInfo);
+        battery.addEventListener("chargingtimechange", updateBatteryInfo);
+        battery.addEventListener("dischargingtimechange", updateBatteryInfo);
+    });
 }
 
 function scaleValue(value, from, to) {
@@ -831,7 +701,7 @@ function scaleValue(value, from, to) {
 }
 
 function handleFileUpload(files) {
-    const maxSize = 2 * 1024 * 1024; // 50 MB
+    const maxSize = 50 * 1024 * 1024; // 50 MB
 
     [...files].forEach(function (file) {
         if (file) {
@@ -872,125 +742,8 @@ function sizeNumberToString(size) {
         size /= stage;
         prefix++;
     }
-    // cl(size, prefix);
     return "" + parseFloat(size.toFixed(2)) + " " + Object.keys(sizePrefixes)[prefix];
-};
-
-
-// class Slider {
-//     constructor (rangeElement, options) {
-//       this.rangeElement = rangeElement
-//       // this.valueElement = valueElement
-//       this.options = options
-
-//       // Attach a listener to "change" event
-//       this.rangeElement.addEventListener('change', this.updateSlider.bind(this))
-//     }
-
-//     // Initialize the slider
-//     init() {
-//       this.rangeElement.setAttribute('min', options.min)
-//       this.rangeElement.setAttribute('max', options.max)
-//       this.rangeElement.value = options.cur
-
-//       this.updateSlider()
-//     }
-
-//     // Format the money
-//     asMoney(value) {
-//       return '$' + parseFloat(value)
-//         .toLocaleString('en-US', { maximumFractionDigits: 2 })
-//     }
-
-//     generateBackground(rangeElement) {   
-//       if (this.rangeElement.value === this.options.min) {
-//         return
-//       }
-
-//       let percentage =  (this.rangeElement.value - this.options.min) / (this.options.max - this.options.min) * 100
-//       return 'background: linear-gradient(to right, #50299c, #7a00ff ' + percentage + '%, #d3edff ' + percentage + '%, #dee1e2 100%)'
-//     }
-
-//     updateSlider (newValue) {
-//         cl("update")
-//       // this.valueElement.innerHTML = this.asMoney(this.rangeElement.value)
-//       this.rangeElement.style = this.generateBackground(this.rangeElement.value)
-//     }
-//   }
-
-//   document.addEventListener("load", () => {
-//   let rangeElement = navbar.querySelector(".screen-menu > .slider-brightness > input")
-//   let valueElement = document.querySelector('.range .range__value span') 
-
-//   let options = {
-//     min: 2000,
-//     max: 75000,
-//     cur: 37500
-//   }
-
-//   if (rangeElement) {
-//     let slider = new Slider(rangeElement, options)
-
-//     slider.init()
-//   }
-
-// });
-
-
-
-
-
-// class Slider {
-//     constructor(rangeElement, options) {
-//         this.rangeElement = rangeElement
-//         // this.valueElement = valueElement
-//         this.options = options
-
-//         // Attach a listener to "change" event
-//         this.rangeElement.addEventListener('input', this.updateSlider.bind(this))
-//     }
-
-//     init() {
-//         this.updateSlider()
-//     }
-
-//     generateBackground(rangeElement) {
-//         if (rangeElement.value === this.options.min) {
-//             return;
-//         }
-
-//         let percentage = (rangeElement.value - Number(rangeElement.min)) / (Number(rangeElement.max) - Number(rangeElement.min)) * 100;
-//         return 'background: linear-gradient(to right, #50299c, #7a00ff ' + percentage + '%, #d3edff ' + percentage + '%, #dee1e2 100%)';
-//     }
-
-//     updateSlider(newValue) {
-//         // this.valueElement.innerHTML = this.asMoney(this.rangeElement.value)
-//         this.rangeElement.style = this.generateBackground(this.rangeElement.value)
-//     }
-// }
-
-// function updateSlider(rangeElement) {
-//     if (rangeElement.value === this.options.min) {
-//         return;
-//     }
-//     let percentage = (rangeElement.value - Number(rangeElement.min)) / (Number(rangeElement.max) - Number(rangeElement.min)) * 100;
-//     rangeElement.style = 'background: linear-gradient(to right, #50299c, #7a00ff ' + percentage + '%, #d3edff ' + percentage + '%, #dee1e2 100%)';
-// }
-
-// document.addEventListener("load", () => {
-
-//     let rangeElement = navbar.querySelector(".screen-menu > .slider-brightness > input")
-
-//     rangeElement.addEventListener("change", (event) => {
-//         cl(event)
-//         if (rangeElement.value === this.options.min) {
-//             return;
-//         }
-//         let percentage = (rangeElement.value - Number(rangeElement.min)) / (Number(rangeElement.max) - Number(rangeElement.min)) * 100;
-//         rangeElement.style = 'background: linear-gradient(to right, #50299c, #7a00ff ' + percentage + '%, #d3edff ' + percentage + '%, #dee1e2 100%)';
-//     })
-
-// });
+};;
 
 function updateSlider(rangeElement) {
     const percentage = (rangeElement.value - Number(rangeElement.min)) / (Number(rangeElement.max) - Number(rangeElement.min)) * 100;
@@ -1000,15 +753,10 @@ function updateSlider(rangeElement) {
 
 if (!String.prototype.replaceAll) {
     String.prototype.replaceAll = function (str, newStr) {
-
-        // If a regex pattern
         if (Object.prototype.toString.call(str).toLowerCase() === "[object regexp]") {
             return this.replace(str, newStr);
         }
-
-        // If a string
         return this.replace(new RegExp(str, "g"), newStr);
-
     };
 }
 

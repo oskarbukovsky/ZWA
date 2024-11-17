@@ -481,6 +481,6 @@ powerButton.addEventListener("click", async () => {
     const source = createElement("source", new Src("media/login/bloomReverse.mp4"), new Type("video/mp4"), new AppendTo(exitVideo));
     document.body.appendChild(exitVideo);
     exitVideo.play();
-    await sleep(5250);
-    location.replace();
+    await sleep(2500);
+    location.replace(location.origin + "/~bukovja4/public/auth.php?method=logout");
 });
