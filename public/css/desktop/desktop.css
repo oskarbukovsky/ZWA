@@ -209,3 +209,20 @@ textarea:not(:read-only),
 	background-color: hsla(218, 100%, 30%, 0.3);
 	z-index: 11;
 }
+
+#logoutAnimation {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 115vw;
+	height: 115vh;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-flow: column;
+	object-fit: cover;
+	filter: blur(4px);
+	z-index: 11000;
+}

@@ -99,6 +99,9 @@ async function processUserIdentifier() {
     let time1 = new Date();
     await localDatabase.add("user", userIdentifier);
 
+    navbar.querySelector(".user-avatar > img").src = htmlSpecialCharsDecode(userIdentifier.icon);
+    navbar.querySelector(".user > span").textContent = userIdentifier.username;
+
     Object.keys(userIdentifier.settings).forEach(key => {
         if (key.includes("Css")) {
             switch (key) {

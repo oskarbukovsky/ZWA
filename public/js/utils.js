@@ -297,7 +297,7 @@ function getDestination(node) {
                 return node.data.data[0];
             default:
                 cl("should not happen");
-                // return location.origin + "/~bukovja4/public/user-data/" + node.owner + node.data.data[0] + node.name;
+            // return location.origin + "/~bukovja4/public/user-data/" + node.owner + node.data.data[0] + node.name;
         }
     } else {
         return location.origin + "/~bukovja4/public/viewer.php?uuid=" + node.uuid;
@@ -518,6 +518,10 @@ function createElement() {
                 break;
             case ReadOnly:
                 element.readOnly = parameter.readOnly;
+                break;
+            case Type:
+                element.type = parameter.type;
+                break;
             case TextContent:
                 element.textContent = parameter.textContent;
                 break;

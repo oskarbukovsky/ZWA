@@ -475,3 +475,12 @@ function mouseSelectBox() {
 //         event.preventDefault();
 //     }
 // }
+
+powerButton.addEventListener("click", async () => {
+    const exitVideo = createElement("video", new Id("logoutAnimation"));
+    const source = createElement("source", new Src("media/login/bloomReverse.mp4"), new Type("video/mp4"), new AppendTo(exitVideo));
+    document.body.appendChild(exitVideo);
+    exitVideo.play();
+    await sleep(5250);
+    location.replace();
+});

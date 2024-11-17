@@ -25,7 +25,7 @@ if (!sessionIsValid()) {
 
     <script src="js/classes.js"></script>
     <script src="js/utils.js"></script>
-    <script src="js/testData.js"></script>
+    <!-- <script src="js/testData.js"></script> -->
     <?php
     $querySessions = getData("vSessions", "user", ["vSession"], [$_SESSION["uuid"]]);
     $DBSessionUser = $querySessions->fetchAll();
@@ -33,7 +33,8 @@ if (!sessionIsValid()) {
     $queryUsers = getData("users", "uuid", ["username"], [$DBSessionUser[0]["user"]]);
     $DBUser = $queryUsers->fetchAll();
 
-    getDataForJs("vNode", "vNodes", "uuid,type,parent,timeCreate,timeEdit,timeRead,owner,permissions,name,description,size,data,icon", ["owner"], [$DBUser[0]["uuid"]]);
+    getDataForJs("vNodes", "vNode", "vNodes", "uuid,type,parent,timeCreate,timeEdit,timeRead,owner,permissions,name,description,size,data,icon", ["owner"], [$DBUser[0]["uuid"]]);
+    getDataForJs("userIdentifier", "user", "users", "username,uuid,icon,settings", ["uuid"], [$DBUser[0]["uuid"]]);
     ?>
     <script defer src="js/setup.js"></script>
     <script defer src="js/events.js"></script>
@@ -45,6 +46,7 @@ if (!sessionIsValid()) {
 
     <link rel="prefetch" href="explorer.html">
     <link rel="prefetch" href="administration.html">
+    <link rel="prefetch" href="media/login/bloomReverse.mp4">
 </head>
 
 <body>
@@ -61,6 +63,18 @@ if (!sessionIsValid()) {
                     Weather Data Source: <a href="https://sharpweather.com/weather_prague/30_days/">Prague 30 days
                         weather</a></div>
                 <script async src="https://static1.sharpweather.com/widgetjs/?id=id107cb35be4427"></script>
+                <div class="controls">
+                    <div class="user">
+                        <div class="user-avatar">
+                            <img src="https://api.dicebear.com/9.x/identicon/svg?seed=demoUser&rowColor=ffb300"
+                                alt="user-avatar-icon">
+                        </div>
+                        <span>demoUser</span>
+                    </div>
+                    <span class="material-symbols-rounded" id="powerButton">
+                        power_settings_new
+                    </span>
+                </div>
             </div>
         </div>
         <div class="navbar-search">

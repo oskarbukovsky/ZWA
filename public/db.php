@@ -102,7 +102,7 @@ function deleteData($tableName, $where, $input)
     }
 }
 
-function getDataForJs($class, $tablename, $what, $where, $input)
+function getDataForJs($variable, $class, $tablename, $what, $where, $input)
 {
     global $conn;
     $sql = "SELECT $what FROM $tablename WHERE";
@@ -129,7 +129,10 @@ function getDataForJs($class, $tablename, $what, $where, $input)
     echo "<script src=\"data:text/javascript;base64,";
 
 
-    $result = "const " . $tablename . " = [";
+    $result = "const " . $variable . " = ";
+    if ($variable != "userIdentifier") {
+        $result .= "[";
+    }
     foreach ($data as $vNode) {
         $result .= "new " . $class . "(";
         // echo "new " . $tablename . "(";
@@ -155,7 +158,10 @@ function getDataForJs($class, $tablename, $what, $where, $input)
             $result .= ",";
         }
     }
-    $result .= "]";
+    // $result .= "]";
+    if ($variable != "userIdentifier") {
+        $result .= "]";
+    }
 
     echo base64_encode($result);
 
@@ -232,7 +238,7 @@ function newUser($username, $password)
 
     $userUuid = newUuid();
     $username = htmlspecialchars($_POST["username"]);
-    $icon = "https://api.dicebear.com/9.x/identicon/svg?seed=" . htmlspecialchars($_POST["username"]);
+    $icon = "https://api.dicebear.com/9.x/identicon/svg?seed=" . htmlspecialchars($_POST["username"]) . "&rowColor=ffb300,fdd835,fb8c00,f4511e,e53935,d81b60,c0ca33,7cb342,FF4FE9,FFBD4F,4FFF65";
     $settings = '{"CssNavbarHeigh": "43px", "CssAppControlsSize": "13px", "CssAppControlsExtra": "9px", "CssNavbarTransparency": "0.8"}';
     $passwordHash = password_hash(htmlspecialchars($password), PASSWORD_DEFAULT);
     $role = 000;

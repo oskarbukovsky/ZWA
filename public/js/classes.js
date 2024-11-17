@@ -86,6 +86,12 @@ class ReadOnly {
     }
 }
 
+class Type {
+    constructor(type) {
+        this.type = type;
+    }
+}
+
 class Data {
     constructor(key, value) {
         if (!key) {
@@ -153,12 +159,21 @@ class userSettings {
     }
 }
 
+const getMethods = (obj) => {
+    let properties = new Set()
+    let currentObj = obj
+    do {
+        Object.getOwnPropertyNames(currentObj).map(item => properties.add(item))
+    } while ((currentObj = Object.getPrototypeOf(currentObj)))
+    return [...properties.keys()].filter(item => typeof obj[item] === 'function')
+}
+
 // crypto.randomUUID()
 class user {
-    constructor(username, uuid, icon, settings = JSON.stringify(new userSettings())) {
+    constructor(username, uuid, icon = "", settings = JSON.stringify(new userSettings())) {
         this.username = username;
         this.uuid = uuid;
-        this.icon = icon;
+        this.icon = htmlSpecialCharsDecode(icon);
         this.settings = JSON.parse(htmlSpecialCharsDecode(settings));
     }
 }
@@ -179,7 +194,7 @@ class vNode {
 
         this.name = name;
         this.description = description;
-        this.size = !isNaN(Number(size)) ? Number(size): 0;
+        this.size = !isNaN(Number(size)) ? Number(size) : 0;
 
         this.data = JSON.parse(htmlSpecialCharsDecode(data));
 

@@ -117,12 +117,66 @@
 	min-width: 640px;
 	min-height: 0px;
 	height: 0px;
+	display: flex;
+	flex-flow: column;
+	justify-content: space-between;
 }
 
 .navbar-menu > .main-menu.open {
 	bottom: calc(var(--navbar-height) + 11px);
 	min-height: 600px;
 	height: 67vh;
+}
+
+.main-menu > .controls {
+	height: 54px;
+	background-color: rgb(8 33 131 / 55%);
+	color: #fff;
+	display: flex;
+	flex-flow: row;
+	justify-content: space-between;
+	align-items: center;
+	padding: 8px 56px;
+}
+
+.main-menu > .controls > .user {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	font-size: 0.7rem;
+	font-weight: 300;
+	padding: 5px 12px 5px 8px;
+	border-radius: 5px;
+}
+
+.main-menu > .controls > .user:hover {
+	background-color: hsl(0deg 0% 50% / 15%);
+}
+
+.main-menu > .controls > #powerButton {
+	padding: 8px;
+	border-radius: 5px;
+}
+
+.main-menu > .controls > #powerButton:hover {
+	background-color: hsl(0deg 0% 50% / 15%);
+}
+
+.main-menu > .controls > .user .user-avatar {
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	background-color: rgb(79, 145, 255);
+	position: relative;
+}
+
+.main-menu > .controls > .user img {
+	width: 18px;
+	height: 18px;
+	position: absolute;
+	top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 #navbar > .navbar-screen {
