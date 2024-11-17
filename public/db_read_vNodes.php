@@ -18,6 +18,23 @@
 
 <body>
     <?php
+
+    $date = "13.11.2024";
+    $parsedDate = explode(".", $date);
+    $timestamp = mktime(0,0,0,$parsedDate[1],$parsedDate[0],$parsedDate[2]);
+    echo $timestamp;
+    $dnyVTydnu = [
+        "1"=> "pondělí",
+        "úterý",
+        "středa",
+        "čtvrtek",
+        "pátek",
+        "sobota",
+        "neděle"
+    ];
+
+    echo $dnyVTydnu[date("N", $timestamp)];
+
     getDataVisual("vNodes", "vNodes", "*");
     ?>
 

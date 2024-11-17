@@ -172,10 +172,10 @@ function sessionIsValid()
         // $query->execute();
 
         $query = getData("vSessions", "validUntil", ["vSession"], [$_SESSION["uuid"]]);
-        $result = $query->fetchAll();
+        $results = $query->fetchAll();
 
-        foreach ($result as $data) {
-            if ($data["validUntil"] > time()) {
+        foreach ($results as $result) {
+            if ($result["validUntil"] > time()) {
                 return true;
             } else {
                 deleteData("vSessions", ["vSession"], [$_SESSION["uuid"]]);
