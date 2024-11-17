@@ -51,41 +51,51 @@ function textDeSelect() {
     }
 }
 
-function clockTooltip() {
-    const datetime = new Date();
-    const date = new Intl.DateTimeFormat("cs-CZ", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-    }).format(datetime);
-    const time = new Intl.DateTimeFormat("cs-CZ", {
-        weekday: "short",
-        hour: "numeric",
-        minute: "numeric",
-        second: "numeric",
-    }).format(datetime) + " (Místní čas)"
-    const element = document.querySelector(".time-tooltip");
-    element.children[0].textContent = date;
-    element.children[1].textContent = time;
-    requestAnimationFrame(clockTooltip);
+function setupClockTooltip() {
+    clockTooltip();
+    function clockTooltip() {
+        const datetime = new Date();
+        const date = new Intl.DateTimeFormat("cs-CZ", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+        }).format(datetime);
+        const time = new Intl.DateTimeFormat("cs-CZ", {
+            weekday: "short",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+        }).format(datetime) + " (Místní čas)"
+        const element = document.querySelector(".time-tooltip");
+        element.children[0].textContent = date;
+        element.children[1].textContent = time;
+        setTimeout(() => {
+            clockTooltip();
+        }, 1001 - datetime.getMilliseconds());
+    }
 }
 
-function clock() {
-    const datetime = new Date();
-    const date = new Intl.DateTimeFormat("cs-CZ", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-    }).format(datetime).replaceAll(" ", "")
-    const time = new Intl.DateTimeFormat("cs-CZ", {
-        hour: "numeric",
-        minute: "numeric",
-        second: "numeric",
-    }).format(datetime)
-    const element = document.querySelector("#datetime");
-    element.setAttribute("data-date", date);
-    element.setAttribute("data-time", time + " ");
-    requestAnimationFrame(clock);
+function setupClock() {
+    clock();
+    function clock() {
+        const datetime = new Date();
+        const date = new Intl.DateTimeFormat("cs-CZ", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+        }).format(datetime).replaceAll(" ", "")
+        const time = new Intl.DateTimeFormat("cs-CZ", {
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+        }).format(datetime)
+        const element = document.querySelector("#datetime");
+        element.setAttribute("data-date", date);
+        element.setAttribute("data-time", time + " ");
+        setTimeout(() => {
+            clock();
+        }, 1001 - datetime.getMilliseconds());
+    }
 }
 
 function deleteDb() {
@@ -586,20 +596,6 @@ function appendBefore(element, beforeWhat) {
 }
 
 function updateCalendar() {
-    const months = [
-        "leden",
-        "únor",
-        "březen",
-        "duben",
-        "květen",
-        "červen",
-        "červenec",
-        "srpen",
-        "září",
-        "říjen",
-        "listopad",
-        "prosinec"
-    ];
     let dayOne = new Date(year, month, 0).getDay();
     let lastDate = new Date(year, month + 1, 0).getDate();
     let monthLastDate = new Date(year, month, 0).getDate();

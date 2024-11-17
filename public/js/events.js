@@ -116,7 +116,7 @@ document.querySelectorAll(".calendar-navigation span").forEach(icon => {
         } else {
             date = new Date();
         }
-        manipulateCalendar();
+        updateCalendar();
     });
 });
 

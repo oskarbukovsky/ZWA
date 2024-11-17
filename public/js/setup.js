@@ -19,6 +19,21 @@ const sizePrefixes = {
     "TB": 1000 * 1000 * 1000 * 1000
 };
 
+const months = [
+    "leden",
+    "únor",
+    "březen",
+    "duben",
+    "květen",
+    "červen",
+    "červenec",
+    "srpen",
+    "září",
+    "říjen",
+    "listopad",
+    "prosinec"
+];
+
 // document.addEventListener("load", () => {
 //     const input = document.querySelector("input[type=file]");
 //     const uploadElement = document.querySelector(".uploading");

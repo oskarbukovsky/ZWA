@@ -42,8 +42,10 @@ window.addEventListener("DOMContentLoaded", async () => {
     getBattery();
     mouseSelectBox();
 
-    requestAnimationFrame(clock);
-    requestAnimationFrame(clockTooltip);
+
+    updateCalendar();
+    setupClock();
+    setupClockTooltip();
 
     cl("|📙 Clearing database")
     await deleteDb();
@@ -71,9 +73,6 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     cl("|📙 Processing desktop...");
     await processDesktopIcons();
-
-    cl("|📙 Starting up calendar...");
-    updateCalendar();
 
     cl("|📘 JS Finished in " + (new Date() - time1) + "ms");
     cl("|📘 Finish from navigation start " + (new Date() - performance.timing.navigationStart) + "ms");
