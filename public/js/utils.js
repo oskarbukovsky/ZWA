@@ -817,3 +817,45 @@ Object.defineProperty(String.prototype, 'capitalize', {
     },
     enumerable: false
 });
+
+function addNotification(content, nodeOrSystem = null) {
+    navbar.querySelector(".navbar-notifications #notifications").classList.add("fill");
+
+    const notification = createElement("div", new ClassList("notification"));
+    const notificationHeader = createElement("header", new AppendTo(notification));
+    const notificationIcon = createElement("img", new AppendTo(notificationHeader), new Src(nodeOrSystem ? getIcon(nodeOrSystem) : "./media/file-icons/info.webp"));
+    notificationIcon.alt = "notification-icon";
+    const notificationTitle = createElement("span", new ClassList("title"), new TextContent(nodeOrSystem ? node.name : "Systém"), new AppendTo(notificationHeader));
+    const notificationSpacer = createElement("div", new ClassList("spacer"), new AppendTo(notificationHeader));
+    const notificationClose = createElement("span", new ClassList("material-symbols-rounded", "close"), new TextContent("close"), new AppendTo(notificationHeader));
+    notificationClose.addEventListener("click", (event) => {
+        if (notification.classList.contains("show-extra")) {
+            notification.classList.add("hide-extra");
+        } else {
+            notification.classList.add("closing");
+        }
+        setTimeout(() => {
+            notification.remove();
+        }, 250);
+    });
+    const notificationContent = createElement("div", new ClassList("notification-content"), new AppendTo(notification));
+    const notificationContentHead = createElement("div", new ClassList("notification-head"), new TextContent(content?.head), new AppendTo(notificationContent));
+    const notificationContentBody = createElement("div", new ClassList("notification-body"), new TextContent(content?.body), new AppendTo(notificationContent));
+
+    if (!navbar.querySelector(".notifications-container").classList.contains("open")) {
+        notification.classList.add("show-extra");
+        navbar.querySelector(".navbar-notifications").appendChild(notification);
+        setTimeout(() => {
+            if(!notification.classList.contains("hide-extra")) {
+                notification.classList.add("hide-extra");
+                setTimeout(() => {
+                    notification.classList.remove("show-extra");
+                    notification.classList.remove("hide-extra");
+                    navbar.querySelector(".navbar-notifications .notifications-content").append(notification);
+                }, 250);
+            }
+        }, 6000);
+    } else {
+        navbar.querySelector(".navbar-notifications .notifications-content").append(notification);
+    }
+}

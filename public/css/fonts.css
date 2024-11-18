@@ -69,7 +69,7 @@
 		url(./fonts/SegoeUIVariableStaticSmallSemilight.ttf) format("woff");
 }
 @font-face {
-	font-family: segoe ui variable static text;
+	font-family: "segoe ui variable static semilight text";
 	font-style: normal;
 	font-weight: 350;
 	src: local("Segoe UI Variable Static Text"),
@@ -111,6 +111,30 @@
 	src: url(./fonts/materials-symbols-rounded.woff2) format("woff2");
 }
 
+@font-face {
+	font-family: "Material Symbols Rounded Notifications Fill";
+	font-style: normal;
+	font-weight: 100 200;
+	src: url(./fonts/materials-symbols-rounded-notifications-fill.woff2)
+		format("woff2");
+}
+
+@font-face {
+	font-family: "Material Symbols Rounded BedTime Fill";
+	font-style: normal;
+	font-weight: 100 200;
+	src: url(./fonts/materials-symbols-rounded-bedtime-fill.woff2)
+		format("woff2");
+}
+
+@font-face {
+	font-family: "Material Symbols Rounded Routine Fill";
+	font-style: normal;
+	font-weight: 100 200;
+	src: url(./fonts/materials-symbols-rounded-routine-fill.woff2)
+		format("woff2");
+}
+
 .material-symbols-rounded {
 	font-family: "Material Symbols Rounded";
 	font-weight: normal;
@@ -128,6 +152,17 @@
 	-webkit-font-smoothing: antialiased;
 }
 
-.material-symbols-rounded.fill {
+#notifications.material-symbols-rounded.fill {
+	font-family: "Material Symbols Rounded Notifications Fill";
+	font-variation-settings: "FILL" 1;
+}
+
+.navbar-screen .bedtime.material-symbols-rounded.fill {
+	font-family: "Material Symbols Rounded BedTime Fill";
+	font-variation-settings: "FILL" 1;
+}
+
+.navbar-screen .routine.material-symbols-rounded.fill {
+	font-family: "Material Symbols Rounded Routine Fill";
 	font-variation-settings: "FILL" 1;
 }

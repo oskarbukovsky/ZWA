@@ -106,47 +106,56 @@ if (!sessionIsValid()) {
                     </span>
                 </div>
                 <div class="slider-blue-light-filter">
-                    <span class="material-symbols-rounded">
+                    <span class="routine material-symbols-rounded fill">
                         routine
                     </span>
                     <input type="range" min="0" max="100" step="1" value="0">
-                    <span class="material-symbols-rounded fill">
+                    <span class="bedtime material-symbols-rounded fill">
                         bedtime
                     </span>
                 </div>
             </div>
         </div>
-        <div class="navbar-time">
+        <div class="navbar-time navbar-notifications">
             <div class="navbar-button-content datetime">
                 <span id="datetime"></span>
                 <span id="notifications" class="material-symbols-rounded">
                     notifications
                 </span>
             </div>
-            <div class="calendar-container">
-                <header class="calendar-header">
-                    <p class="calendar-current-date"></p>
-                    <div class="calendar-navigation">
-                        <span id="calendar-prev" class="material-symbols-rounded">
-                            arrow_drop_up
-                        </span>
-                        <span id="calendar-next" class="material-symbols-rounded">
-                            arrow_drop_down
-                        </span>
-                    </div>
-                </header>
+            <div class="calendar-container notifications-container">
+                <div class="notifications-wrapper">
+                    <header class="notifications-header">
+                        <span class="notification-navigation">Oznámení</span>
+                        <span class="clear-all-notifications">Vymazat vše</span>
+                    </header>
+                    <div class="notifications-content"></div>
+                </div>
+                <div class="calendar-wrapper">
+                    <header class="calendar-header">
+                        <p class="calendar-current-date"></p>
+                        <div class="calendar-navigation">
+                            <span id="calendar-prev" class="material-symbols-rounded">
+                                arrow_drop_up
+                            </span>
+                            <span id="calendar-next" class="material-symbols-rounded">
+                                arrow_drop_down
+                            </span>
+                        </div>
+                    </header>
 
-                <div class="calendar-body">
-                    <ul class="calendar-weekdays">
-                        <li>po</li>
-                        <li>út</li>
-                        <li>st</li>
-                        <li>čt</li>
-                        <li>pá</li>
-                        <li>so</li>
-                        <li>ne</li>
-                    </ul>
-                    <ul class="calendar-dates"></ul>
+                    <div class="calendar-body">
+                        <ul class="calendar-weekdays">
+                            <li>po</li>
+                            <li>út</li>
+                            <li>st</li>
+                            <li>čt</li>
+                            <li>pá</li>
+                            <li>so</li>
+                            <li>ne</li>
+                        </ul>
+                        <ul class="calendar-dates"></ul>
+                    </div>
                 </div>
             </div>
             <div class="time-tooltip">

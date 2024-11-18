@@ -475,22 +475,204 @@
 	font-size: 1.25rem;
 }
 
+#notifications.fill {
+	color: rgba(156, 235, 255, 1);
+}
+
+.calendar-wrapper,
+.notifications-wrapper {
+	border: 1px solid rgb(55, 55, 55);
+	background: rgba(20, 61, 117, 0.7);
+	backdrop-filter: blur(8px);
+	box-shadow: 1px 1px 4px -1px rgb(0 12 26 / 50%);
+	border-radius: 6px;
+}
+
+.notifications-wrapper {
+	margin-bottom: 8px;
+}
+
+.notifications-wrapper > header {
+	display: flex;
+	flex-flow: row;
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px 16px;
+	font-size: 0.8rem;
+}
+.notifications-wrapper:not(:has(.notifications-content > div.notification))
+	> header
+	> .clear-all-notifications {
+	display: none;
+}
+
+.notifications-wrapper > header > .clear-all-notifications {
+	display: block;
+	font-size: 0.7rem;
+	font-weight: 300;
+	background-color: rgba(29, 71, 129, 0.6);
+	box-shadow: 1px 1px 4px -1px rgba(0, 12, 26, 0.2);
+	border-radius: 6px;
+	padding: 4px 8px;
+	transition: background-color 100ms ease-in-out;
+	font-family: "segoe ui variable static semilight text", sans-serif;
+}
+
+.notifications-wrapper > header > .clear-all-notifications:hover {
+	background-color: rgba(29, 71, 129, 0.75);
+}
+
+.notifications-wrapper > .notifications-content {
+	display: flex;
+	flex-flow: column;
+	gap: 8px;
+	padding: 8px 4px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	height: calc(100vh - var(--navbar-height) - 390px - 37px - 48px);
+	transition: height 100ms ease-in-out;
+}
+
+.notifications-wrapper > .notifications-content:not(:has(div.notification)) {
+	height: 196px;
+}
+
+.notifications-wrapper
+	> .notifications-content:not(:has(div.notification)):after {
+	content: "Žádná nová oznámení";
+	font-size: 0.8rem;
+	color: hsla(0, 0%, 95%, 0.9);
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.notification {
+	position: relative;
+	left: 0;
+	background-color: rgba(22, 63, 119, 0.6);
+	border-radius: 6px;
+	padding: 6px;
+	opacity: 1;
+	transition: all 150ms ease-in-out;
+}
+
+.notification.closing {
+	opacity: 0;
+	right: 100%;
+	left: 100%;
+}
+
+.notification.show-extra {
+	position: absolute;
+	display: block;
+	z-index: 11100;
+	background-color: rgba(22, 63, 119, 0.85);
+	color: #fff;
+	bottom: calc(var(--navbar-height) + 10px);
+	animation: show-extra 250ms ease-in-out 0s 1 forwards;
+}
+
+div.notification.hide-extra {
+	animation: hide-extra 225ms ease-in-out 0s 1 forwards !important;
+}
+
+@keyframes show-extra {
+	0% {
+		opacity: 0;
+		right: 0px;
+		left: 100%;
+	}
+	100% {
+		opacity: 1;
+		right: 7px;
+		left: calc(100% - 330px);
+	}
+}
+
+@keyframes hide-extra {
+	0% {
+		opacity: 1;
+		right: 7px;
+		left: calc(100% - 330px);
+	}
+	100% {
+		opacity: 0;
+		right: 0px;
+		left: 100%;
+	}
+}
+
+.notification > header {
+	display: flex;
+	flex-flow: row;
+	align-items: center;
+	justify-content: space-between;
+	padding: 2px 4px;
+}
+
+.notification > header > img {
+	height: 20px;
+}
+
+.notification > header > .title {
+	padding-left: 8px;
+	font-size: 0.75rem;
+	font-family: "segoe ui variable static semilight text", sans-serif;
+}
+
+.notification > header > .spacer {
+	width: 100%;
+}
+
+.notification > header > .close {
+	font-size: 1.2rem;
+	color: hsla(0, 0%, 100%, 0.65);
+	opacity: 0;
+	transform: scale(1);
+	transition: color 100ms ease-in-out, opacity 100ms ease-in-out,
+		scale 65ms linear;
+}
+
+.notification:hover > header > .close {
+	opacity: 1;
+}
+
+.notification > header > span.close:hover {
+	color: hsla(0, 0%, 100%, 0.85);
+}
+.notification > header > span.close:active {
+	transform: scale(0.85);
+	color: hsla(0, 0%, 100%, 0.55);
+}
+
+.notification > .notification-content {
+	padding: 10px 6px 8px 6px;
+}
+
+.notification > .notification-content > .notification-head {
+	font-size: 0.8rem;
+	font-weight: 400;
+	padding-bottom: 4px;
+}
+
+.notification > .notification-content > .notification-body {
+	font-size: 0.75rem;
+	font-weight: 300;
+}
+
 .calendar-container {
 	position: absolute;
 	bottom: calc(10px + var(--navbar-height));
-	right: -312px;
-	background: rgba(20, 61, 117, 0.7);
-	width: 310px;
+	right: -330px;
+	width: 330px;
 	height: max-content;
-	border: 1px solid rgb(55, 55, 55);
-	box-shadow: 1px 1px 4px -1px rgb(0 12 26 / 50%);
-	border-radius: 6px;
-	box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
 	color: #fff;
 	transition: right 150ms ease-in-out;
-	backdrop-filter: blur(8px);
 	z-index: 11000;
 	opacity: 0;
+	transition: all 150ms cubic-bezier(0.3, 0, 0.8, 0.15);
 }
 
 .calendar-container.open {
@@ -499,7 +681,7 @@
 	opacity: 1;
 }
 
-.calendar-container header {
+.calendar-wrapper header {
 	display: flex;
 	align-items: center;
 	padding: 25px 30px 10px;
@@ -553,7 +735,7 @@ header .calendar-current-date {
 
 .calendar-body .calendar-dates {
 	margin: 0;
-	padding: 0 2px;
+	padding: 0 4px;
 }
 
 .calendar-body li {
@@ -563,7 +745,7 @@ header .calendar-current-date {
 }
 
 .calendar-body > .calendar-weekdays {
-	padding: 0 2px;
+	padding: 0 4px;
 }
 
 .calendar-body .calendar-weekdays li {

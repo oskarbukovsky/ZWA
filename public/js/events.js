@@ -94,6 +94,21 @@ navbar.querySelector(".navbar-screen .navbar-button-content").addEventListener("
     navbar.querySelector(".navbar-screen .screen-menu").classList.toggle("open");
 });
 
+navbar.querySelector(".navbar-notifications .navbar-button-content").addEventListener("click", () => {
+    if (navbar.querySelector(".navbar-notifications #notifications").classList.contains("fill") && !navbar.querySelector(".navbar-time > .notifications-container").classList.contains("open")) {
+        navbar.querySelector(".navbar-notifications #notifications").classList.remove("fill");
+    }
+});
+
+navbar.querySelector(".navbar-notifications .notifications-container .clear-all-notifications").addEventListener("click", () => {
+    navbar.querySelectorAll(".navbar-notifications .notifications-content > div.notification").forEach((element) => {
+        element.classList.add("closing");
+        setTimeout(() => {
+            element.remove();
+        }, 200);
+    });
+});
+
 navbar.querySelector(".navbar-time .navbar-button-content").addEventListener("click", () => {
     navbar.querySelector(".navbar-time > .calendar-container").classList.toggle("open");
 });
@@ -397,6 +412,7 @@ function mouseSelectBox() {
     let startX, startY;
     let selectBox;
     let desktopSize;
+    let desktopIcons;
 
     function selectStart(target, position) {
         if (target == desktop) {
@@ -406,6 +422,7 @@ function mouseSelectBox() {
             selecting = true;
             deselectDesktopIcons();
             desktopSize = desktop.getBoundingClientRect();
+            desktopIcons = desktop.querySelectorAll(".icon");
         }
     }
 
@@ -442,7 +459,7 @@ function mouseSelectBox() {
                 selectBox.style.height = (mouseY - startY) + "px";
             }
 
-            desktop.querySelectorAll(".icon").forEach((element) => {
+            desktopIcons.forEach((element) => {
                 if (elementsCollide(element, selectBox)) {
                     element.classList.add("icon-selected");
                 } else {
@@ -483,4 +500,8 @@ powerButton.addEventListener("click", async () => {
     exitVideo.play();
     await sleep(2500);
     location.replace(location.origin + "/~bukovja4/public/auth.php?method=logout");
+});
+
+navbar.querySelector(".main-menu .controls > .user").addEventListener("click", () => {
+    addNotification({ "head": "Hlavní menu", "body": "Kliknul jsi na ikonku uživatele" });
 });
