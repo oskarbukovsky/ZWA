@@ -28,6 +28,10 @@ if ($_POST["method"] == "login") {
         header("Location: index.php?type=login&error=missing-username");
         die();
     }
+    if (strlen($_POST["username"]) < 5 || strlen($_POST["username"]) >= 16) {
+        header("Location: index.php?type=login&error=username-too-short");
+        die();
+    }
     if (!isset($_POST["password"])) {
         header("Location: index.php?type=login&error=missing-password");
         die();
@@ -49,6 +53,10 @@ if ($_POST["method"] == "login") {
 if ($_POST["method"] == "register") {
     if (!isset($_POST["username"])) {
         header("Location: index.php?type=register&error=missing-username");
+        die();
+    }
+    if (strlen($_POST["username"]) < 5 || strlen($_POST["username"]) >= 16) {
+        header("Location: index.php?type=register&error=username-too-short");
         die();
     }
     if (!isset($_POST["password"]) || !isset($_POST["passwordAgain"])) {

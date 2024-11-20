@@ -153,6 +153,9 @@ window.onmessage = async function (event) {
             const node = await localDatabase.getColumn("vNodes", "uuid", event.data[1]);
             appOpen(node[0]);
             break;
+        case "sessionTimeout":
+            addNotification({"head":"Relace vypršela", "body":"Přihlaš se prosím znovu"});
+            break;
         default:
             cl("!📕 Neznámá zpráva z okna!")
     }

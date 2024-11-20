@@ -76,3 +76,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         console.log("loaded from cookie:", getCookie("loginWallpaper"));
     }
 });
+
+if (pageInIframe()) {
+    window.top.postMessage(["sessionTimeout"]);
+}

@@ -252,9 +252,9 @@ function getDestination(node) {
             case "vLinkTrash":
                 return location.origin + "/~bukovja4/public/user-data/" + node.owner + node.data.data[0] + node.name;
             case "admin":
-                return location.origin + "/~bukovja4/public/administration.html";
+                return location.origin + "/~bukovja4/public/administration.php";
             case "vComputer":
-                return location.origin + "/~bukovja4/public/explorer.html?folder=user-data/" + node.owner;
+                return location.origin + "/~bukovja4/public/explorer.php?folder=user-data/" + node.owner;
             case "http":
             case "https":
                 return node.data.data[0];
@@ -825,12 +825,15 @@ function addNotification(content, nodeOrSystem = null) {
     const notificationHeader = createElement("header", new AppendTo(notification));
     const notificationIcon = createElement("img", new AppendTo(notificationHeader), new Src(nodeOrSystem ? getIcon(nodeOrSystem) : "./media/file-icons/info.webp"));
     notificationIcon.alt = "notification-icon";
-    const notificationTitle = createElement("span", new ClassList("title"), new TextContent(nodeOrSystem ? node.name : "Systém"), new AppendTo(notificationHeader));
+    const notificationTitle = createElement("span", new ClassList("title"), new TextContent(nodeOrSystem ? nodeOrSystem.name : "Systém"), new AppendTo(notificationHeader));
     const notificationSpacer = createElement("div", new ClassList("spacer"), new AppendTo(notificationHeader));
     const notificationClose = createElement("span", new ClassList("material-symbols-rounded", "close"), new TextContent("close"), new AppendTo(notificationHeader));
     notificationClose.addEventListener("click", (event) => {
         if (notification.classList.contains("show-extra")) {
             notification.classList.add("hide-extra");
+            if ((navbar.querySelectorAll(".navbar-notifications > .extra-notifications > .notification").length + navbar.querySelectorAll(".navbar-notifications .notifications-content > .notification").length) == 1) {
+                navbar.querySelector(".navbar-notifications #notifications").classList.remove("fill");
+            }
         } else {
             notification.classList.add("closing");
         }
@@ -844,9 +847,9 @@ function addNotification(content, nodeOrSystem = null) {
 
     if (!navbar.querySelector(".notifications-container").classList.contains("open")) {
         notification.classList.add("show-extra");
-        navbar.querySelector(".navbar-notifications").appendChild(notification);
+        navbar.querySelector(".navbar-notifications > .extra-notifications").appendChild(notification);
         setTimeout(() => {
-            if(!notification.classList.contains("hide-extra")) {
+            if (!notification.classList.contains("hide-extra")) {
                 notification.classList.add("hide-extra");
                 setTimeout(() => {
                     notification.classList.remove("show-extra");
@@ -858,4 +861,8 @@ function addNotification(content, nodeOrSystem = null) {
     } else {
         navbar.querySelector(".navbar-notifications .notifications-content").append(notification);
     }
+}
+
+function pageInIframe() {
+    return (window.self !== window.top) 
 }

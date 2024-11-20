@@ -24,9 +24,9 @@ SourceFiles=SourceFiles
 InstallPrompt=
 DisplayLicense=
 FinishMessage=
-TargetName=C:\Users\Oskar\OneDrive\Dokumenty\CVUT\S01\ZWA\Semestralka\root\NetOs Installer\NetOs.exe
+TargetName=C:\Users\Oskar\OneDrive\Dokumenty\CVUT\S01\ZWA\Semestralka\root\NetOs Installer\NetOs1.exe
 FriendlyName=NetOs
-AppLaunched=ProtonShell.exe
+AppLaunched=cmd.exe /K "run.bat"
 PostInstallCmd=<None>
 AdminQuietInstCmd=
 UserQuietInstCmd=
@@ -34,6 +34,8 @@ FILE0="Config.ini"
 FILE1="favicon.ico"
 FILE2="ProtonShell.exe"
 FILE3="WebView2Loader.dll"
+FILE4="MicrosoftEdgeWebview2Setup.exe"
+FILE5="run.bat"
 [SourceFiles]
 SourceFiles0=C:\Users\Oskar\OneDrive\Dokumenty\CVUT\S01\ZWA\Semestralka\root\NetOs Installer\
 [SourceFiles0]
@@ -41,3 +43,5 @@ SourceFiles0=C:\Users\Oskar\OneDrive\Dokumenty\CVUT\S01\ZWA\Semestralka\root\Net
 %FILE1%=
 %FILE2%=
 %FILE3%=
+%FILE4%=
+%FILE5%=

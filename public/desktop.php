@@ -1,8 +1,7 @@
 <?php
 require("db.php");
 if (!sessionIsValid()) {
-    // echo "Invalid from desktop";
-    header("Location: index.php?event=session-timeout");
+    header("Location: error.php?code=403");
     die();
 }
 ?>
@@ -162,6 +161,7 @@ if (!sessionIsValid()) {
                 <span>time</span>
                 <span>date</span>
             </div>
+            <div class="extra-notifications"></div>
         </div>
         <div class="navbar-minimize"></div>
     </div>

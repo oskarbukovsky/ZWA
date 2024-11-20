@@ -533,8 +533,12 @@
 	transition: height 100ms ease-in-out;
 }
 
+.notifications-content::-webkit-scrollbar {
+	background: transparent !important;
+}
+
 .notifications-wrapper > .notifications-content:not(:has(div.notification)) {
-	height: 196px;
+	height: min(196px, calc(100vh - var(--navbar-height) - 390px - 37px - 48px));
 }
 
 .notifications-wrapper
@@ -556,6 +560,8 @@
 	padding: 6px;
 	opacity: 1;
 	transition: all 150ms ease-in-out;
+	width: 100%;
+	box-sizing: border-box;
 }
 
 .notification.closing {
@@ -564,13 +570,22 @@
 	left: 100%;
 }
 
-.notification.show-extra {
+.navbar-notifications > .extra-notifications {
 	position: absolute;
-	display: block;
-	z-index: 11100;
-	background-color: rgba(22, 63, 119, 0.85);
-	color: #fff;
 	bottom: calc(var(--navbar-height) + 10px);
+	right: 10px;
+	height: calc(100vh - var(--navbar-height) - 16px);
+	width: 330px;
+	display: flex;
+	flex-flow: column-reverse wrap;
+	gap: 10px;
+	overflow: hidden;
+}
+
+.notification.show-extra {
+	display: block;
+	color: #fff;
+	z-index: 10900;
 	animation: show-extra 250ms ease-in-out 0s 1 forwards;
 }
 
@@ -581,7 +596,7 @@ div.notification.hide-extra {
 @keyframes show-extra {
 	0% {
 		opacity: 0;
-		right: 0px;
+		right: -320px;
 		left: 100%;
 	}
 	100% {
@@ -620,6 +635,10 @@ div.notification.hide-extra {
 	padding-left: 8px;
 	font-size: 0.75rem;
 	font-family: "segoe ui variable static semilight text", sans-serif;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	min-width: calc(100% - 55px);
 }
 
 .notification > header > .spacer {
@@ -649,6 +668,14 @@ div.notification.hide-extra {
 
 .notification > .notification-content {
 	padding: 10px 6px 8px 6px;
+	width: calc(100% - 12px);
+}
+
+.notification-content > .notification-head,
+.notification-content > .notification-body {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .notification > .notification-content > .notification-head {

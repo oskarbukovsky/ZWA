@@ -1,3 +1,11 @@
+<?php
+require("db.php");
+if (!sessionIsValid()) {
+    header("Location: error.php?code=403");
+    die();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="cs">
 
