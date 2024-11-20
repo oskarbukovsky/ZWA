@@ -154,7 +154,19 @@ window.onmessage = async function (event) {
             appOpen(node[0]);
             break;
         case "sessionTimeout":
-            addNotification({"head":"Relace vypršela", "body":"Přihlaš se prosím znovu"});
+            if (!shutdown) {
+                const notification = await addNotification({ "head": "Relace vypršela | Přihlaš se prosím znovu" }, true);
+                let i = 60;
+                notification.querySelector(".notification-body").textContent = "Automatické odhlášení za: " + i + "s";
+                setInterval(() => {
+                    i--;
+                    notification.querySelector(".notification-body").textContent = "Automatické odhlášení za: " + i + "s";
+                    if (i <= 0) {
+                        window.location.assign("index.php?event=session-timeout");
+                    }
+                }, 1000);
+            }
+            shutdown = true;
             break;
         default:
             cl("!📕 Neznámá zpráva z okna!")
@@ -269,7 +281,7 @@ function deselectDesktopIcons() {
 
 function desktopIconContextMenu(element, node) {
     element.addEventListener("contextmenu", function (event) {
-        cl("Open ContextMenu from Desktop\n", element);
+        cl("Open ContextMenu from Desktop\n", element, node);
 
         deselectDesktopIcons();
         element.classList.add("icon-selected");
@@ -291,24 +303,36 @@ function desktopIconContextMenu(element, node) {
 
         const open = createElement("span", new TextContent("Otevřít"), new AppendTo(container));
         open.addEventListener("click", () => appOpen(node));
-        const edit = createElement("span", new TextContent("Upravit"), new AppendTo(container));
-        const print = createElement("span", new TextContent("Tisknout"), new AppendTo(container));
-        print.addEventListener("click", () => {
-            const iframe = createElement("iframe", new ClassList("hidden"), new Src(getDestination(node)), new AppendTo(document.body), new ElementEvent("afterprint", () => self.close));
-            cl("Printing: ", iframe);
-            iframe.contentWindow.print();
-            setTimeout(() => {
-                iframe.remove();
-            }, 300000);
-        });
+
+        if (node.type == "file" && node.name.split(".").pop() == "txt") {
+            const edit = createElement("span", new TextContent("Upravit"), new AppendTo(container));
+        }
+
+        if (node.type == "file") {
+            const print = createElement("span", new TextContent("Tisknout"), new AppendTo(container));
+            print.addEventListener("click", () => {
+                const iframe = createElement("iframe", new ClassList("hidden"), new Src(getDestination(node)), new AppendTo(document.body), new ElementEvent("afterprint", () => self.close));
+                cl("Printing: ", iframe);
+                iframe.contentWindow.print();
+                setTimeout(() => {
+                    iframe.remove();
+                }, 300000);
+            });
+        }
+
         const hr1 = createElement("hr", new AppendTo(container));
 
         const copy = createElement("span", new TextContent("Kopírovat"), new AppendTo(container));
-        const download = createElement("span", new TextContent("Stáhnout"), new AppendTo(container));
+
+        if (node.type != "link") {
+            const download = createElement("span", new TextContent("Stáhnout"), new AppendTo(container));
+        }
 
         const hr2 = createElement("hr", new AppendTo(container));
 
-        const remove = createElement("span", new TextContent("Odstranit"), new AppendTo(container));
+        if (node.permissions.canDelete) {
+            const remove = createElement("span", new TextContent("Odstranit"), new AppendTo(container));
+        }
         const rename = createElement("span", new TextContent("Přejmenovat"), new AppendTo(container));
 
         const hr3 = createElement("hr", new AppendTo(container));

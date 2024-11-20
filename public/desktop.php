@@ -43,8 +43,8 @@ if (!sessionIsValid()) {
         <link rel="stylesheet" type="text/css" href="css/desktop/noscript.css">
     </noscript>
 
-    <link rel="prefetch" href="explorer.html">
-    <link rel="prefetch" href="administration.html">
+    <link rel="prefetch" href="explorer.php">
+    <link rel="prefetch" href="administration.php">
     <link rel="prefetch" href="media/login/bloomReverse.mp4">
 </head>
 
