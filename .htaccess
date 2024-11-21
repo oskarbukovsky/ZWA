@@ -1,0 +1,9 @@
+//Custom 401 errors
+ErrorDocument 401 /home/bukovja4/www/public/error.php?code=401
+
+//Custom 403 errors
+ErrorDocument 403 /home/bukovja4/www/public/error.php?code=403
+
+//Custom 404 errors
+ErrorDocument 404 /home/bukovja4/www/public/error.php?code=404
+ 

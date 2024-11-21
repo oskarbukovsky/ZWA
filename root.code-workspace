@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "SSH FS - zwa-cvut",
+			"uri": "ssh://zwa-cvut/home/bukovja4/www"
+		}
+	],
+	"settings": {}
+}

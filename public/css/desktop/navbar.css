@@ -70,9 +70,153 @@
 	z-index: 11000;
 }
 
+.navbar-search input[type="search"]::-webkit-search-decoration,
+.navbar-search input[type="search"]::-webkit-search-cancel-button,
+.navbar-search input[type="search"]::-webkit-search-results-button,
+.navbar-search input[type="search"]::-webkit-search-results-decoration {
+	-webkit-appearance: none;
+}
+
 #navbar:not(:has(.search-menu:active)) > .navbar-search:active {
 	background-size: 95%;
 }
+
+.search-bar {
+	height: 32px;
+	background-color: hsl(216, 61%, 31%);
+	border: 1px solid rgba(36, 78, 141, 0.65);
+	border-radius: 24px;
+	position: relative;
+	margin-bottom: 16px;
+	transition: background-color 100ms ease-in-out;
+}
+
+.search-bar:focus-within {
+	background-color: hsl(216, 35%, 18%);
+}
+
+.search-bar:after {
+	content: "";
+	display: block;
+	position: relative;
+	top: 50%;
+	left: 16px;
+	width: 16px;
+	height: 16px;
+	transform: translateY(-50%) scale(1.25);
+	background-image: url(../../media/ui/search-icon.webp);
+	pointer-events: none;
+	filter: saturate(1.5);
+}
+
+.search-bar:not(:focus-within):after {
+	mix-blend-mode: plus-lighter;
+	filter: brightness(90%);
+}
+
+.search-bar > input[type="search"]::placeholder {
+	color: hsl(217, 29%, 85%);
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: 400;
+	font-size: 0.8rem;
+	transition: color 60ms ease-in-out;
+}
+
+.search-bar:focus-within > input[type="search"]::placeholder {
+	color: hsl(216, 5%, 60%);
+}
+
+.search-bar > input[type="search"] {
+	position: absolute;
+	top: 0;
+	height: 32px;
+	width: 100%;
+	background-color: inherit;
+	border-radius: 24px;
+	border: none;
+	padding: 2px 2px 2px 48px;
+	outline: none;
+	color: #fff;
+	font-family: "segoe ui variable static text";
+	font-weight: 300;
+	font-size: 0.9rem;
+}
+
+.search-menu .search-content {
+	display: flex;
+	flex-flow: row;
+	color: #fff;
+	height: calc(100% - 34px);
+}
+
+.search-menu:has(input:valid):has(.search-results > .search-result)
+	.search-content {
+	gap: 12px;
+}
+
+.search-results {
+	display: flex;
+	flex-flow: column;
+	gap: 10px;
+	width: 100%;
+	height: 100%;
+}
+
+.search-item-description {
+	width: 0;
+	height: 100%;
+	border-radius: 6px;
+	background-color: rgba(36, 79, 143, 0.6);
+}
+
+.search-menu:has(input:valid):has(.search-results > .search-result)
+	.search-item-description {
+	min-width: 385px;
+}
+
+.search-result {
+	position: relative;
+	display: flex;
+	flex-flow: row;
+	border-radius: 6px;
+	padding: 8px;
+	background-color: rgba(0,0,0,0);
+	transition: background-color 100ms ease-in-out;
+}
+
+.search-result.selected,
+.search-result:hover {
+	background-color: rgba(36, 79, 143, 0.6);
+}
+
+.search-result.selected:after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 1px;
+	height: 24px;
+	width: 3px;
+	background-color: rgba(64, 189, 255, 0.9);
+	border-radius: 16px;
+	transform: translateY(-50%);
+}
+
+.search-result > img {
+	-webkit-user-drag: none;
+}
+
+.search-result > div {
+	display: flex;
+	flex-flow: column;
+}
+
+/* input:valid {
+	outline: 1px solid lime;
+}	
+
+input:invalid {
+	outline: 1px solid red;
+} */
 
 /* #navbar > .navbar-search:hover {
 	background-image: url("../media/ui/search-hover.webp");
@@ -81,7 +225,7 @@
 .navbar-popup {
 	position: absolute;
 	border-radius: 6px;
-	background-color: rgba(16, 55, 122, 0.8);
+	background-color: rgba(16, 55, 122, 0.82);
 	backdrop-filter: blur(8px);
 	border: 1px solid rgb(55, 55, 55);
 	box-shadow: 1px 1px 4px -1px rgb(0 12 26 / 50%);
@@ -102,9 +246,10 @@
 .navbar-search > .search-menu {
 	bottom: calc(var(--navbar-height) - 1px);
 	left: 11px;
-	min-width: 775px;
+	width: 730px;
 	min-height: 0px;
 	height: 0px;
+	padding: 24px;
 }
 
 .navbar-search > .search-menu.open {
@@ -116,7 +261,7 @@
 .navbar-menu > .main-menu {
 	bottom: calc(var(--navbar-height) - 1px);
 	left: 11px;
-	min-width: 640px;
+	width: 640px;
 	min-height: 0px;
 	height: 0px;
 	display: flex;
@@ -538,7 +683,10 @@
 }
 
 .notifications-wrapper > .notifications-content:not(:has(div.notification)) {
-	height: min(196px, calc(100vh - var(--navbar-height) - 390px - 37px - 48px));
+	height: min(
+		196px,
+		calc(100vh - var(--navbar-height) - 390px - 37px - 48px)
+	);
 }
 
 .notifications-wrapper
@@ -555,7 +703,7 @@
 .notification {
 	position: relative;
 	left: 0;
-	background-color: rgba(22, 63, 119, 0.6);
+	background-color: rgba(22, 63, 119, 0.65);
 	border-radius: 6px;
 	padding: 6px;
 	opacity: 1;
@@ -583,6 +731,7 @@
 }
 
 .notification.show-extra {
+	position: relative;
 	display: block;
 	color: #fff;
 	z-index: 10900;

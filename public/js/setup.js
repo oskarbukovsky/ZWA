@@ -42,8 +42,6 @@ const months = [
 const input = document.querySelector("input[type=file]");
 const uploadElement = document.querySelector(".uploading");
 
-let shutdown = false;
-
 let date = new Date();
 let year = date.getFullYear();
 let month = date.getMonth();

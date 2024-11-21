@@ -86,8 +86,13 @@ navbar.querySelector(".navbar-menu").addEventListener("click", (event) => {
     }
 });
 
+
+let searchEnterHandler = null;
 navbar.querySelector(".navbar-search .navbar-button-content").addEventListener("click", () => {
     navbar.querySelector(".navbar-search > .search-menu").classList.toggle("open");
+    if (navbar.querySelector(".navbar-search > .search-menu").classList.contains("open")) {
+        navbar.querySelector(".navbar-search input[type=search]").focus();
+    }
 });
 
 navbar.querySelector(".navbar-screen .navbar-button-content").addEventListener("click", (event) => {
@@ -141,6 +146,7 @@ const appIframeLoaded = () => {
     navbarHolder.classList.add("active");
 };
 
+let shutdown = false;
 window.onmessage = async function (event) {
     // console.log(event);
     if (event.origin != location.origin) {
@@ -350,7 +356,7 @@ function desktopIconContextMenu(element, node) {
 }
 
 document.addEventListener("keydown", async (event) => {
-    if (event.ctrlKey && (event.key == "a" || event.key == "A")) {
+    if (event.ctrlKey && (event.key == "a" || event.key == "A") && event.target != navbar.querySelector(".navbar-search input[type=search]")) {
         deselectDesktopIcons();
         closeMainMenu();
         closeSearchbarMenu()

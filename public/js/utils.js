@@ -534,6 +534,7 @@ function closeDesktopCalendar() {
 
 function closeSearchbarMenu() {
     navbar.querySelector(".search-menu").classList.remove("open");
+    navbar.querySelector(".navbar-search input[type=search]").value = "";
 }
 
 function closeMainMenu() {

@@ -69,7 +69,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     await processUserIdentifier();
 
     cl("|📙 Processing vNodes...");
-    await processVNodes();
+    await processVNodes(vNodes);
 
     cl("|📙 Processing desktop...");
     await processDesktopIcons();
@@ -127,7 +127,7 @@ async function processUserIdentifier() {
     cl("|📗 userIdentifier processed in " + (new Date() - time1) + "ms");
 }
 
-async function processVNodes() {
+async function processVNodes(vNodes) {
     let time1 = new Date();
     vNodes.forEach(async (node) => {
         await localDatabase.add("vNodes", node);
