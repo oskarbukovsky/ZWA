@@ -249,13 +249,13 @@ input:invalid {
 	width: 730px;
 	min-height: 0px;
 	height: 0px;
-	padding: 24px;
 }
 
 .navbar-search > .search-menu.open {
 	bottom: calc(var(--navbar-height) + 11px);
 	min-height: 600px;
 	height: 67vh;
+	padding: 24px;
 }
 
 .navbar-menu > .main-menu {

@@ -85,7 +85,7 @@ if (!sessionIsValid()) {
                 <div class="search-content">
                     <div class="search-results">
                         <div class="search-result selected">
-                            <img src="./media/file-icons/info.webp" alt="search-result-item">
+                            <img src="./media/ui/info.webp" alt="search-result-item">
                             <div>
                                 <span class="name">Systém</span>
                                 <span class="type">Aplikace</span>
@@ -99,7 +99,7 @@ if (!sessionIsValid()) {
                             </div>
                         </div>
                         <div class="search-result">
-                            <img src="./media/file-icons/info.webp" alt="search-result-item">
+                            <img src="./media/ui/info.webp" alt="search-result-item">
                             <div>
                                 <span class="name">Systém</span>
                                 <span class="type">Aplikace</span>

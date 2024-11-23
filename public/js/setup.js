@@ -9,6 +9,8 @@ const myConfObj = {
     lastIframe: null
 }
 
+let shutdown = false;
+
 const resizingElementsPrefixes = ["n", "e", "s", "w", "nw", "ne", "sw", "se"];
 
 const sizePrefixes = {

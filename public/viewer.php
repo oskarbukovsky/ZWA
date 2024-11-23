@@ -17,7 +17,7 @@ if (isset($_GET["method"]) && ($_GET["method"] == "sharing")) {
     }
 
     foreach ($results as $result) {
-        if ($result["validUntil"] < time()) {
+        if ($result["validUntil"] < floor(microtime(true) * 1000)) {
             deleteData("vSessions", ["vSession"], [$_GET["uuid"]]);
             header("Location: error.php?code=401");
             die();

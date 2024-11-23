@@ -822,12 +822,18 @@ Object.defineProperty(String.prototype, 'capitalize', {
     enumerable: false
 });
 
-function addNotification(content, permanent = false, nodeOrSystem = null) {
+function addNotification(content, permanent = false, nodeOrSystem = null, icon = null) {
     navbar.querySelector(".navbar-notifications #notifications").classList.add("fill");
+
+    const defaultIcons = {
+        "info": "./media/ui/info.webp",
+        "warning": "./media/ui/warning.webp",
+        "error": "./media/ui/error.webp"
+    }
 
     const notification = createElement("div", new ClassList("notification"));
     const notificationHeader = createElement("header", new AppendTo(notification));
-    const notificationIcon = createElement("img", new AppendTo(notificationHeader), new Src(nodeOrSystem ? getIcon(nodeOrSystem) : "./media/file-icons/info.webp"));
+    const notificationIcon = createElement("img", new AppendTo(notificationHeader), new Src(nodeOrSystem ? getIcon(nodeOrSystem) : defaultIcons[icon ? icon : "info"]));
     notificationIcon.alt = "notification-icon";
     const notificationTitle = createElement("span", new ClassList("title"), new TextContent(nodeOrSystem ? nodeOrSystem.name : "Systém"), new AppendTo(notificationHeader));
     const notificationSpacer = createElement("div", new ClassList("spacer"), new AppendTo(notificationHeader));
@@ -875,4 +881,36 @@ function addNotification(content, permanent = false, nodeOrSystem = null) {
 
 function pageInIframe() {
     return (window.self !== window.top)
+}
+
+async function ajax(data) {
+    let formData = new FormData();
+    for (const [key, value] of Object.entries(data)) {
+        formData.append(key, value);
+    }
+    const rawResponse = await fetch('ajax.php', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: formData
+    });
+    const content = await rawResponse.json();
+
+    console.log(content);
+    return content;
+}
+
+async function timeoutNotification() {
+    const notification = await addNotification({ "head": "Relace vypršela | Přihlaš se prosím znovu" }, true, null, "error");
+    let i = 60;
+    notification.querySelector(".notification-body").textContent = "Automatické odhlášení za: " + i + "s";
+    setInterval(() => {
+        i--;
+        notification.querySelector(".notification-body").textContent = "Automatické odhlášení za: " + i + "s";
+        if (i <= 0) {
+            window.location.assign("index.php?event=session-timeout");
+        }
+    }, 1000);
 }

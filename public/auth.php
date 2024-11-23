@@ -48,9 +48,7 @@ if ($_POST["method"] == "login") {
     sessionSet($_POST["username"]);
     header("Location: desktop.php");
     die();
-}
-
-if ($_POST["method"] == "register") {
+} elseif ($_POST["method"] == "register") {
     if (!isset($_POST["username"])) {
         header("Location: index.php?type=register&error=missing-username");
         die();

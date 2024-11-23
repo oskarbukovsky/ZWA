@@ -146,7 +146,18 @@ const appIframeLoaded = () => {
     navbarHolder.classList.add("active");
 };
 
-let shutdown = false;
+const timeoutCheck = (periodInS) => {
+    setInterval(() => {
+        ajax({ "method": "timeoutCheck" }).then(response => {
+            if (response.status != "ok") {
+                if (!shutdown) {
+                    timeoutNotification();
+                }
+            }
+        })
+    }, periodInS * 1000);
+}
+
 window.onmessage = async function (event) {
     // console.log(event);
     if (event.origin != location.origin) {
@@ -161,16 +172,7 @@ window.onmessage = async function (event) {
             break;
         case "sessionTimeout":
             if (!shutdown) {
-                const notification = await addNotification({ "head": "Relace vypršela | Přihlaš se prosím znovu" }, true);
-                let i = 60;
-                notification.querySelector(".notification-body").textContent = "Automatické odhlášení za: " + i + "s";
-                setInterval(() => {
-                    i--;
-                    notification.querySelector(".notification-body").textContent = "Automatické odhlášení za: " + i + "s";
-                    if (i <= 0) {
-                        window.location.assign("index.php?event=session-timeout");
-                    }
-                }, 1000);
+                timeoutNotification();
             }
             shutdown = true;
             break;

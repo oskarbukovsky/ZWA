@@ -56,3 +56,10 @@ function printFile($uuid)
         echo $e->getMessage();
     }
 }
+
+function returnJSONResponse($jsonData)
+{
+    header('Content-type: application/json');
+    echo json_encode($jsonData);
+    die();
+}
