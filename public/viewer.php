@@ -23,7 +23,10 @@ if (isset($_GET["method"]) && ($_GET["method"] == "sharing")) {
             die();
         }
 
-        printFile($result["file"]);
+        if (!printFile($result["file"])) {
+            header("Location: error.php?code=401");
+            die();
+        }
     }
 } else {
     if (!sessionIsValid()) {
@@ -36,5 +39,8 @@ if (isset($_GET["method"]) && ($_GET["method"] == "sharing")) {
         die();
     }
 
-    printFile($_GET["uuid"]);
+    if (!printFile($_GET["uuid"])){
+        header("Location: error.php?code=401");
+        die();
+    }
 }

@@ -92,6 +92,12 @@ class Type {
     }
 }
 
+class Alt {
+    constructor(alt) {
+        this.alt = alt;
+    }
+}
+
 class Data {
     constructor(key, value) {
         if (!key) {

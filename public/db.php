@@ -85,12 +85,12 @@ function getData($tableName, $what, $where, $input)
     return $query;
 }
 
-function deleteData($tableName, $where, $input)
+function deleteData($tableName, $where, $input, $cmp = "=")
 {
     global $conn;
     $sql = "DELETE FROM $tableName WHERE";
     foreach ($where as $key => $value) {
-        $sql .= " " . $value . "=:" . $value;
+        $sql .= " " . $value . $cmp . ":" . $value;
     }
     $query = $conn->prepare($sql);
     foreach ($where as $key => $value) {
@@ -98,9 +98,11 @@ function deleteData($tableName, $where, $input)
     }
     try {
         $query->execute();
+        return true;
     } catch (PDOException $e) {
         echo $e->getMessage();
     }
+    return false;
 }
 
 function getDataForJs($variable, $class, $tablename, $what, $where, $input)
@@ -178,23 +180,13 @@ function sessionIsValid()
     }
     try {
         global $conn;
-        // $vSession = trim($_SESSION["uuid"]);
-        // // $sql = "SELECT validUntil FROM sessions WHERE session=:value";
-        // $sql = "SELECT * FROM vSessions WHERE vSession = :value";
-        // $query = $conn->prepare($sql);
-        // $query->bindParam(":value", $vSession, PDO::PARAM_STR);
-        // $query->execute();
+        deleteData("vSessions", ["validUntil"], [floor(microtime(true) * 1000)], "<");
 
         $query = getData("vSessions", "validUntil", ["vSession"], [$_SESSION["uuid"]]);
         $results = $query->fetchAll();
 
-        foreach ($results as $result) {
-            if ($result["validUntil"] > floor(microtime(true) * 1000)) {
-                return true;
-            } else {
-                deleteData("vSessions", ["vSession"], [$_SESSION["uuid"]]);
-                return false;
-            }
+        if (count($results) > 0) {
+            return true;
         }
     } catch (PDOException $e) {
         echo $e->getMessage();
@@ -208,17 +200,27 @@ function sessionSet($username)
     $_SESSION["logged"] = true;
     $_SESSION["uuid"] = trim(newUuid());
 
+    $query = getData("users", "uuid", ["username"], [$username]);
+    $results = $query->fetchAll();
+
+    if (count($results)!=1) {
+        return false;
+    }
+
+    $_SESSION["userUuid"] = $results[0]["uuid"];
+
     global $conn;
     $sql = "INSERT INTO vSessions (vSession,user,validUntil) VALUES (?,?,?)";
     $query = $conn->prepare($sql);
     $query->execute(array($_SESSION["uuid"], $username, (floor(microtime(true) * 1000) + 8 * 60 * 60 * 1000)));
+    return true;
 }
 
 function userExist($username)
 {
     try {
         $query = getData("users", "uuid", ["username"], [$username]);
-        $data = $query->fetchAll(PDO::FETCH_ASSOC);
+        $data = $query->fetchAll();
         foreach ($data as $user) {
             $_SESSION["uuid"] = $user["uuid"];
         }

@@ -42,10 +42,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     getBattery();
     mouseSelectBox();
 
-
     updateCalendar();
     setupClock();
-    setupClockTooltip();
 
     cl("|📙 Clearing database")
     await deleteDb();
@@ -78,7 +76,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     cl("|📘 Finish from navigation start " + (new Date() - performance.timing.navigationStart) + "ms");
     // 📕📙📗📘
 
-    timeoutCheck(15);
+    timeoutCheck(DEBUG ? 300 : 15);
     
     //Temporary FPS/frameTime/ram usage counter
     if (DEBUG) {
@@ -91,11 +89,11 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 //TODO: custom získávání columns např. pro permissions a settings
 
-if (!DEBUG) {
+// if (!DEBUG) {
     window.addEventListener("contextmenu", (event) => {
         event.preventDefault();
     });
-}
+// }
 
 async function processUserIdentifier() {
     let time1 = new Date();

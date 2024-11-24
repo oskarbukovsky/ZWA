@@ -25,6 +25,28 @@ class ElementEvents {
         }
     };
 
+    static vNodeDelete = (event) => {
+        const uuid = bubbleToClass(event, "icon").querySelector("[data-uuid]").dataset.uuid;
+        cl("|📘 Deleting vNode with uuid: ", uuid);
+        ajax({ "method": "delete", "fileUuid": uuid }).then(response => {
+            if (response.status == "ok") {
+                addNotification({ "head": "Odstanění", "body": "Ok: " + response.uuid }, false, null, "info");
+
+                if (window.location.pathname.split("/").pop().includes("desktop")) {
+                    desktop.querySelector('.icon:has([data-uuid="' + uuid + '"])').remove();
+                } else {
+                    files.querySelector('.file[data-uuid="' + 1 + '"]').remove();
+                }
+                const app = windows.querySelector('.windows-app[data-uuid="' + uuid + '"]');
+                if (app) {
+                    closeApp(app, true)
+                }
+            } else {
+                addNotification({ "head": "Odstanění", "body": "Chyba: " + response.uuid }, false, null, "warning");
+            }
+        });
+    }
+
     static NoPropagation(event) {
         event.stopPropagation();
     }
@@ -287,9 +309,54 @@ function deselectDesktopIcons() {
     // navbar.querySelector(".navbar-search").children[0].classList.remove("open");
 }
 
+desktop.addEventListener("contextmenu", (event) => {
+    const container = createElement("div", new ClassList("context-menu", "open", "no-select"), new ElementEvent("contextmenu", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+    }));
+
+    let timeout;
+    let newPopup;
+    const createNew = createElement("span", new ClassList("extra", "material-symbols-rounded-after"), new TextContent("Nový"), new AppendTo(container), new ElementEvent("mouseenter", (event) => {
+        timeout = setTimeout(() => {
+            if (!newPopup && createNew.matches(':hover')) {
+                newPopup = createElement("div", new ClassList("context-menu", "open", "no-select"), new AppendTo(createNew));
+                const newFolder = createElement("span", new TextContent("Složka"), new AppendTo(newPopup));
+                const newHr = createElement("hr", new AppendTo(newPopup));
+                const newText = createElement("span", new TextContent("Textoný dokument"), new AppendTo(newPopup));
+
+                newPopup.style.left = createNew.getBoundingClientRect().width + 1 + "px";
+                if (newPopup.getBoundingClientRect().right > desktop.getBoundingClientRect().right) {
+                    newPopup.style.left = "unset";
+                    newPopup.style.right = createNew.getBoundingClientRect().width + 1 + "px";
+
+                }
+                newPopup.style.bottom = "-2px";
+            }
+        }, 450);
+    }), new ElementEvent("mouseleave", (event) => {
+        if (newPopup) {
+            createNew.querySelectorAll(".context-menu").forEach(element => {
+                element.remove();
+            });
+            newPopup = null;
+            if (timeout) {
+                clearTimeout(timeout);
+            }
+            timeout = null;
+        }
+    }));
+
+
+    const properties = createElement("span", new TextContent("Vlastnosti"), new AppendTo(container));
+
+    positionContextMenu(container, desktop);
+});
+
 function desktopIconContextMenu(element, node) {
     element.addEventListener("contextmenu", function (event) {
-        cl("Open ContextMenu from Desktop\n", element, node);
+        event.stopPropagation();
+        // cl("Open ContextMenu from Desktop\n", element, node);
 
         deselectDesktopIcons();
         element.classList.add("icon-selected");
@@ -307,25 +374,26 @@ function desktopIconContextMenu(element, node) {
         deselectAllApps();
         closeAllDesktopContextMenus();
 
-        const container = createElement("div", new ClassList("context-menu", "open", "no-select"));
+        const container = createElement("div", new ClassList("context-menu", "open", "no-select"), new ElementEvent("contextmenu", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+        }));
 
-        const open = createElement("span", new TextContent("Otevřít"), new AppendTo(container));
-        open.addEventListener("click", () => appOpen(node));
+        const open = createElement("span", new TextContent("Otevřít"), new AppendTo(container), new ElementEvent("click", () => { appOpen(node) }));
 
         if (node.type == "file" && node.name.split(".").pop() == "txt") {
             const edit = createElement("span", new TextContent("Upravit"), new AppendTo(container));
         }
 
         if (node.type == "file") {
-            const print = createElement("span", new TextContent("Tisknout"), new AppendTo(container));
-            print.addEventListener("click", () => {
+            const print = createElement("span", new TextContent("Tisknout"), new AppendTo(container), new ElementEvent("click", () => {
                 const iframe = createElement("iframe", new ClassList("hidden"), new Src(getDestination(node)), new AppendTo(document.body), new ElementEvent("afterprint", () => self.close));
                 cl("Printing: ", iframe);
                 iframe.contentWindow.print();
                 setTimeout(() => {
                     iframe.remove();
                 }, 300000);
-            });
+            }));
         }
 
         const hr1 = createElement("hr", new AppendTo(container));
@@ -339,7 +407,7 @@ function desktopIconContextMenu(element, node) {
         const hr2 = createElement("hr", new AppendTo(container));
 
         if (node.permissions.canDelete) {
-            const remove = createElement("span", new TextContent("Odstranit"), new AppendTo(container));
+            const remove = createElement("span", new TextContent("Odstranit"), new AppendTo(container), new ElementEvent("click", ElementEvents.vNodeDelete));
         }
         const rename = createElement("span", new TextContent("Přejmenovat"), new AppendTo(container));
 
@@ -347,13 +415,7 @@ function desktopIconContextMenu(element, node) {
 
         const properties = createElement("span", new TextContent("Vlastnosti"), new AppendTo(container));
 
-        container.style.left = event.clientX + 1 + "px";
-        element.appendChild(container);
-        let bottom = desktop.getBoundingClientRect().height - event.clientY + 1;
-        if (container.getBoundingClientRect().height >= event.clientY) {
-            bottom = desktop.getBoundingClientRect().height - container.getBoundingClientRect().height - 1;
-        }
-        container.style.bottom = bottom + "px";
+        positionContextMenu(container, element);
     });
 }
 
@@ -440,7 +502,6 @@ window.addEventListener("DOMContentLoaded", () => {
     blueLightFilter.oninput = blueLightFilterChange;
     blueLightFilterChange(blueLightFilter);
 });
-
 
 function mouseSelectBox() {
     let selecting;

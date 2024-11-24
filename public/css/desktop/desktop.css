@@ -74,14 +74,14 @@ body,
 	opacity: 1;
 }
 
-.icon .context-menu {
+.context-menu {
 	position: absolute;
 	background-color: rgba(48, 48, 48, 1);
 	color: rgba(255, 255, 255, 0.91);
 	white-space: pre;
 	border-radius: 3px;
 	box-shadow: 2px 2px 8px 0px rgba(0, 12, 26, 0.2);
-	border: 1px solid rgba(64, 64, 64, 1);
+	/* border: 1px solid rgba(64, 64, 64, 1); */
 	padding: 3px 2px;
 	/* pointer-events: none; */
 	transition: opacity 225ms ease-in-out;
@@ -92,7 +92,7 @@ body,
 	z-index: 10;
 }
 
-.icon .context-menu.open {
+.context-menu.open {
 	opacity: 1;
 }
 
@@ -114,6 +114,18 @@ body,
 
 .context-menu > span:hover {
 	background-color: rgba(58, 58, 58, 1);
+}
+
+.context-menu > .extra {
+	position: relative;
+}
+
+.context-menu > .extra:after {
+	content: "chevron_right";
+	position: absolute;
+    right: 0;
+	top: 50%;
+    transform: translateY(-50%);
 }
 
 #desktop > .icon:hover {

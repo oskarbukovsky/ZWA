@@ -51,8 +51,127 @@ function textDeSelect() {
     }
 }
 
-function setupClockTooltip() {
+function pageInIframe() {
+    return (window.self !== window.top)
+}
+
+function timestampToHuman(timestamp) {
+    const date = new Intl.DateTimeFormat("cs-CZ", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+    }).format(timestamp).replaceAll(" ", "")
+    const time = new Intl.DateTimeFormat("cs-CZ", {
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+    }).format(timestamp);
+    return date + " " + time;
+}
+
+function appendBefore(element, beforeWhat) {
+    return beforeWhat.parentNode.insertBefore(element, beforeWhat);;
+}
+
+function scaleValue(value, from, to) {
+    var scale = (to[1] - to[0]) / (from[1] - from[0]);
+    var capped = Math.min(from[1], Math.max(from[0], value)) - from[0];
+    return ~~(capped * scale + to[0]);
+}
+
+
+async function sha256Hash(text) {
+    return Array.from(new Uint8Array(await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)))).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+const is_key_down = (() => {
+    const state = {};
+    window.addEventListener("keyup", (event) => {
+        state[event.key] = false;
+        // cl(event.key + " " + state[event.key]);
+    });
+    window.addEventListener("keydown", (event) => {
+        state[event.key] = true;
+        // cl(event.key + " " + state[event.key]);
+    });
+    return (key) => state.hasOwnProperty(key) && state[key] || false;
+})();
+
+function sizeNumberToString(size) {
+    let prefix = 0;
+    let stage = Object.values(sizePrefixes)[1];
+    while (size / stage >= 1) {
+        size /= stage;
+        prefix++;
+    }
+    return "" + parseFloat(size.toFixed(2)) + " " + Object.keys(sizePrefixes)[prefix];
+};
+
+function setCookie(name, value, expiryHours) {
+    const d = new Date();
+    d.setTime(d.getTime() + (expiryHours * 60 * 60 * 1000));
+    let expires = "expires=" + d.toUTCString();
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+    return true;
+}
+
+function getCookie(name) {
+    name = name + "=";
+    let ca = document.cookie.split(";");
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == " ") {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return null;
+}
+
+function isValidUrl(string) {
+    let url;
+
+    try {
+        url = new URL(string);
+    } catch (_) {
+        return false;
+    }
+
+    return url.protocol === "http:" || url.protocol === "https:";
+}
+
+function stripPx(element, styleType, defaultValue) {
+    return element.style[styleType] ? Number(element.style[styleType].replace("px", "")) : defaultValue;
+}
+
+function getParam(param) {
+    return new URLSearchParams(window.location.search).get(param);
+}
+
+function setupClock() {
+    clock();
     clockTooltip();
+    function clock() {
+        const datetime = new Date();
+        const date = new Intl.DateTimeFormat("cs-CZ", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+        }).format(datetime).replaceAll(" ", "")
+        const time = new Intl.DateTimeFormat("cs-CZ", {
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+        }).format(datetime)
+        const element = document.querySelector("#datetime");
+        element.setAttribute("data-date", date);
+        element.setAttribute("data-time", time + " ");
+        setTimeout(() => {
+            clock();
+        }, 1001 - datetime.getMilliseconds());
+    }
     function clockTooltip() {
         const datetime = new Date();
         const date = new Intl.DateTimeFormat("cs-CZ", {
@@ -71,29 +190,6 @@ function setupClockTooltip() {
         element.children[1].textContent = time;
         setTimeout(() => {
             clockTooltip();
-        }, 1001 - datetime.getMilliseconds());
-    }
-}
-
-function setupClock() {
-    clock();
-    function clock() {
-        const datetime = new Date();
-        const date = new Intl.DateTimeFormat("cs-CZ", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-        }).format(datetime).replaceAll(" ", "")
-        const time = new Intl.DateTimeFormat("cs-CZ", {
-            hour: "numeric",
-            minute: "numeric",
-            second: "numeric",
-        }).format(datetime)
-        const element = document.querySelector("#datetime");
-        element.setAttribute("data-date", date);
-        element.setAttribute("data-time", time + " ");
-        setTimeout(() => {
-            clock();
         }, 1001 - datetime.getMilliseconds());
     }
 }
@@ -217,28 +313,14 @@ function openDb() {
     };
 }
 
-function getTimeForTooltip(datetime) {
-    const date = new Intl.DateTimeFormat("cs-CZ", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-    }).format(datetime).replaceAll(" ", "")
-    const time = new Intl.DateTimeFormat("cs-CZ", {
-        hour: "numeric",
-        minute: "numeric",
-        second: "numeric",
-    }).format(datetime);
-    return date + " " + time;
-}
-
 function getIconTooltipText(node) {
     switch (node.type) {
         case "folder":
         case "images":
         case "documents":
-            return node.name + "\r\nDatum vytvoření: " + getTimeForTooltip(node.timeCreate) + "\r\nVelikost: " + sizeNumberToString(node.size);
+            return node.name + "\r\nDatum vytvoření: " + timestampToHuman(node.timeCreate) + "\r\nVelikost: " + sizeNumberToString(node.size);
         case "file":
-            return node.name + "\r\n" + node.description + "\r\nVelikost: " + sizeNumberToString(node.size) + "\r\nDatum změny: " + getTimeForTooltip(node.timeEdit);
+            return node.name + "\r\n" + node.description + "\r\nVelikost: " + sizeNumberToString(node.size) + "\r\nDatum změny: " + timestampToHuman(node.timeEdit);
         case "link":
             return "Odkaz na: " + node.data.data[0];
         default:
@@ -321,7 +403,6 @@ function getIcon(node) {
 }
 
 function bubbleToClass(event, className) {
-    // event.preventDefault();
     let app = event.target;
     while (app && app.classList && !app?.classList?.contains(className)) {
         app = app.parentElement;
@@ -351,8 +432,10 @@ function maximizeApp(maximizeButton, header) {
 }
 
 function closeApp(target, forced = false) {
-    function close(event) {
-        let app = bubbleToClass(event, "windows-app");
+    function close(app, forced = false) {
+        if (!forced) {
+            app = bubbleToClass(app, "windows-app");
+        }
         app.classList.add("closing");
         setTimeout(() => {
             app.remove();
@@ -366,10 +449,27 @@ function closeApp(target, forced = false) {
         }
     }
     if (forced === true) {
-        close(target);
+        close(target, true);
         return;
     }
     target.onclick = close;
+}
+
+function positionContextMenu(container, appendTo) {
+    appendTo.appendChild(container);
+    let left = event.clientX + 1 + "px";
+    container.style.left = left;
+    let bottom = desktop.getBoundingClientRect().height - event.clientY + 1;
+    if (container.getBoundingClientRect().height >= event.clientY) {
+        bottom = desktop.getBoundingClientRect().height - container.getBoundingClientRect().height - 1;
+    }
+
+    if (container.getBoundingClientRect().right >= desktop.getBoundingClientRect().width) {
+        left = desktop.getBoundingClientRect().width - container.getBoundingClientRect().width - 1;
+    }
+
+    container.style.bottom = bottom + "px";
+    container.style.left = left + "px";
 }
 
 function dragApp(element) {
@@ -434,7 +534,6 @@ function dragApp(element) {
     window.addEventListener("mouseup", dragStop);
     window.addEventListener("touchend", dragStop);
     window.addEventListener("blur", dragStop);
-
 }
 
 function selectApp(uuid) {
@@ -492,6 +591,9 @@ function createElement() {
                 break;
             case Data:
                 element.dataset[parameter.key] = parameter.value;
+                break;
+            case Alt:
+                element.alt = parameter.alt;
                 break;
             case ElementEvent:
                 element.addEventListener(parameter.type, parameter.handler);
@@ -595,10 +697,6 @@ function resizeWindow(app) {
     })
 }
 
-function appendBefore(element, beforeWhat) {
-    return beforeWhat.parentNode.insertBefore(element, beforeWhat);;
-}
-
 function updateCalendar() {
     let dayOne = new Date(year, month, 0).getDay();
     let lastDate = new Date(year, month + 1, 0).getDate();
@@ -694,22 +792,17 @@ function getBattery() {
     });
 }
 
-function scaleValue(value, from, to) {
-    var scale = (to[1] - to[0]) / (from[1] - from[0]);
-    var capped = Math.min(from[1], Math.max(from[0], value)) - from[0];
-    return ~~(capped * scale + to[0]);
-}
-
 function handleFileUpload(files) {
     const maxSize = 50 * 1024 * 1024; // 50 MB
 
     [...files].forEach(function (file) {
         if (file) {
             if (file.size > maxSize) {
-                cl("File size exceeds the limit of 2 MB");
+                cl("File size exceeds the limit of 50 MB");
                 return;
-            } else if (!isValidFileType(file)) {
-                cl("File type is not supported");
+            }
+            if (!isValidFileType(file)) {
+                cl("File type is not supported", file.type);
                 return;
             }
             cl("File to be uploaded: ", file);
@@ -718,85 +811,14 @@ function handleFileUpload(files) {
 }
 
 function isValidFileType(file) {
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif"]
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp", "application/pdf", "text/plain"]
     return allowedTypes.includes(file.type)
 }
-
-const is_key_down = (() => {
-    const state = {};
-    window.addEventListener("keyup", (event) => {
-        state[event.key] = false;
-        // cl(event.key + " " + state[event.key]);
-    });
-    window.addEventListener("keydown", (event) => {
-        state[event.key] = true;
-        // cl(event.key + " " + state[event.key]);
-    });
-    return (key) => state.hasOwnProperty(key) && state[key] || false;
-})();
-
-function sizeNumberToString(size) {
-    let prefix = 0;
-    let stage = Object.values(sizePrefixes)[1];
-    while (size / stage >= 1) {
-        size /= stage;
-        prefix++;
-    }
-    return "" + parseFloat(size.toFixed(2)) + " " + Object.keys(sizePrefixes)[prefix];
-};;
 
 function updateSlider(rangeElement) {
     const percentage = (rangeElement.value - Number(rangeElement.min)) / (Number(rangeElement.max) - Number(rangeElement.min)) * 100;
     rangeElement.style = "background: linear-gradient(to right, rgb(64, 189, 255), rgb(64, 189, 255) " + percentage + "%, rgb(148, 166, 191) " + percentage + "%, rgb(148, 166, 191) 100%)";
     return percentage;
-}
-
-if (!String.prototype.replaceAll) {
-    String.prototype.replaceAll = function (str, newStr) {
-        if (Object.prototype.toString.call(str).toLowerCase() === "[object regexp]") {
-            return this.replace(str, newStr);
-        }
-        return this.replace(new RegExp(str, "g"), newStr);
-    };
-}
-
-async function sha256Hash(text) {
-    return Array.from(new Uint8Array(await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)))).map((b) => b.toString(16).padStart(2, "0")).join("");
-}
-
-function setCookie(name, value, expiryHours) {
-    const d = new Date();
-    d.setTime(d.getTime() + (expiryHours * 60 * 60 * 1000));
-    let expires = "expires=" + d.toUTCString();
-    document.cookie = name + "=" + value + ";" + expires + ";path=/";
-    return true;
-}
-
-function getCookie(name) {
-    name = name + "=";
-    let ca = document.cookie.split(";");
-    for (let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) == " ") {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
-    }
-    return null;
-}
-
-function isValidUrl(string) {
-    let url;
-
-    try {
-        url = new URL(string);
-    } catch (_) {
-        return false;
-    }
-
-    return url.protocol === "http:" || url.protocol === "https:";
 }
 
 function elementsCollide(el1, el2) {
@@ -811,16 +833,29 @@ function elementsCollide(el1, el2) {
     );
 }
 
-function stripPx(element, styleType, defaultValue) {
-    return element.style[styleType] ? Number(element.style[styleType].replace("px", "")) : defaultValue;
+if (!String.prototype.replaceAll) {
+    Object.defineProperty(String.prototype, 'replaceAll', {
+        enumerable: false,
+        configurable: false,
+        writable: false,
+        value: function (str, newStr) {
+            if (Object.prototype.toString.call(str).toLowerCase() === "[object regexp]") {
+                return this.replace(str, newStr);
+            }
+            return this.replace(new RegExp(str, "g"), newStr);
+        }
+    });
 }
-
-Object.defineProperty(String.prototype, 'capitalize', {
-    value: function () {
-        return this.charAt(0).toUpperCase() + this.slice(1);
-    },
-    enumerable: false
-});
+if (!String.prototype.capitalize) {
+    Object.defineProperty(String.prototype, 'capitalize', {
+        enumerable: false,
+        configurable: false,
+        writable: false,
+        value: function () {
+            return this.charAt(0).toUpperCase() + this.slice(1);
+        }
+    });
+}
 
 function addNotification(content, permanent = false, nodeOrSystem = null, icon = null) {
     navbar.querySelector(".navbar-notifications #notifications").classList.add("fill");
@@ -833,8 +868,7 @@ function addNotification(content, permanent = false, nodeOrSystem = null, icon =
 
     const notification = createElement("div", new ClassList("notification"));
     const notificationHeader = createElement("header", new AppendTo(notification));
-    const notificationIcon = createElement("img", new AppendTo(notificationHeader), new Src(nodeOrSystem ? getIcon(nodeOrSystem) : defaultIcons[icon ? icon : "info"]));
-    notificationIcon.alt = "notification-icon";
+    const notificationIcon = createElement("img", new AppendTo(notificationHeader), new Alt("notification-icon"), new Src(nodeOrSystem ? getIcon(nodeOrSystem) : defaultIcons[icon ? icon : "info"]));
     const notificationTitle = createElement("span", new ClassList("title"), new TextContent(nodeOrSystem ? nodeOrSystem.name : "Systém"), new AppendTo(notificationHeader));
     const notificationSpacer = createElement("div", new ClassList("spacer"), new AppendTo(notificationHeader));
 
@@ -879,8 +913,17 @@ function addNotification(content, permanent = false, nodeOrSystem = null, icon =
     return notification
 }
 
-function pageInIframe() {
-    return (window.self !== window.top)
+async function timeoutNotification() {
+    const notification = await addNotification({ "head": "Relace vypršela | Přihlaš se prosím znovu" }, true, null, "error");
+    let i = 60;
+    notification.querySelector(".notification-body").textContent = "Automatické odhlášení za: " + i + "s";
+    setInterval(() => {
+        i--;
+        notification.querySelector(".notification-body").textContent = "Automatické odhlášení za: " + i + "s";
+        if (i <= 0) {
+            window.location.assign("index.php?event=session-timeout");
+        }
+    }, 1000);
 }
 
 async function ajax(data) {
@@ -898,19 +941,6 @@ async function ajax(data) {
     });
     const content = await rawResponse.json();
 
-    console.log(content);
+    cl(content);
     return content;
-}
-
-async function timeoutNotification() {
-    const notification = await addNotification({ "head": "Relace vypršela | Přihlaš se prosím znovu" }, true, null, "error");
-    let i = 60;
-    notification.querySelector(".notification-body").textContent = "Automatické odhlášení za: " + i + "s";
-    setInterval(() => {
-        i--;
-        notification.querySelector(".notification-body").textContent = "Automatické odhlášení za: " + i + "s";
-        if (i <= 0) {
-            window.location.assign("index.php?event=session-timeout");
-        }
-    }, 1000);
 }
