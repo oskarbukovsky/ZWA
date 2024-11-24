@@ -337,6 +337,8 @@ function getDestination(node) {
                 return location.origin + "/~bukovja4/public/administration.php";
             case "vComputer":
                 return location.origin + "/~bukovja4/public/explorer.php?folder=user-data/" + node.owner;
+            case "folder":
+                return location.origin + "/~bukovja4/public/explorer.php?folder=" + node.data.data[0].split("vComputer://")[1];
             case "http":
             case "https":
                 return node.data.data[0];
@@ -941,6 +943,13 @@ async function ajax(data) {
     });
     const content = await rawResponse.json();
 
-    cl(content);
+    cl("|📙 Recieved: ", content);
     return content;
+}
+
+function nodeFromAjax(response) {
+    let parsed = JSON.parse(response.item[0]);
+
+    const result = new vNode(parsed.uuid, parsed.type, parsed.parent, parsed.timeCreate, parsed.timeEdit, parsed.timeRead, parsed.owner, parsed.permissions, parsed.name, parsed.description, parsed.size, parsed.data, parsed.icon);
+    return result;
 }

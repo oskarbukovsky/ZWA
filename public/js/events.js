@@ -25,7 +25,48 @@ class ElementEvents {
         }
     };
 
-    static vNodeDelete = (event) => {
+    static fileCreate = (event) => {
+        cl("|📘 Creating new file vNode");
+        ajax({ "method": "create", "type": "file", "parent": "file" }).then(response => {
+            if (response.status == "ok") {
+                addNotification({ "head": "Vytvoření", "body": "Ok: " + Object.keys(response.item)[0] }, false, null, "info");
+            } else {
+                addNotification({ "head": "Vytvoření", "body": "Chyba: " + response.details }, false, null, "warning");
+            }
+        });
+    }
+
+    static folderCreate = (event) => {
+        cl("|📘 Creating new folder vNode");
+        localDatabase.getColumn("vNodes", "type", "desktop").then(desktopNode => {
+            const data = { "method": "create", "type": "folder", "parent": desktopNode[0].uuid };
+            cl("|📗 Sending data:", data);
+            ajax(data).then(response => {
+                if (response.status == "ok") {
+                    const newNode = nodeFromAjax(response);
+                    addNotification({ "head": "Vytvoření", "body": "Ok: " + newNode.uuid }, false, null, "info");
+                    processVNodes([newNode]);
+                    addDesktopIcon(newNode);
+                } else {
+                    addNotification({ "head": "Vytvoření", "body": "Chyba: " + response.details }, false, null, "warning");
+                }
+            });
+        });
+    }
+
+    static fileModify = (event) => {
+        const uuid = bubbleToClass(event, "icon").querySelector("[data-uuid]").dataset.uuid;
+        cl("|📘 Modifying vNode with uuid: ", uuid);
+        ajax({ "method": "modify", "fileUuid": uuid }).then(response => {
+            if (response.status == "ok") {
+                addNotification({ "head": "Upravení", "body": "Ok: " + response.uuid }, false, null, "info");
+            } else {
+                addNotification({ "head": "Upravení", "body": "Chyba: " + response.details }, false, null, "warning");
+            }
+        });
+    }
+
+    static fileDelete = (event) => {
         const uuid = bubbleToClass(event, "icon").querySelector("[data-uuid]").dataset.uuid;
         cl("|📘 Deleting vNode with uuid: ", uuid);
         ajax({ "method": "delete", "fileUuid": uuid }).then(response => {
@@ -42,13 +83,24 @@ class ElementEvents {
                     closeApp(app, true)
                 }
             } else {
-                addNotification({ "head": "Odstanění", "body": "Chyba: " + response.uuid }, false, null, "warning");
+                addNotification({ "head": "Odstanění", "body": "Chyba: " + response.details }, false, null, "warning");
             }
         });
     }
 
     static NoPropagation(event) {
         event.stopPropagation();
+    }
+}
+async function fileRead(uuid) {
+    cl("|📘 Reading vNode with uuid: ", uuid);
+    const response = await ajax({ "method": "read", "fileUuid": uuid });
+    if (response.status == "ok") {
+        addNotification({ "head": "Čtení", "body": "Ok: " + response.uuid }, false, null, "info");
+        return true;
+    } else {
+        addNotification({ "head": "Čtení", "body": "Chyba: " + response.details }, false, null, "warning");
+        return false;
     }
 }
 
@@ -313,6 +365,8 @@ desktop.addEventListener("contextmenu", (event) => {
     const container = createElement("div", new ClassList("context-menu", "open", "no-select"), new ElementEvent("contextmenu", (event) => {
         event.preventDefault();
         event.stopPropagation();
+    }), new ElementEvent("click", (event) => {
+        container.remove();
     }));
 
     let timeout;
@@ -321,9 +375,9 @@ desktop.addEventListener("contextmenu", (event) => {
         timeout = setTimeout(() => {
             if (!newPopup && createNew.matches(':hover')) {
                 newPopup = createElement("div", new ClassList("context-menu", "open", "no-select"), new AppendTo(createNew));
-                const newFolder = createElement("span", new TextContent("Složka"), new AppendTo(newPopup));
+                const newFolder = createElement("span", new TextContent("Složka"), new AppendTo(newPopup), new ElementEvent("click", ElementEvents.folderCreate));
                 const newHr = createElement("hr", new AppendTo(newPopup));
-                const newText = createElement("span", new TextContent("Textoný dokument"), new AppendTo(newPopup));
+                const newText = createElement("span", new TextContent("Textoný dokument"), new AppendTo(newPopup), new ElementEvent("click", ElementEvents.fileCreate));
 
                 newPopup.style.left = createNew.getBoundingClientRect().width + 1 + "px";
                 if (newPopup.getBoundingClientRect().right > desktop.getBoundingClientRect().right) {
@@ -407,7 +461,7 @@ function desktopIconContextMenu(element, node) {
         const hr2 = createElement("hr", new AppendTo(container));
 
         if (node.permissions.canDelete) {
-            const remove = createElement("span", new TextContent("Odstranit"), new AppendTo(container), new ElementEvent("click", ElementEvents.vNodeDelete));
+            const remove = createElement("span", new TextContent("Odstranit"), new AppendTo(container), new ElementEvent("click", ElementEvents.fileDelete));
         }
         const rename = createElement("span", new TextContent("Přejmenovat"), new AppendTo(container));
 

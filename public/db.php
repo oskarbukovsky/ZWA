@@ -173,6 +173,29 @@ function getDataForJs($variable, $class, $tablename, $what, $where, $input)
     //     defer></script>';
 }
 
+function getDataForJson($tablename, $what, $where, $input)
+{
+    global $conn;
+    $sql = "SELECT $what FROM $tablename WHERE";
+    foreach ($where as $key => $value) {
+        $sql .= " " . $value . "=:" . $value;
+    }
+    $query = $conn->prepare($sql);
+    foreach ($where as $key => $value) {
+        $query->bindParam(":" . $value, $input[$key], PDO::PARAM_STR);
+    }
+
+    try {
+        $query->execute();
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
+        return;
+    }
+
+    return json_encode($result[0]);
+}
+
 function sessionIsValid()
 {
     if (!isset($_SESSION["logged"]) || !isset($_SESSION["uuid"])) {
@@ -203,7 +226,7 @@ function sessionSet($username)
     $query = getData("users", "uuid", ["username"], [$username]);
     $results = $query->fetchAll();
 
-    if (count($results)!=1) {
+    if (count($results) != 1) {
         return false;
     }
 
@@ -257,41 +280,43 @@ function createDefaultFiles($ownerUuid)
     global $conn;
     $sql = "INSERT INTO vNodes (uuid, type, parent, timeCreate, timeEdit, timeRead, owner, permissions, name, description, size, data, icon) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
+    $timestamp = floor(microtime(true) * 1000);
+
     $query = $conn->prepare($sql);
-    $query->execute(array($ownerUuid, "root", null, floor(microtime(true) * 1000), floor(microtime(true) * 1000), floor(microtime(true) * 1000), $ownerUuid, '{"canDelete":false}', "Základní složka", "", 0, '{"data":[]}', null));
+    $query->execute(array($ownerUuid, "root", null, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":false}', "Základní složka", "", 0, '{"data":[]}', null));
     mkdir(dirname(__FILE__) . "/user-data/" . $ownerUuid . "/");
 
     $query = $conn->prepare($sql);
     $desktopUuid = newUuid();
-    $query->execute(array($desktopUuid, "desktop", $ownerUuid, floor(microtime(true) * 1000), floor(microtime(true) * 1000), floor(microtime(true) * 1000), $ownerUuid, '{"canDelete":false}', "Plocha", "Obsahuje soubory a složky na ploše", 0, '{"data":[]}', null));
+    $query->execute(array($desktopUuid, "desktop", $ownerUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":false}', "Plocha", "Obsahuje soubory a složky na ploše", 0, '{"data":["/' . $ownerUuid . '/"]}', null));
     mkdir(dirname(__FILE__) . "/user-data/" . $ownerUuid . "/" . $desktopUuid . "/");
 
     $query = $conn->prepare($sql);
     $documentsUuid = newUuid();
-    $query->execute(array($documentsUuid, "documents", $ownerUuid, floor(microtime(true) * 1000), floor(microtime(true) * 1000), floor(microtime(true) * 1000), $ownerUuid, '{"canDelete":false}', "Dokumenty", "Složka pro ukládání dokumentů", 0, '{"data":[]}', null));
+    $query->execute(array($documentsUuid, "documents", $ownerUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":false}', "Dokumenty", "Složka pro ukládání dokumentů", 0, '{"data":["/' . $ownerUuid . '/"]}', null));
     mkdir(dirname(__FILE__) . "/user-data/" . $ownerUuid . "/" . $documentsUuid . "/");
 
     $query = $conn->prepare($sql);
     $imagesUuid = newUuid();
-    $query->execute(array($imagesUuid, "images", $ownerUuid, floor(microtime(true) * 1000), floor(microtime(true) * 1000), floor(microtime(true) * 1000), $ownerUuid, '{"canDelete":false}', "Obrázky", "Složka pro ukládání obrázků", 0, '{"data":[]}', null));
+    $query->execute(array($imagesUuid, "images", $ownerUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":false}', "Obrázky", "Složka pro ukládání obrázků", 0, '{"data":["/' . $ownerUuid . '/"]}', null));
     mkdir(dirname(__FILE__) . "/user-data/" . $ownerUuid . "/" . $imagesUuid);
 
     $query = $conn->prepare($sql);
-    $query->execute(array(newUuid(), "link", $desktopUuid, floor(microtime(true) * 1000), floor(microtime(true) * 1000), floor(microtime(true) * 1000), $ownerUuid, '{"canDelete":false}', "Tento Počítač", "Umístění: Tento Počítač", 0, '{"data":["vComputer://"]}', null));
+    $query->execute(array(newUuid(), "link", $desktopUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":false}', "Tento Počítač", "Umístění: Tento Počítač", 0, '{"data":["vComputer://"]}', null));
 
     $query = $conn->prepare($sql);
-    $query->execute(array(newUuid(), "link", $desktopUuid, floor(microtime(true) * 1000), floor(microtime(true) * 1000), floor(microtime(true) * 1000), $ownerUuid, '{"canDelete":false}', "Administrace", "", 0, '{"data":["admin://"]}', null));
+    $query->execute(array(newUuid(), "link", $desktopUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":false}', "Administrace", "", 0, '{"data":["admin://"]}', null));
 
     copy(dirname(__FILE__) . "/user-data/defaults/Nový textový dokument.txt", dirname(__FILE__) . "/user-data/" . $ownerUuid . "/" . $desktopUuid . "/Nový textový dokument.txt");
     $query = $conn->prepare($sql);
-    $query->execute(array(newUuid(), "file", $desktopUuid, floor(microtime(true) * 1000), floor(microtime(true) * 1000), floor(microtime(true) * 1000), $ownerUuid, '{"canDelete":true}', "Nový textový dokument.txt", "Typ: Textový dokument", filesize(dirname(__FILE__) . "/user-data/defaults/Nový textový dokument.txt"), '{"data":["/' . $desktopUuid . '/"]}', null));
+    $query->execute(array(newUuid(), "file", $desktopUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":true}', "Nový textový dokument.txt", "Typ: Textový dokument", filesize(dirname(__FILE__) . "/user-data/defaults/Nový textový dokument.txt"), '{"data":["/' . $desktopUuid . '/"]}', null));
 
     copy(dirname(__FILE__) . "/user-data/defaults/sample.pdf", dirname(__FILE__) . "/user-data/" . $ownerUuid . "/" . $desktopUuid . "/sample.pdf");
     $query = $conn->prepare($sql);
-    $query->execute(array(newUuid(), "file", $desktopUuid, floor(microtime(true) * 1000), floor(microtime(true) * 1000), floor(microtime(true) * 1000), $ownerUuid, '{"canDelete":true}', "sample.pdf", "Typ: PDF dokument", filesize(dirname(__FILE__) . "/user-data/defaults/sample.pdf"), '{"data":["/' . $desktopUuid . '/"]}', null));
+    $query->execute(array(newUuid(), "file", $desktopUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":true}', "sample.pdf", "Typ: PDF dokument", filesize(dirname(__FILE__) . "/user-data/defaults/sample.pdf"), '{"data":["/' . $desktopUuid . '/"]}', null));
 
     $query = $conn->prepare($sql);
-    $query->execute(array(newUuid(), "link", $desktopUuid, floor(microtime(true) * 1000), floor(microtime(true) * 1000), floor(microtime(true) * 1000), $ownerUuid, '{"canDelete":false}', "Mapy", "OpenStreetMaps based map app", 0, '{"data":["https://facilmap.org/#9/50.1443/14.4470/Lima"]}', "https://cdn-icons-png.flaticon.com/512/235/235861.png"));
+    $query->execute(array(newUuid(), "link", $desktopUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":false}', "Mapy", "OpenStreetMaps based map app", 0, '{"data":["https://facilmap.org/#9/50.1443/14.4470/Lima"]}', "https://cdn-icons-png.flaticon.com/512/235/235861.png"));
 }
 
 function loginAuth($username, $password)

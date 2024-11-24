@@ -154,7 +154,11 @@ async function processDesktopIcons() {
     cl("|📗 Desktop processed in " + (new Date() - time1) + "ms");
 }
 
-function appOpen(node) {
+async function appOpen(node) {
+    const status = await fileRead(node.uuid);
+    if (!status) {
+        return;
+    }
     deselectAllApps();
     cl("opening window", node);
 
