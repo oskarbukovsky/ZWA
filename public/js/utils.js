@@ -337,8 +337,6 @@ function getDestination(node) {
                 return location.origin + "/~bukovja4/public/administration.php";
             case "vComputer":
                 return location.origin + "/~bukovja4/public/explorer.php?folder=user-data/" + node.owner;
-            case "folder":
-                return location.origin + "/~bukovja4/public/explorer.php?folder=" + node.data.data[0].split("vComputer://")[1];
             case "http":
             case "https":
                 return node.data.data[0];
@@ -346,6 +344,8 @@ function getDestination(node) {
                 cl("should not happen");
             // return location.origin + "/~bukovja4/public/user-data/" + node.owner + node.data.data[0] + node.name;
         }
+    } else if (node.type == "folder") {
+        return location.origin + "/~bukovja4/public/explorer.php?folder=" + node.data.data[0].split("vComputer://")[1];
     } else {
         return location.origin + "/~bukovja4/public/viewer.php?uuid=" + node.uuid;
         // return location.origin + "/~bukovja4/public/user-data/" + node.owner + node.data.data[0] + node.name;
