@@ -24,6 +24,13 @@ if (!sessionIsValid()) {
 
     <script src="js/classes.js"></script>
     <script src="js/utils.js"></script>
+
+    <?php
+    $parent = rtrim($_GET["folder"], '/');
+    $parentUuid = substr($parent, 1 + strripos($parent, "/"));
+
+    getDataForJs("vNodes", "vNode", "vNodes", "uuid,type,parent,timeCreate,timeEdit,timeRead,owner,permissions,name,description,size,data,icon", ["owner", "parent"], [$_SESSION["userUuid"], $parentUuid]);
+    ?>
     <script src="js/setup.js"></script>
     <script defer src="js/explorer.js"></script>
 </head>

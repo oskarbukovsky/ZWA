@@ -173,4 +173,5 @@ files.querySelectorAll(".file").forEach((element) => {
 
 document.addEventListener("DOMContentLoaded", () => {
     countSelectedFiles();
+    processVNodes();
 });

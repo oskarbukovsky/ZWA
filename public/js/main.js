@@ -126,14 +126,6 @@ async function processUserIdentifier() {
     cl("|📗 userIdentifier processed in " + (new Date() - time1) + "ms");
 }
 
-async function processVNodes(vNodes) {
-    let time1 = new Date();
-    vNodes.forEach(async (node) => {
-        await localDatabase.add("vNodes", node);
-    })
-    cl("|📗 vNodes processed in " + (new Date() - time1) + "ms");
-}
-
 async function processDesktopIcons() {
     let time1 = new Date();
     let rootId = await localDatabase.getColumn("vNodes", "type", "root");

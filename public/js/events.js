@@ -27,12 +27,19 @@ class ElementEvents {
 
     static fileCreate = (event) => {
         cl("|📘 Creating new file vNode");
-        ajax({ "method": "create", "type": "file", "parent": "file" }).then(response => {
-            if (response.status == "ok") {
-                addNotification({ "head": "Vytvoření", "body": "Ok: " + Object.keys(response.item)[0] }, false, null, "info");
-            } else {
-                addNotification({ "head": "Vytvoření", "body": "Chyba: " + response.details }, false, null, "warning");
-            }
+        localDatabase.getColumn("vNodes", "type", "desktop").then(desktopNode => {
+            const data = { "method": "create", "type": "file", "parent": desktopNode[0].uuid };
+            cl("|📗 Sending data:", data);
+            ajax(data).then(response => {
+                if (response.status == "ok") {
+                    const newNode = nodeFromAjax(response);
+                    addNotification({ "head": "Vytvoření", "body": "Ok: " + newNode.uuid }, false, null, "info");
+                    processVNodes([newNode]);
+                    addDesktopIcon(newNode);
+                } else {
+                    addNotification({ "head": "Vytvoření", "body": "Chyba: " + response.details }, false, null, "warning");
+                }
+            });
         });
     }
 
@@ -100,6 +107,9 @@ async function fileRead(uuid) {
         return true;
     } else {
         addNotification({ "head": "Čtení", "body": "Chyba: " + response.details }, false, null, "warning");
+        if (response.details == "sessionTimeout") {
+            window.postMessage(["sessionTimeout"]);
+        }
         return false;
     }
 }

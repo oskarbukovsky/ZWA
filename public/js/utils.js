@@ -392,6 +392,12 @@ function getIcon(node) {
                             return "./media/file-icons/text.webp";
                         case "pdf":
                             return "./media/file-icons/pdf.webp";
+                        case "jpeg":
+                        case "jpg":
+                        case "png":
+                        case "gif":
+                        case "webp":
+                            return "./media/file-icons/image.webp";
                         default:
                             return "./media/file-icons/unknown.webp"
                     }
@@ -795,19 +801,34 @@ function getBattery() {
 }
 
 function handleFileUpload(files) {
-    const maxSize = 50 * 1024 * 1024; // 50 MB
+    const maxSize = 50 * (1024 * 1024); // 50 MB
 
     [...files].forEach(function (file) {
         if (file) {
             if (file.size > maxSize) {
-                cl("File size exceeds the limit of 50 MB");
+                addNotification({ "head": "Soubor je moc velký (" + sizeNumberToString(file.size) + " > 50MB)", "body": "Soubor: " + file.name }, false, null, "error");
+                cl("|📙 File size exceeds the limit of 50 MB");
                 return;
             }
             if (!isValidFileType(file)) {
-                cl("File type is not supported", file.type);
+                addNotification({ "head": "Typ souboru není podporovaný", "body": "Soubor: " + file.name }, false, null, "error");
+                cl("|📙 File type is not supported", file);
                 return;
             }
-            cl("File to be uploaded: ", file);
+            cl("|📘 File to be uploaded: ", file);
+            localDatabase.getColumn("vNodes", "type", "desktop").then(desktopNode => {
+                const data = { "method": "upload", "parent": desktopNode[0].uuid, "fileUpload": file };
+                ajax(data).then(response => {
+                    if (response.status == "ok") {
+                        const newNode = nodeFromAjax(response);
+                        addNotification({ "head": "Nahrání", "body": "Ok: " + newNode.uuid }, false, null, "info");
+                        processVNodes([newNode]);
+                        addDesktopIcon(newNode);
+                    } else {
+                        addNotification({ "head": "Nahrání", "body": "Chyba: " + response.details }, false, null, "warning");
+                    }
+                });
+            });
         }
     });
 }
@@ -952,4 +973,12 @@ function nodeFromAjax(response) {
 
     const result = new vNode(parsed.uuid, parsed.type, parsed.parent, parsed.timeCreate, parsed.timeEdit, parsed.timeRead, parsed.owner, parsed.permissions, parsed.name, parsed.description, parsed.size, parsed.data, parsed.icon);
     return result;
+}
+
+async function processVNodes(vNodes) {
+    let time1 = new Date();
+    vNodes.forEach(async (node) => {
+        await localDatabase.add("vNodes", node);
+    })
+    cl("|📗 vNodes processed in " + (new Date() - time1) + "ms");
 }

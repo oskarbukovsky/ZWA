@@ -105,13 +105,19 @@ function deleteData($tableName, $where, $input, $cmp = "=")
     return false;
 }
 
-function getDataForJs($variable, $class, $tablename, $what, $where, $input)
+function getDataForJs($variable, $class, $tablename, $what, $where, $input, $operator = "AND")
 {
     global $conn;
+
+
     $sql = "SELECT $what FROM $tablename WHERE";
     foreach ($where as $key => $value) {
+        if ($key != 0) {
+            $sql .= " " . $operator;
+        }
         $sql .= " " . $value . "=:" . $value;
     }
+    // print ($sql);
     $query = $conn->prepare($sql);
     foreach ($where as $key => $value) {
         $query->bindParam(":" . $value, $input[$key], PDO::PARAM_STR);

@@ -9,23 +9,33 @@ if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH
 }
 
 if (!sessionIsValid()) {
-    returnJSONResponse(["status" => "error", "errorType" => "sessionTimeout"]);
+    returnJSONResponse(["status" => "error", "details" => "sessionTimeout"]);
 }
 
 if (!isset($_POST["method"])) {
-    returnJSONResponse(["status" => "error", "errorType" => "missingMethod"]);
+    returnJSONResponse(["status" => "error", "details" => "missingMethod"]);
 }
 
 if ($_POST["method"] == "timeoutCheck") {
     returnJSONResponse(["status" => "ok"]);
 }
 
-if ($_POST["method"] == "create") {
+if ($_POST["method"] == "upload") {
+    if (!isset($_POST["parent"])) {
+        returnJSONResponse(["status" => "error", "errorType" => "missingParent"]);
+    }
+    $status = uploadFile($_POST["parent"]);
+    if ($status !== null) {
+        returnJSONResponse(["status" => "ok", "details" => "entryUploaded", "item" => $status]);
+    } else {
+        returnJSONResponse(["status" => "error", "details" => "unableToUpload"]);
+    }
+} elseif ($_POST["method"] == "create") {
     if (!isset($_POST["type"])) {
-        returnJSONResponse(["status" => "error", "errorType" => "missingType"]);
+        returnJSONResponse(["status" => "error", "details" => "missingType"]);
     }
     if (!isset($_POST["parent"])) {
-        returnJSONResponse(["status" => "error", "errorType" => "missingType"]);
+        returnJSONResponse(["status" => "error", "details" => "missingParent"]);
     }
     $status = createFile($_POST["type"], $_POST["parent"]);
     if ($status !== null) {
@@ -35,7 +45,7 @@ if ($_POST["method"] == "create") {
     }
 } elseif ($_POST["method"] == "modify") {
     if (!isset($_POST["fileUuid"])) {
-        returnJSONResponse(["status" => "error", "errorType" => "missingFileUuid"]);
+        returnJSONResponse(["status" => "error", "details" => "missingFileUuid"]);
     }
     $status = modifyFile($_POST["fileUuid"]);
     if ($status !== null) {
@@ -45,7 +55,7 @@ if ($_POST["method"] == "create") {
     }
 } elseif ($_POST["method"] == "delete") {
     if (!isset($_POST["fileUuid"])) {
-        returnJSONResponse(["status" => "error", "errorType" => "missingFileUuid"]);
+        returnJSONResponse(["status" => "error", "details" => "missingFileUuid"]);
     }
     if (deleteFile($_POST["fileUuid"])) {
         returnJSONResponse(["status" => "ok", "details" => "entryDeleted", "uuid" => $_POST["fileUuid"]]);
@@ -54,7 +64,7 @@ if ($_POST["method"] == "create") {
     }
 } elseif ($_POST["method"] == "read") {
     if (!isset($_POST["fileUuid"])) {
-        returnJSONResponse(["status" => "error", "errorType" => "missingFileUuid"]);
+        returnJSONResponse(["status" => "error", "details" => "missingFileUuid"]);
     }
     $status = readFileMetadata($_POST["fileUuid"]);
     if ($status !== null) {
@@ -64,7 +74,7 @@ if ($_POST["method"] == "create") {
     }
 } elseif ($_POST["method"] == "search") {
     if (!isset($_POST["query"])) {
-        returnJSONResponse(["status" => "error", "errorType" => "missingQuery"]);
+        returnJSONResponse(["status" => "error", "details" => "missingQuery"]);
     }
     $status = findFiles($_POST["query"]);
     if ($status !== null) {
@@ -74,4 +84,4 @@ if ($_POST["method"] == "create") {
     }
 }
 
-returnJSONResponse(["status" => "error", "errorType" => "unknownMethod"]);
+returnJSONResponse(["status" => "error", "details" => "unknownMethod"]);
