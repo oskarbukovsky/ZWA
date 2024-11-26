@@ -218,10 +218,43 @@ function openDb() {
     let time1 = new Date();
     let localDatabaseRequest = indexedDB.open(dbName, 1);
     const errorsElement = document.querySelector(".errors");
+    
+    localDatabaseRequest.onerror = function (event) {
+        cl("!📕 Prohlížeč pravděpodobně nepodporuje nebo je zakázaná IndexedDB: ", event);
+        cssVar("--db-error", '"Prohlížeč pravděpodobně nepodporuje nebo je zakázaná IndexedDB"');
+        
+        errorsElement.classList.remove("hidden")
+        errorsElement.classList.add("db-error");
+    };
+
+    localDatabaseRequest.onblocked = function (event) {
+        cl("!📕 Nelze navázat spojení s databází: ", event);
+        cssVar("--db-error", '"Nelze navázat spojení s databází"');
+        
+        errorsElement.classList.remove("hidden")
+        errorsElement.classList.add("db-error");
+    };
+
+    localDatabaseRequest.onupgradeneeded = function (event) {
+        let dbStore;
+        dbStores.forEach((currentStore) => {
+            dbStore = event.currentTarget.result.createObjectStore(currentStore.name, { keyPath: currentStore.keyPath, autoIncrement: false });
+            currentStore.columns.forEach((column) => {
+                dbStore.createIndex(column, column, { unique: false });
+            });
+        });
+    };
 
     return new Promise(resolve => {
         localDatabaseRequest.onsuccess = function (event) {
             localDatabase = this.result;
+            
+            localDatabase.onversionchange = (event) => {
+                cl("|📘 A new version of this page is ready. Please reload or close this tab!");
+                localDatabase.close();
+                openDb();
+                addNotification({ "head": "Neaktuální verze aplikace", "body": "Aktualizujte stránku pro aktuální data" }, false, null, "warning");
+            };
 
             localDatabase.getStore = function (store, readonly_readwrite = "readwrite") {
                 return localDatabase.transaction(store, readonly_readwrite).objectStore(store);
@@ -234,11 +267,6 @@ function openDb() {
                         return resolve(event);
                     }
                     try {
-                        // cl(1, await localDatabase.getColumn(store, "uuid", item.uuid));
-                        // if (await localDatabase.getColumn(store, "uuid", item.uuid).lenght == 1) {
-                        //     dbStore.add(item);
-                        // } else {
-                        // }
                         dbStore.put(item);
                     } catch (error) {
                         cl("!📕 ERROR: ", error, item);
@@ -275,7 +303,7 @@ function openDb() {
                 });
             }
             localDatabase.onclose = function (event) {
-                cl("! Spojení s databází bylo přerušeno: ", event);
+                cl("!📕 Spojení s databází bylo přerušeno: ", event);
                 cssVar("--db-error", '"Spojení s lokální databází bylo přerušeno"');
 
                 if (errorsElement) {
@@ -284,7 +312,7 @@ function openDb() {
                 }
             }
             localDatabase.onerror = function (event) {
-                cl("Nastala chyba v databázi: ", event);
+                cl("!📕 Nastala chyba v databázi: ", event);
                 cssVar("--db-error", '"Nastala chyba v databázi: \\a ' + event.target.error + '"');
 
                 if (errorsElement) {
@@ -295,32 +323,6 @@ function openDb() {
             };
             cl("|📗 indexedDB Ready in " + (new Date() - time1) + "ms");
             resolve();
-        };
-
-        localDatabaseRequest.onerror = function (event) {
-            cl("Prohlížeč pravděpodobně nepodporuje nebo je zakázaná IndexedDB: ", event);
-            cssVar("--db-error", '"Prohlížeč pravděpodobně nepodporuje nebo je zakázaná IndexedDB"');
-
-            errorsElement.classList.remove("hidden")
-            errorsElement.classList.add("db-error");
-        };
-
-        localDatabaseRequest.onblocked = function (event) {
-            cl("! Nelze navázat spojení s databází: ", event);
-            cssVar("--db-error", '"Nelze navázat spojení s databází"');
-
-            errorsElement.classList.remove("hidden")
-            errorsElement.classList.add("db-error");
-        };
-
-        localDatabaseRequest.onupgradeneeded = function (event) {
-            let dbStore;
-            dbStores.forEach((currentStore) => {
-                dbStore = event.currentTarget.result.createObjectStore(currentStore.name, { keyPath: currentStore.keyPath, autoIncrement: false });
-                currentStore.columns.forEach((column) => {
-                    dbStore.createIndex(column, column, { unique: false });
-                });
-            });
         };
     });
 }
@@ -993,4 +995,16 @@ async function processVNodes(vNodes) {
         await localDatabase.add("vNodes", node);
     })
     cl("|📗 vNodes processed in " + (new Date() - time1) + "ms");
+}
+
+function debounce(callback, delay) {
+    let timerId;
+    return function () {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timerId);
+        timerId = setTimeout(function () {
+            callback.apply(context, args);
+        }, delay);
+    };
 }

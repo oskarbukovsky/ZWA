@@ -253,7 +253,7 @@ input:invalid {
 
 .navbar-search > .search-menu.open {
 	bottom: calc(var(--navbar-height) + 11px);
-	min-height: 600px;
+	min-height: 575px;
 	height: 67vh;
 	padding: 24px;
 }

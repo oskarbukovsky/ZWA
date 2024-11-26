@@ -413,7 +413,7 @@ desktop.addEventListener("contextmenu", (event) => {
             }
             timeout = null;
         }
-    }),  new ElementEvent("click", (event) => {
+    }), new ElementEvent("click", (event) => {
         event.stopImmediatePropagation();
     }));
 
@@ -488,6 +488,26 @@ function desktopIconContextMenu(element, node) {
         positionContextMenu(container, element);
     });
 }
+
+const fileSearchInputHandler = debounce((query) => {
+    cl("|📘 Searching for vNode: ", query);
+    localDatabase.getColumn("vNodes", "type", "desktop").then(desktopNode => {
+        const data = { "method": "search", "query": query };
+        cl("|📗 Sending data:", data);
+        ajax(data).then(response => {
+            if (response.status == "ok") {
+                addNotification({ "head": "Hledání", "body": "Ok: \"" + query + "\"" }, false, null, "info");
+            } else {
+                addNotification({ "head": "Hledání", "body": "Chyba: " + response.details }, false, null, "warning");
+            }
+        });
+    });
+}, 350);
+
+navbar.querySelector(".navbar-search .search-bar>input[type=search]").addEventListener("input", async (event) => {
+    const query = event.target.value;
+    fileSearchInputHandler(query)
+});
 
 document.addEventListener("keydown", async (event) => {
     if (event.ctrlKey && (event.key == "a" || event.key == "A") && event.target != navbar.querySelector(".navbar-search input[type=search]")) {
