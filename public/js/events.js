@@ -2,13 +2,17 @@
 
 class ElementEvents {
     static appIframeMouseOver = (event) => {
-        myConfObj.iframeMouseOver = true;
-        myConfObj.lastIframe = event.target;
+        iframesHelper.iframeMouseOver = true;
+        iframesHelper.lastIframe = event.target;
+        // if (document.querySelector(".uploading").classList.containg("upload")) {
+        //     document.querySelector(".uploading").classList.remove("upload");
+        // }
+        // cl(event.target)
     };
 
     static appIframeMouseOut = () => {
-        myConfObj.iframeMouseOver = false;
-        myConfObj.lastIframe = null;
+        iframesHelper.iframeMouseOver = false;
+        iframesHelper.lastIframe = null;
     };
 
     static navbarIconClick = (event) => {
@@ -115,7 +119,7 @@ async function fileRead(uuid) {
 }
 
 window.addEventListener("blur", () => {
-    if (myConfObj.iframeMouseOver) {
+    if (iframesHelper.iframeMouseOver) {
         closeMainMenu();
         closeSearchbarMenu()
         closeDesktopCalendar();
@@ -124,7 +128,7 @@ window.addEventListener("blur", () => {
         deselectAllApps();
         closeAllDesktopContextMenus();
         uploadElement.classList.remove("upload");
-        let app = myConfObj.lastIframe;
+        let app = iframesHelper.lastIframe;
         while (!app?.classList?.contains("windows-app")) {
             app = app.parentElement;
             if (app === null) {
@@ -387,7 +391,7 @@ desktop.addEventListener("contextmenu", (event) => {
                 newPopup = createElement("div", new ClassList("context-menu", "open", "no-select"), new AppendTo(createNew));
                 const newFolder = createElement("span", new TextContent("Složka"), new AppendTo(newPopup), new ElementEvent("click", ElementEvents.folderCreate));
                 const newHr = createElement("hr", new AppendTo(newPopup));
-                const newText = createElement("span", new TextContent("Textoný dokument"), new AppendTo(newPopup), new ElementEvent("click", ElementEvents.fileCreate));
+                const newText = createElement("span", new TextContent("Textový dokument"), new AppendTo(newPopup), new ElementEvent("click", ElementEvents.fileCreate));
 
                 newPopup.style.left = createNew.getBoundingClientRect().width + 1 + "px";
                 if (newPopup.getBoundingClientRect().right > desktop.getBoundingClientRect().right) {
@@ -409,6 +413,8 @@ desktop.addEventListener("contextmenu", (event) => {
             }
             timeout = null;
         }
+    }),  new ElementEvent("click", (event) => {
+        event.stopImmediatePropagation();
     }));
 
 

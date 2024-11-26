@@ -171,7 +171,34 @@ files.querySelectorAll(".file").forEach((element) => {
     });
 });
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+    cl("|📙 Opening indexedDB");
+    await openDb();
     countSelectedFiles();
-    processVNodes();
+    cl("|📙 Processing vNodes...");
+    await processVNodes(vNodes);
+});
+
+document.body.addEventListener("dragover", (event) => {
+    event.preventDefault();
+});
+
+document.body.addEventListener("dragenter", (event) => {
+    event.preventDefault();
+    document.querySelector(".uploading").classList.add("upload");
+});
+document.querySelector(".uploading").addEventListener("dragleave", (event) => {
+    event.preventDefault();
+    document.querySelector(".uploading").classList.remove("upload");
+});
+
+document.body.addEventListener("drop", (event) => {
+    document.querySelector(".uploading").classList.remove("upload");
+    event.preventDefault();
+    window.top.postMessage(["fileUploading"]);
+    const files = event.dataTransfer.files;
+    if (files.length) {
+        fileUpload.files = files;
+        handleFileUpload(files)
+    }
 });

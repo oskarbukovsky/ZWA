@@ -219,98 +219,110 @@ function openDb() {
     let localDatabaseRequest = indexedDB.open(dbName, 1);
     const errorsElement = document.querySelector(".errors");
 
-    localDatabaseRequest.onsuccess = function (event) {
-        localDatabase = this.result;
+    return new Promise(resolve => {
+        localDatabaseRequest.onsuccess = function (event) {
+            localDatabase = this.result;
 
-        localDatabase.getStore = function (store, readonly_readwrite = "readwrite") {
-            return localDatabase.transaction(store, readonly_readwrite).objectStore(store);
-        };
+            localDatabase.getStore = function (store, readonly_readwrite = "readwrite") {
+                return localDatabase.transaction(store, readonly_readwrite).objectStore(store);
+            };
 
-        localDatabase.add = function (store, item) {
-            return new Promise((resolve) => {
-                let dbStore = localDatabase.getStore(store);
-                function success(event) {
-                    return resolve(event);
-                }
-                try {
-                    dbStore.add(item);
-                } catch (error) {
-                    cl("!📕 ERROR: ", error, item);
-                }
-                dbStore.transaction.oncomplete = (event) => success(event);
-            });
-        }
-
-        localDatabase.getColumn = function (store, column, filter = null) {
-            return new Promise(function (resolve) {
-                let dbStore = localDatabase.getStore(store);
-                let dbIndex = dbStore.index(column);
-                let result = [];
-
-                function success(event) {
-                    const cursor = event.target.result;
-                    if (cursor) {
-                        // cl(" - item: ", cursor.value);
-                        result.push(cursor.value)
-                        cursor.continue();
-                    } else {
-                        // cl("Entries all displayed.");
-                        return resolve(result);
+            localDatabase.add = async function (store, item) {
+                return new Promise(async (resolve) => {
+                    let dbStore = localDatabase.getStore(store);
+                    function success(event) {
+                        return resolve(event);
                     }
+                    try {
+                        // cl(1, await localDatabase.getColumn(store, "uuid", item.uuid));
+                        // if (await localDatabase.getColumn(store, "uuid", item.uuid).lenght == 1) {
+                        //     dbStore.add(item);
+                        // } else {
+                        // }
+                        dbStore.put(item);
+                    } catch (error) {
+                        cl("!📕 ERROR: ", error, item);
+                    }
+                    dbStore.transaction.oncomplete = (event) => success(event);
+                });
+            }
+
+            localDatabase.getColumn = function (store, column, filter = null) {
+                return new Promise(function (resolve) {
+                    let dbStore = localDatabase.getStore(store);
+                    let dbIndex = dbStore.index(column);
+                    let result = [];
+
+                    function success(event) {
+                        const cursor = event.target.result;
+                        if (cursor) {
+                            // cl(" - item: ", cursor.value);
+                            result.push(cursor.value)
+                            cursor.continue();
+                        } else {
+                            // cl("Entries all displayed.");
+                            return resolve(result);
+                        }
+                    }
+                    if (filter !== null) {
+                        let dbRange = IDBKeyRange.only(filter);
+                        let dbCursor = dbIndex.openCursor(dbRange).onsuccess = (event) => success(event);
+                        // cl(dbCursor);
+                    } else {
+                        let dbCursor = dbIndex.openCursor().onsuccess = (event) => success(event);
+                        // cl(dbCursor);
+                    }
+                });
+            }
+            localDatabase.onclose = function (event) {
+                cl("! Spojení s databází bylo přerušeno: ", event);
+                cssVar("--db-error", '"Spojení s lokální databází bylo přerušeno"');
+
+                if (errorsElement) {
+                    errorsElement.classList.remove("hidden")
+                    errorsElement.classList.add("db-error");
                 }
-                if (filter !== null) {
-                    let dbRange = IDBKeyRange.only(filter);
-                    let dbCursor = dbIndex.openCursor(dbRange).onsuccess = (event) => success(event);
-                    // cl(dbCursor);
-                } else {
-                    let dbCursor = dbIndex.openCursor().onsuccess = (event) => success(event);
-                    // cl(dbCursor);
+            }
+            localDatabase.onerror = function (event) {
+                cl("Nastala chyba v databázi: ", event);
+                cssVar("--db-error", '"Nastala chyba v databázi: \\a ' + event.target.error + '"');
+
+                if (errorsElement) {
+                    errorsElement.classList.remove("hidden")
+                    errorsElement.classList.add("db-error");
                 }
-            });
-        }
-        localDatabase.onclose = function (event) {
-            cl("! Spojení s databází bylo přerušeno: ", event);
-            cssVar("--db-error", '"Spojení s lokální databází bylo přerušeno"');
 
-            errorsElement.classList.remove("hidden")
-            errorsElement.classList.add("db-error");
-        }
-        localDatabase.onerror = function (event) {
-            cl("Nastala chyba v databázi: ", event);
-            cssVar("--db-error", '"Nastala chyba v databázi: \\a ' + event.target.error + '"');
-
-            errorsElement.classList.remove("hidden")
-            errorsElement.classList.add("db-error");
-
+            };
+            cl("|📗 indexedDB Ready in " + (new Date() - time1) + "ms");
+            resolve();
         };
-        cl("|📗 indexedDB Ready in " + (new Date() - time1) + "ms");
-    };
 
-    localDatabaseRequest.onerror = function (event) {
-        cl("Prohlížeč pravděpodobně nepodporuje nebo je zakázaná IndexedDB: ", event);
-        cssVar("--db-error", '"Prohlížeč pravděpodobně nepodporuje nebo je zakázaná IndexedDB"');
+        localDatabaseRequest.onerror = function (event) {
+            cl("Prohlížeč pravděpodobně nepodporuje nebo je zakázaná IndexedDB: ", event);
+            cssVar("--db-error", '"Prohlížeč pravděpodobně nepodporuje nebo je zakázaná IndexedDB"');
 
-        errorsElement.classList.remove("hidden")
-        errorsElement.classList.add("db-error");
-    };
+            errorsElement.classList.remove("hidden")
+            errorsElement.classList.add("db-error");
+        };
 
-    localDatabaseRequest.onblocked = function (event) {
-        cl("! Nelze navázat spojení s databází: ", event);
-        cssVar("--db-error", '"Nelze navázat spojení s databází"');
+        localDatabaseRequest.onblocked = function (event) {
+            cl("! Nelze navázat spojení s databází: ", event);
+            cssVar("--db-error", '"Nelze navázat spojení s databází"');
 
-        errorsElement.classList.remove("hidden")
-        errorsElement.classList.add("db-error");
-    };
+            errorsElement.classList.remove("hidden")
+            errorsElement.classList.add("db-error");
+        };
 
-    localDatabaseRequest.onupgradeneeded = function (event) {
-        let dbStore;
-        dbStores.forEach((currentStore) => {
-            dbStore = event.currentTarget.result.createObjectStore(currentStore.name, { keyPath: currentStore.keyPath, autoIncrement: false });
-            currentStore.columns.forEach((column) => {
-                dbStore.createIndex(column, column, { unique: false });
+        localDatabaseRequest.onupgradeneeded = function (event) {
+            let dbStore;
+            dbStores.forEach((currentStore) => {
+                dbStore = event.currentTarget.result.createObjectStore(currentStore.name, { keyPath: currentStore.keyPath, autoIncrement: false });
+                currentStore.columns.forEach((column) => {
+                    dbStore.createIndex(column, column, { unique: false });
+                });
             });
-        });
-    };
+        };
+    });
 }
 
 function getIconTooltipText(node) {

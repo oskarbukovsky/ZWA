@@ -104,34 +104,6 @@ function uploadFile($parentUuid)
         echo $e->getMessage();
     }
     return null;
-
-
-    // foreach ($_FILES["fileUpload"]["error"] as $key => $error) {
-    //     if ($error == UPLOAD_ERR_OK) {
-    //         $newUuid = newUuid();
-    //         $timestamp = floor(microtime(true) * 1000);
-
-    //         $query = getData("vNodes", "uuid, data", ["uuid"], [$parentUuid]);
-    //         $results = $query->fetchAll();
-
-    //         if (count($results) != 1) {
-    //             return null;
-    //         }
-
-    //         $parentDir = json_decode($results[0]["data"])->data[0] . $results[0]["uuid"] . "/";
-
-    //         $tmp_name = $_FILES["fileUpload"]["tmp_name"][$key];
-    //         $name = basename($_FILES["fileUpload"]["name"][$key]);
-
-    //         $query = $conn->prepare($sql);
-    //         $query->execute(array($newUuid, "file", $parentUuid, $timestamp, $timestamp, $timestamp, $_SESSION["userUuid"], '{"canDelete":true}', $name, "Složka", 0, '{"data":["/' . $parentDir . '/"]}', null));
-
-    //         move_uploaded_file($tmp_name, "$parentDir/$name");
-    //         array_push($timestamps, [$newUuid => $timestamp]);
-    //     } else {
-    //         return null;
-    //     }
-    // }
 }
 
 function createFile($type, $parentUuid)

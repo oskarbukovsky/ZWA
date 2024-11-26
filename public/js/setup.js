@@ -4,7 +4,7 @@ let localDatabase
 const dbName = "ZWA";
 const dbStores = [new dbShape("vNodes", Object.keys(new vNode()), "uuid"), new dbShape("user", Object.keys(new user()), "uuid")];
 
-const myConfObj = {
+const iframesHelper = {
     iframeMouseOver: false,
     lastIframe: null
 }

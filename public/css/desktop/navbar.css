@@ -461,6 +461,7 @@ input:invalid {
 	text-wrap: nowrap;
 	opacity: 0;
 	transition: opacity 175ms ease-in-out 200ms;
+	pointer-events: none;
 }
 
 .battery:has(span:hover) > .battery-tooltip {
@@ -499,6 +500,7 @@ input:invalid {
 	display: flex;
 	flex-flow: column;
 	gap: 10px;
+	pointer-events: none;
 }
 .navbar-time:has(.datetime:hover):not(:has(.calendar-container.open))
 	> .time-tooltip {

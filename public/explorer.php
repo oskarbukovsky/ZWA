@@ -354,6 +354,9 @@ if (!sessionIsValid()) {
         <span class="total">Počet položek:</span>
         <span class="selected">.</span>
     </div>
+    <div class="uploading">
+        <input type="file" id="fileUpload" name="fileUpload" class="hidden">
+    </div>
 </body>
 
 </html>

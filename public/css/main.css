@@ -83,6 +83,7 @@
 	background: rgba(0, 0, 255, 0.2);
 	text-align: center;
 	align-content: center;
+	z-index: 1;
 }
 
 .blue-light-filter,

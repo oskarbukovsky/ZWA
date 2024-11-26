@@ -7,7 +7,7 @@
 	top: 50px;
 	left: 250px;
 	min-width: 400px;
-	height: calc(
+	min-height: calc(
 		300px + 1px +
 			max(
 				calc(var(--app-controls-size) + 2 * var(--app-controls-extra)),
