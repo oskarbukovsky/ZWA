@@ -2,22 +2,51 @@
 
 const DEBUG = true;
 
+/**
+ * The function `cl` logs the `arguments` to the console if the `DEBUG` variable is true.
+ */
 function cl() {
     if (DEBUG) {
         console.log(...arguments);
     }
 }
 
+/**
+ * The function `sleep` returns a promise that resolves after a specified number of milliseconds.
+ * 
+ * @param ms The `ms` parameter in the `sleep` function represents the number of milliseconds for which
+ * the function will pause or sleep before resolving the promise.
+ * 
+ * @return The `sleep` function is returning a Promise.
+ */
 function sleep(ms) {
     return new Promise(resolve => {
         setTimeout(resolve, ms)
     });
 }
 
+/**
+ * The function checks if the input value contains the string "true".
+ * @param value - The `bool` function you provided checks if the input `value` contains the boolish
+ * "true" using a regular expression test.
+ * @returns The function `bool` is returning a boolean value indicating boolishness
+ */
 function bool(value) {
     return (/true/).test(value);
 }
 
+/**
+ * The `cssVar` function allows you to get or set the value of a CSS variable on the root element of
+ * the document.
+ * @param variableName - The `variableName` parameter in the `cssVar` function is a string representing
+ * the name of the CSS variable whose value you want to retrieve or set. For example, if you have a CSS
+ * variable defined as `--main-color`, you would pass `'--main-color'` as the `
+ * @param [value=null] - The `value` parameter in the `cssVar` function is the new value that you want
+ * to set for the CSS variable identified by `variableName`. If you provide a `value`, the function
+ * will update the CSS variable with that new value. If you don't provide a `value`, the
+ * @returns The `cssVar` function is returning the value of the CSS variable with the name specified in
+ * the `variableName` parameter.
+ */
 function cssVar(variableName, value = null) {
     if (value !== null) {
         document.documentElement.style.setProperty(variableName, value.toString());
@@ -26,6 +55,19 @@ function cssVar(variableName, value = null) {
     }
 }
 
+/**
+ * The function `textSelect` is used to programmatically select a range of text within a text input
+ * field.
+ * @param field - The `field` parameter in the `textSelect` function represents the input field or
+ * textarea element in which you want to select text. This field could be a reference to the DOM
+ * element itself.
+ * @param start - The `start` parameter in the `textSelect` function represents the starting index or
+ * position within the text field where the selection should begin. This index is typically a numeric
+ * value indicating the character position within the text field.
+ * @param end - The `end` parameter in the `textSelect` function represents the end position of the
+ * text selection within the specified input field. It indicates the index of the character where the
+ * selection should end.
+ */
 function textSelect(field, start, end) {
     if (field.createTextRange) {
         const selRange = field.createTextRange();
@@ -42,6 +84,9 @@ function textSelect(field, start, end) {
     field.focus();
 }
 
+/**
+ * The function `textDeSelect` is used to clear any text selection on a webpage.
+ */
 function textDeSelect() {
     if (window.getSelection) {
         window.getSelection().removeAllRanges();
@@ -51,10 +96,24 @@ function textDeSelect() {
     }
 }
 
+/**
+ * The function `pageInIframe` checks if the current page is being displayed within an iframe.
+ * @returns The function `pageInIframe()` is checking if the current page is being displayed within an
+ * iframe. It returns `true` if the page is inside an iframe, and `false` if it is not.
+ */
 function pageInIframe() {
     return (window.self !== window.top)
 }
 
+/**
+ * The function `timestampToHuman` converts a timestamp into a human-readable date and time format in
+ * Czech language.
+ * @param timestamp - The `timestamp` parameter in the `timestampToHuman` function is a Unix timestamp
+ * representing a specific date and time. It is the number of seconds that have elapsed since January
+ * 1, 1970, at 00:00:00 UTC. The function takes this timestamp and converts it into
+ * @returns The `timestampToHuman` function returns a formatted date and time string in the format
+ * "DDMMMYYYY HH:MM:SS" (e.g., "25.10.2022 14:30:45") based on the provided timestamp.
+ */
 function timestampToHuman(timestamp) {
     const date = new Intl.DateTimeFormat("cs-CZ", {
         day: "numeric",
@@ -69,21 +128,55 @@ function timestampToHuman(timestamp) {
     return date + " " + time;
 }
 
+/**
+ * The function `appendBefore` inserts an element before a specified element in the DOM.
+ * @param element - The `element` parameter in the `appendBefore` function is the element that you want
+ * to insert before another element in the DOM.
+ * @param beforeWhat - The `beforeWhat` parameter in the `appendBefore` function is the element before
+ * which you want to insert the new element.
+ * @returns The function `appendBefore` is returning the element that was inserted before the
+ * `beforeWhat` element.
+ */
 function appendBefore(element, beforeWhat) {
     return beforeWhat.parentNode.insertBefore(element, beforeWhat);;
 }
 
+/**
+ * The `scaleValue` function scales a given value from one range to another range.
+ * @param value - The `value` parameter represents the value that you want to scale from one range to
+ * another.
+ * @param from - The `from` parameter in the `scaleValue` function represents the range of the input
+ * values that you want to scale. It is an array with two elements: the minimum and maximum values of
+ * the input range.
+ * @param to - The `to` parameter in the `scaleValue` function represents the range to which you want
+ * to scale the input value. It is an array containing two elements - the minimum and maximum values of
+ * the desired output range.
+ * @returns The function `scaleValue` returns the scaled value based on the input value, the range it
+ * is coming from (`from`), and the range it needs to be scaled to (`to`).
+ */
 function scaleValue(value, from, to) {
     var scale = (to[1] - to[0]) / (from[1] - from[0]);
     var capped = Math.min(from[1], Math.max(from[0], value)) - from[0];
     return ~~(capped * scale + to[0]);
 }
 
-
+/**
+ * The function `sha256Hash` asynchronously generates a SHA-256 hash for the input text using the Web
+ * Crypto API in JavaScript.
+ * @param text - The `sha256Hash` function you provided is an asynchronous function that calculates the
+ * SHA-256 hash of the input text using the Web Crypto API. The function takes a `text` parameter,
+ * which is the input text for which you want to calculate the SHA-256 hash.
+ * @returns The `sha256Hash` function returns a Promise that resolves to the SHA-256 hash of the input
+ * `text` as a hexadecimal string.
+ */
 async function sha256Hash(text) {
     return Array.from(new Uint8Array(await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)))).map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+/* A function `is_key_down` that checks whether a specific key is currently
+being pressed on the keyboard. It uses event listeners for keyup and keydown events to update the
+state of keys being pressed or released. The function returns `true` if the specified key is
+currently pressed, and `false` otherwise. */
 const is_key_down = (() => {
     const state = {};
     window.addEventListener("keyup", (event) => {
@@ -97,6 +190,17 @@ const is_key_down = (() => {
     return (key) => state.hasOwnProperty(key) && state[key] || false;
 })();
 
+/**
+ * The function `sizeNumberToString` converts a given size number into a formatted string with an
+ * appropriate size prefix.
+ * @param size - It seems like you have not provided the value for the `size` parameter in the
+ * `sizeNumberToString` function. Please provide the value of `size` so that I can help you convert it
+ * to a formatted string representation with the appropriate size prefix.
+ * @returns The function `sizeNumberToString` returns a string that represents the given size number in
+ * a human-readable format with the appropriate size prefix. The size is converted to a smaller unit if
+ * necessary, and the result is rounded to two decimal places. The returned string includes the
+ * converted size and the corresponding size prefix.
+ */
 function sizeNumberToString(size) {
     let prefix = 0;
     let stage = Object.values(sizePrefixes)[1];
@@ -107,6 +211,20 @@ function sizeNumberToString(size) {
     return "" + parseFloat(size.toFixed(2)) + " " + Object.keys(sizePrefixes)[prefix];
 };
 
+/**
+ * The function `setCookie` is used to set a cookie with a specified name, value, and expiry time in
+ * hours.
+ * @param name - The `name` parameter in the `setCookie` function represents the name of the cookie you
+ * want to set. It is a string that identifies the cookie and allows you to retrieve its value later.
+ * @param value - The `value` parameter in the `setCookie` function represents the value you want to
+ * store in the cookie. It could be a string, number, or any other data type that you want to associate
+ * with the cookie name.
+ * @param expiryHours - The `expiryHours` parameter in the `setCookie` function represents the number
+ * of hours after which the cookie will expire. This value is used to calculate the expiration time for
+ * the cookie by converting it to milliseconds and adding it to the current time.
+ * @returns The function `setCookie` is returning `true` after setting the cookie with the provided
+ * name, value, and expiry time.
+ */
 function setCookie(name, value, expiryHours) {
     const d = new Date();
     d.setTime(d.getTime() + (expiryHours * 60 * 60 * 1000));
@@ -115,6 +233,14 @@ function setCookie(name, value, expiryHours) {
     return true;
 }
 
+/**
+ * The function `getCookie` retrieves the value of a cookie by its name from the document's cookies.
+ * @param name - The `getCookie` function you provided is used to retrieve a cookie value by its name
+ * from the `document.cookie` string. The `name` parameter in this function represents the name of the
+ * cookie whose value you want to retrieve.
+ * @returns If the cookie with the specified name is found, the function will return the value of that
+ * cookie. If the cookie is not found, the function will return null.
+ */
 function getCookie(name) {
     name = name + "=";
     let ca = document.cookie.split(";");
@@ -130,6 +256,15 @@ function getCookie(name) {
     return null;
 }
 
+/**
+ * The function `isValidUrl` checks if a given string is a valid URL starting with either "http://" or
+ * "https://".
+ * @param string - The `isValidUrl` function takes a string as a parameter and checks if it represents
+ * a valid URL with either the "http" or "https" protocol. If the string can be successfully parsed as
+ * a URL using the `URL` constructor without throwing an error, and the protocol of the URL is
+ * @returns The function `isValidUrl` returns a boolean value. It returns `true` if the input string is
+ * a valid URL with either "http:" or "https:" protocol, and `false` otherwise.
+ */
 function isValidUrl(string) {
     let url;
 
@@ -142,14 +277,40 @@ function isValidUrl(string) {
     return url.protocol === "http:" || url.protocol === "https:";
 }
 
+/**
+ * The function `stripPx` takes an element, a style type, and a default value, and returns the
+ * numerical value of the specified style property without the "px" unit if present, or the default
+ * value if the style property is not set.
+ * @param element - The `element` parameter represents the HTML element whose style property you want
+ * to access.
+ * @param styleType - The `styleType` parameter in the `stripPx` function refers to the CSS style
+ * property that you want to extract the pixel value from. For example, if you want to get the pixel
+ * value of the `width` property of an element, you would pass `'width'` as the `styleType
+ * @param defaultValue - The `defaultValue` parameter is the value that will be returned if the
+ * `element` does not have the specified `styleType` in pixels.
+ * @returns The function `stripPx` returns the numerical value of a CSS property of an element, without
+ * the "px" unit. If the property is not set, it returns the `defaultValue` provided as an argument.
+ */
 function stripPx(element, styleType, defaultValue) {
     return element.style[styleType] ? Number(element.style[styleType].replace("px", "")) : defaultValue;
 }
 
+/**
+ * The function `getParam` retrieves a specific parameter value from the URL query string.
+ * @param param - The `getParam` function is designed to retrieve a specific parameter value from the
+ * query string of the current URL. The `param` parameter in this function should be a string
+ * representing the name of the parameter you want to retrieve from the URL.
+ * @returns The `getParam` function is returning the value of the specified parameter from the query
+ * string of the current URL.
+ */
 function getParam(param) {
     return new URLSearchParams(window.location.search).get(param);
 }
 
+/**
+ * The `setupClock` function creates a clock and a tooltip displaying the current date and time in
+ * cs-CZ format.
+ */
 function setupClock() {
     clock();
     clockTooltip();
@@ -194,6 +355,10 @@ function setupClock() {
     }
 }
 
+/**
+ * The function `deleteDb` deletes a database and resolves a promise once the operation is successful.
+ * @returns A Promise is being returned from the deleteDb function.
+ */
 function deleteDb() {
     let time1 = new Date();
     return new Promise((resolve) => {
@@ -206,6 +371,12 @@ function deleteDb() {
     });
 }
 
+/**
+ * The function `openDbError` displays an error message when unable to connect to a database within a
+ * specified time limit.
+ * @param timeout - The `timeout` parameter in the `openDbError` function represents the time limit in
+ * seconds for connecting to the database before an error is triggered.
+ */
 function openDbError(timeout) {
     cl("!📕 Nedaří se připojit k databázi v časovém limitu: " + timeout + "s");
     cssVar("--db-error", '"Nedaří se připojit k databázi [V časovém limitu ' + timeout + 's]: \\a Zavřete ostatní okna s aplikací"');
@@ -214,15 +385,20 @@ function openDbError(timeout) {
     errorsElement.classList.add("db-error");
 }
 
+/**
+ * The function `openDb` opens a database and resolves a promise once the operation is successful.
+ * Plus some extra features
+ * @returns A Promise is being returned from the openDb function.
+ */
 function openDb() {
     let time1 = new Date();
     let localDatabaseRequest = indexedDB.open(dbName, 1);
     const errorsElement = document.querySelector(".errors");
-    
+
     localDatabaseRequest.onerror = function (event) {
         cl("!📕 Prohlížeč pravděpodobně nepodporuje nebo je zakázaná IndexedDB: ", event);
         cssVar("--db-error", '"Prohlížeč pravděpodobně nepodporuje nebo je zakázaná IndexedDB"');
-        
+
         errorsElement.classList.remove("hidden")
         errorsElement.classList.add("db-error");
     };
@@ -230,7 +406,7 @@ function openDb() {
     localDatabaseRequest.onblocked = function (event) {
         cl("!📕 Nelze navázat spojení s databází: ", event);
         cssVar("--db-error", '"Nelze navázat spojení s databází"');
-        
+
         errorsElement.classList.remove("hidden")
         errorsElement.classList.add("db-error");
     };
@@ -248,7 +424,7 @@ function openDb() {
     return new Promise(resolve => {
         localDatabaseRequest.onsuccess = function (event) {
             localDatabase = this.result;
-            
+
             localDatabase.onversionchange = (event) => {
                 cl("|📘 A new version of this page is ready. Please reload or close this tab!");
                 localDatabase.close();
@@ -256,10 +432,21 @@ function openDb() {
                 addNotification({ "head": "Neaktuální verze aplikace", "body": "Aktualizujte stránku pro aktuální data" }, false, null, "warning");
             };
 
+            /* The above code is defining a function `getStore` on the `localDatabase` object. This
+            function takes two parameters: `store` and `readonly_readwrite`, with a default value of
+            "readwrite" for the second parameter. The function is likely used to interact with a
+            local database, such as IndexedDB, and allows for specifying the access mode (read-only
+            or read-write) when accessing the specified store. */
             localDatabase.getStore = function (store, readonly_readwrite = "readwrite") {
                 return localDatabase.transaction(store, readonly_readwrite).objectStore(store);
             };
 
+            /* The above code is defining an asynchronous function named `add` on the `localDatabase`
+            object. This function takes two parameters: `store` and `item`. Inside the function, it
+            is likely adding the `item` to a local database store specified by the `store`
+            parameter. The use of `async` keyword indicates that the function will operate
+            asynchronously and may involve asynchronous operations like fetching data or interacting
+            with a database. */
             localDatabase.add = async function (store, item) {
                 return new Promise(async (resolve) => {
                     let dbStore = localDatabase.getStore(store);
@@ -275,6 +462,11 @@ function openDb() {
                 });
             }
 
+            /* The above code is defining a function `getColumn` on the `localDatabase` object. This
+            function takes three parameters: `store`, `column`, and `filter`, with `filter` having a
+            default value of `null`. The purpose of this function is to retrieve a specific column
+            from a given store in a local database. If a `filter` is provided, it can be used to
+            further refine the results. */
             localDatabase.getColumn = function (store, column, filter = null) {
                 return new Promise(function (resolve) {
                     let dbStore = localDatabase.getStore(store);
@@ -327,6 +519,11 @@ function openDb() {
     });
 }
 
+/**
+ * The function `getIconTooltipText` generates desktop icon tooltip text used for showing user some basic file info
+ * @param node - The `node` arguments is user to determine vNode user wants to see details
+ * @returns The `getIconTooltipText` function is returning string of tooltip content
+ */
 function getIconTooltipText(node) {
     switch (node.type) {
         case "folder":
@@ -342,6 +539,11 @@ function getIconTooltipText(node) {
     }
 }
 
+/**
+ * The function `getDestination` generates iframe url to load
+ * @param node - The `node` arguments is user to determine vNode user wants to get url
+ * @returns The `getDestination` function is returning string representation of URL for iframe
+ */
 function getDestination(node) {
     if (node.type == "link") {
         switch (node.data.data[0].split(":\/\/").shift()) {
@@ -366,6 +568,11 @@ function getDestination(node) {
     }
 }
 
+/**
+ * The function `getIcon` generates application icon URL adress
+ * @param node - The `node` arguments is user to determine vNode user wants to see icon
+ * @returns The `getIcon` function is returning string URL of the icon
+ */
 function getIcon(node) {
     if (node.icon) {
         return node.icon;
@@ -424,6 +631,11 @@ function getIcon(node) {
     }
 }
 
+/**
+ * The function `bubbleToClass` used for retrieving closest parent containing given class from user event
+ * @param event - The `event` arguments determine search starting point, usualy click and its `event.target`
+ * @returns The `bubbleToClass` return closes parent of given class relative to event.target source
+ */
 function bubbleToClass(event, className) {
     let app = event.target;
     while (app && app.classList && !app?.classList?.contains(className)) {
@@ -435,6 +647,10 @@ function bubbleToClass(event, className) {
     return app;
 }
 
+/**
+ * The function `minimizeApp` hooks minimize event listener to controls button
+ * @param minimizeButton - The `minimizeButton` event as DOM element to hook event to
+ */
 function minimizeApp(minimizeButton) {
     minimizeButton.addEventListener("click", (event) => {
         let app = bubbleToClass(event, "windows-app");
@@ -444,6 +660,12 @@ function minimizeApp(minimizeButton) {
     });
 }
 
+// TODO
+
+/**
+ * The function `maximizeApp` hooks minimize event listener to controls button
+ * @param maximizeButton - The `maximizeButton` event as DOM element to hook event to
+ */
 function maximizeApp(maximizeButton, header) {
     maximizeButton.addEventListener("click", (event) => {
         bubbleToClass(event, "windows-app").classList.toggle("maximized");
@@ -453,6 +675,11 @@ function maximizeApp(maximizeButton, header) {
     });
 }
 
+/**
+ * The function `closeApp` handle closing of the apps
+ * @param target - The `target` as app selector (DOM Element)
+ * @param forced - The `forced` bool value indicating if close should be instant
+ */
 function closeApp(target, forced = false) {
     function close(app, forced = false) {
         if (!forced) {
@@ -477,6 +704,11 @@ function closeApp(target, forced = false) {
     target.onclick = close;
 }
 
+/**
+ * The function `positionContextMenu` position contextMenu if user hovers over app icon perfectly
+ * @param container - The `container` as DOM Element which context menu to position
+ * @param appendTo - DOM Icon element to insert contextMenu to
+ */
 function positionContextMenu(container, appendTo) {
     appendTo.appendChild(container);
     let left = event.clientX + 1 + "px";
@@ -494,6 +726,10 @@ function positionContextMenu(container, appendTo) {
     container.style.left = left + "px";
 }
 
+/**
+ * The function `dragApp` handles app dragging
+ * @param element - The `element` as DOM Element which app behavior to handle
+ */
 function dragApp(element) {
     let dragging;
     let waitForMove;
@@ -558,6 +794,10 @@ function dragApp(element) {
     window.addEventListener("blur", dragStop);
 }
 
+/**
+ * The function `dragApp` handles app selection
+ * @param uuid - The uuid string to define which app
+ */
 function selectApp(uuid) {
     const appWindow = windows.querySelector('[data-uuid="' + uuid + '"]');
     appWindow.classList.add("active");
@@ -566,6 +806,11 @@ function selectApp(uuid) {
     deselectAllApps('[data-uuid="' + uuid + '"]');
 }
 
+/**
+ * The function `createElement` handles elements creation
+ * @param arguments - Iterate over arguments items to determine how new element shound appears
+ * @returns The function `createElement` is returning a DOM Element created
+ */
 function createElement() {
     let parameters = [...arguments];
     let parameter;
@@ -636,6 +881,9 @@ function createElement() {
     return element;
 }
 
+/**
+ * The function `closeAllDesktopContextMenus` closes all desktop context menus
+ */
 function closeAllDesktopContextMenus() {
     desktop.querySelectorAll(".context-menu").forEach((element) => {
         element.classList.remove("open");
@@ -643,6 +891,10 @@ function closeAllDesktopContextMenus() {
     });
 }
 
+/**
+ * The function `deselectAllApps` deselects all unwanted apps
+ * @param exceptSelector - CSS selector to ignore some apps
+ */
 function deselectAllApps(exceptSelector) {
     windows.querySelectorAll(".windows-app.active:not(" + exceptSelector + ")").forEach((app) => {
         app.classList.remove("active");
@@ -652,23 +904,40 @@ function deselectAllApps(exceptSelector) {
     });
 }
 
+/**
+ * The function `closeDesktopCalendar` closes calendar
+ */
 function closeDesktopCalendar() {
     navbar.querySelector(".calendar-container").classList.remove("open");
 }
 
+/**
+ * The function `closeSearchbarMenu` closes search menu
+ */
 function closeSearchbarMenu() {
     navbar.querySelector(".search-menu").classList.remove("open");
     navbar.querySelector(".navbar-search input[type=search]").value = "";
 }
 
+/**
+ * The function `closeMainMenu` closes main menu
+ */
 function closeMainMenu() {
     navbar.querySelector(".main-menu").classList.remove("open");
 }
 
+/**
+ * The function `closeScreenMenu` closes screen brightness menu
+ */
 function closeScreenMenu() {
     navbar.querySelector(".screen-menu").classList.remove("open");
 }
 
+/**
+ * The function `desktopIconTooltip` handles tooltip behavior
+ * @param element - DOM Element to register handlers to
+ * @param node - The `node` arguments is user to determine vNode user may request to see tooltip of
+ */
 function desktopIconTooltip(element, node) {
     let tooltipTimer, tooltipX, tooltipY;
 
@@ -711,6 +980,7 @@ function desktopIconTooltip(element, node) {
     });
 }
 
+// TODO: Docs
 function resizeWindow(app) {
     resizingElementsPrefixes.forEach((side) => {
         let resizingElement = app.querySelector("." + side + "grip");
@@ -719,6 +989,9 @@ function resizeWindow(app) {
     })
 }
 
+/**
+ * The function `updateCalendar` handles calendar generation
+ */
 function updateCalendar() {
     let dayOne = new Date(year, month, 0).getDay();
     let lastDate = new Date(year, month + 1, 0).getDate();
@@ -747,6 +1020,9 @@ function updateCalendar() {
     document.querySelector(".calendar-dates").innerHTML = lit;
 }
 
+/**
+ * The function `getLowestMaxAppZIndex` get lowest unused z-index for displaying above others
+ */
 function getLowestMaxAppZIndex() {
     let indexes = [];
     const elements = windows.querySelectorAll(".windows-app");
@@ -759,11 +1035,14 @@ function getLowestMaxAppZIndex() {
     return indexes.sort((a, b) => b - a)[0] + 1;
 }
 
+/**
+ * The function `getBluetooth` check if users computer or browser supports browser bluetooth api and if so, it creates navbar bluetooth access and click handler
+ */
 async function getBluetooth() {
     if (await navigator.bluetooth.getAvailability()) {
         const bluetoothNavbar = createElement("div", new ClassList("bluetooth"));
         const bluetoothIcon = createElement("div", new ClassList("material-symbols-rounded"), new TextContent("bluetooth"), new AppendTo(bluetoothNavbar));
-
+        // TODO: BT event
         bluetoothIcon.addEventListener("click", async (event) => {
             event.stopPropagation();
             try {
@@ -776,6 +1055,9 @@ async function getBluetooth() {
     }
 }
 
+/**
+ * Retrieves battery information and updates the battery icon and tooltip accordingly.
+ */
 function getBattery() {
     const icons = ["battery_0_bar", "battery_1_bar", "battery_2_bar", "battery_3_bar", "battery_4_bar", "battery_5_bar", "battery_6_bar", "battery_full"];
     const iconsCharging = ["battery_charging_full", "battery_charging_20", "battery_charging_30", "battery_charging_80", "battery_charging_90", "battery_full"]
@@ -814,6 +1096,10 @@ function getBattery() {
     });
 }
 
+/**
+ * Handles the upload of files, checking if the file size exceeds the maximum allowed size. And run ajax calls for them separately
+ * @param files - The list of files to be uploaded.
+ */
 function handleFileUpload(files) {
     const maxSize = 50 * (1024 * 1024); // 50 MB
 
@@ -847,17 +1133,33 @@ function handleFileUpload(files) {
     });
 }
 
+/**
+ * Check if the file type is valid based on a list of allowed file types.
+ * @param file - The file to check its type.
+ * @returns - `True` if the file type is valid, `false` otherwise.
+ */
 function isValidFileType(file) {
     const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp", "application/pdf", "text/plain"]
     return allowedTypes.includes(file.type)
 }
 
+/**
+ * Updates the slider element with a linear gradient background based on the current value. CSS/JS trick
+ * @param rangeElement - The range input element to update.
+ * @returns The percentage value of the slider.
+ */
 function updateSlider(rangeElement) {
     const percentage = (rangeElement.value - Number(rangeElement.min)) / (Number(rangeElement.max) - Number(rangeElement.min)) * 100;
     rangeElement.style = "background: linear-gradient(to right, rgb(64, 189, 255), rgb(64, 189, 255) " + percentage + "%, rgb(148, 166, 191) " + percentage + "%, rgb(148, 166, 191) 100%)";
     return percentage;
 }
 
+/**
+ * Check if two elements on the page collide with each other.
+ * @param el1 - The first element to check for collision.
+ * @param el2 - The second element to check for collision.
+ * @returns `True` if the elements collide, `false` otherwise.
+ */
 function elementsCollide(el1, el2) {
     var rect1 = el1.getBoundingClientRect();
     var rect2 = el2.getBoundingClientRect();
@@ -870,6 +1172,10 @@ function elementsCollide(el1, el2) {
     );
 }
 
+/**
+ * Polyfill for the replaceAll method on the String prototype if it does not already exist.
+ * + Plus capitalization of the strings
+ */
 if (!String.prototype.replaceAll) {
     Object.defineProperty(String.prototype, 'replaceAll', {
         enumerable: false,
@@ -894,6 +1200,14 @@ if (!String.prototype.capitalize) {
     });
 }
 
+/**
+ * Adds a notification to the navbar with the specified content and options.
+ * @param content - The content of the notification.
+ * @param permanent - Whether the notification should be permanent or dismissible.
+ * @param nodeOrSystem - The node or system to associate the notification with.
+ * @param icon - The icon to display with the notification.
+ * @returns The created notification element.
+ */
 function addNotification(content, permanent = false, nodeOrSystem = null, icon = null) {
     navbar.querySelector(".navbar-notifications #notifications").classList.add("fill");
 
@@ -950,6 +1264,10 @@ function addNotification(content, permanent = false, nodeOrSystem = null, icon =
     return notification
 }
 
+/**
+ * Displays a timeout notification that counts down from 60 seconds and redirects the user
+ * to a session timeout page when the countdown reaches 0.
+ */
 async function timeoutNotification() {
     const notification = await addNotification({ "head": "Relace vypršela | Přihlaš se prosím znovu" }, true, null, "error");
     let i = 60;
@@ -963,6 +1281,11 @@ async function timeoutNotification() {
     }, 1000);
 }
 
+/**
+ * Performs an AJAX request to the server using the provided data.
+ * @param data - The data to be sent in the request.
+ * @returns  A promise that resolves to the response content in JSON format.
+ */
 async function ajax(data) {
     let formData = new FormData();
     for (const [key, value] of Object.entries(data)) {
@@ -982,6 +1305,11 @@ async function ajax(data) {
     return content;
 }
 
+/**
+ * Creates a new vNode object from the JSON response obtained from an AJAX call.
+ * @param response - The JSON response object from the AJAX call.
+ * @returns A new vNode object created from the parsed JSON response.
+ */
 function nodeFromAjax(response) {
     let parsed = JSON.parse(response.item[0]);
 
@@ -989,6 +1317,10 @@ function nodeFromAjax(response) {
     return result;
 }
 
+/**
+ * Asynchronously processes an array of virtual nodes by adding each node to the local database.
+ * @param vNodes - An array of virtual nodes to be processed.
+ */
 async function processVNodes(vNodes) {
     let time1 = new Date();
     vNodes.forEach(async (node) => {
@@ -997,6 +1329,12 @@ async function processVNodes(vNodes) {
     cl("|📗 vNodes processed in " + (new Date() - time1) + "ms");
 }
 
+/**
+ * Debounces a callback function to limit the rate at which it is executed.
+ * @param callback - The function to be debounced.
+ * @param delay - The delay in milliseconds before the function is executed.
+ * @returns A debounced version of the original callback function.
+ */
 function debounce(callback, delay) {
     let timerId;
     return function () {

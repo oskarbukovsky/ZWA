@@ -29,18 +29,22 @@ if ($_POST["method"] == "login") {
         die();
     }
     if (strlen($_POST["username"]) < 5 || strlen($_POST["username"]) >= 16) {
+        header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
         header("Location: index.php?type=login&error=username-too-short");
         die();
     }
     if (!isset($_POST["password"])) {
+        header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
         header("Location: index.php?type=login&error=missing-password");
         die();
     }
     if (!userExist($_POST["username"])) {
+        header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
         header("Location: index.php?type=login&error=user-do-not-exist");
         die();
     }
     if (!loginAuth($_POST["username"], $_POST["password"])) {
+        header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
         header("Location: index.php?type=login&error=wrong-credentials");
         die();
     }
@@ -54,18 +58,22 @@ if ($_POST["method"] == "login") {
         die();
     }
     if (strlen($_POST["username"]) < 5 || strlen($_POST["username"]) >= 16) {
+        header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
         header("Location: index.php?type=register&error=username-too-short");
         die();
     }
     if (!isset($_POST["password"]) || !isset($_POST["passwordAgain"])) {
+        header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
         header("Location: index.php?type=register&error=missing-password");
         die();
     }
     if (userExist($_POST["username"])) {
+        header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
         header("Location: index.php?type=register&error=user-already-exist");
         die();
     }
     if ($_POST["password"] != $_POST["passwordAgain"]) {
+        header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
         header("Location: index.php?type=register&error=password-do-not-match");
         die();
     }

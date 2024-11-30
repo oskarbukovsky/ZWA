@@ -16,6 +16,15 @@
 				)
 			)
 	);
+	height: calc(
+		300px + 1px +
+			max(
+				calc(var(--app-controls-size) + 2 * var(--app-controls-extra)),
+				calc(
+					12px + var(--app-controls-size) + var(--app-controls-extra)
+				)
+			)
+	);
 	background-color: rgb(25, 25, 25);
 	border: 1px solid rgb(55, 55, 55);
 	border-radius: 6px;

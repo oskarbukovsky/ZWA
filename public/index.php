@@ -44,11 +44,15 @@ if (sessionIsValid()) {
             <input type="text" name="method" value="login" class="hidden">
             <div class="input">
                 <input id="loginUsername" type="text" name="username" placeholder="Jméno" pattern="[a-zA-Z0-9]{5,16}"
-                    autocomplete="username" title="" required>
+                    autocomplete="username" title="Jméno musí mít 5-16 znaků, a smí být složeno pouze z a-z, A-Z, 0-9" required <?php
+                    if (isset($_COOKIE["Prefill-username"]) && isset($_GET["type"]) && $_GET["type"] == "login") {
+                        echo "value=\"" . htmlspecialchars($_COOKIE["Prefill-username"]) . "\"";
+                    }
+                    ?>>
             </div>
             <div class="input">
                 <input id="loginPassword" type="password" name="password" placeholder="Heslo"
-                    autocomplete="current-password" pattern=".{6,}" required>
+                    autocomplete="current-password" pattern=".{6,}" title="Heslo musí obsahovat 6 a více znaků" required>
             </div>
             <label class="loginButton">
                 <input type="submit" value="Submit">
@@ -62,7 +66,11 @@ if (sessionIsValid()) {
             <div class="input">
                 <input id="registerUsername" type="text" name="username" placeholder="Jméno" autocomplete="username"
                     pattern="[a-zA-Z0-9]{5,16}"
-                    title="Jméno musí mít 5-16 znaků, a smí být složeno pouze z a-z, A-Z, 0-9" required>
+                    title="Jméno musí mít 5-16 znaků, a smí být složeno pouze z a-z, A-Z, 0-9" required <?php
+                    if (isset($_COOKIE["Prefill-username"]) && isset($_GET["type"]) && $_GET["type"] == "register") {
+                        echo "value=" . htmlspecialchars($_COOKIE["Prefill-username"]);
+                    }
+                    ?>>
             </div>
             <div class="input">
                 <input id="registerPassword" type="password" name="password" placeholder="Heslo"
@@ -70,7 +78,7 @@ if (sessionIsValid()) {
             </div>
             <div class="input">
                 <input id="registerPasswordAgain" type="password" name="passwordAgain" placeholder="Heslo znovu"
-                    autocomplete="new-password" pattern=".{6,}" required>
+                    autocomplete="new-password" pattern=".{6,}" title="Heslo musí obsahovat 6 a více znaků" required>
             </div>
             <label class="loginButton">
                 <input type="submit" value="Submit">

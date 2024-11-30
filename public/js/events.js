@@ -1,6 +1,15 @@
 "use strict";
 
+/**
+ * Class containing static methods related to element events.
+ */
 class ElementEvents {
+    /**
+     * Sets the `iframeMouseOver` property to true and updates the `lastIframe` property
+     * with the target of the mouseover event.
+     * @param {Event} event - The mouseover event object.
+     * @returns None
+     */
     static appIframeMouseOver = (event) => {
         iframesHelper.iframeMouseOver = true;
         iframesHelper.lastIframe = event.target;
@@ -10,11 +19,21 @@ class ElementEvents {
         // cl(event.target)
     };
 
+    /**
+     * Sets the iframeMouseOver property to false and clears the lastIframe reference.
+     * @returns None
+     */
     static appIframeMouseOut = () => {
         iframesHelper.iframeMouseOver = false;
         iframesHelper.lastIframe = null;
     };
 
+    /**
+     * Handles the click event on a navbar icon by toggling the active state of the icon
+     * and showing/hiding the corresponding app window.
+     * @param {Event} event - The click event object.
+     * @returns None
+     */
     static navbarIconClick = (event) => {
         setTimeout(() => { }, 20);
         const icon = bubbleToClass(event, "navbar-icon");
@@ -29,6 +48,11 @@ class ElementEvents {
         }
     };
 
+    /**
+     * Creates a new file vNode by sending a request to the server and processing the response.
+     * @param {Event} event - The event that triggered the file creation.
+     * @returns None
+     */
     static fileCreate = (event) => {
         cl("|📘 Creating new file vNode");
         localDatabase.getColumn("vNodes", "type", "desktop").then(desktopNode => {
@@ -47,6 +71,11 @@ class ElementEvents {
         });
     }
 
+    /**
+     * Creates a new folder vNode in the desktop.
+     * @param {Event} event - The event that triggered the folder creation.
+     * @returns None
+     */
     static folderCreate = (event) => {
         cl("|📘 Creating new folder vNode");
         localDatabase.getColumn("vNodes", "type", "desktop").then(desktopNode => {
@@ -65,6 +94,11 @@ class ElementEvents {
         });
     }
 
+    /**
+     * Modifies a vNode file based on the event triggered.
+     * @param {Event} event - The event that triggered the file modification.
+     * @returns None
+     */
     static fileModify = (event) => {
         const uuid = bubbleToClass(event, "icon").querySelector("[data-uuid]").dataset.uuid;
         cl("|📘 Modifying vNode with uuid: ", uuid);
@@ -77,6 +111,11 @@ class ElementEvents {
         });
     }
 
+    /**
+     * Deletes a file based on the event triggered.
+     * @param {Event} event - The event that triggered the file deletion.
+     * @returns None
+     */
     static fileDelete = (event) => {
         const uuid = bubbleToClass(event, "icon").querySelector("[data-uuid]").dataset.uuid;
         cl("|📘 Deleting vNode with uuid: ", uuid);
@@ -103,6 +142,12 @@ class ElementEvents {
         event.stopPropagation();
     }
 }
+
+/**
+ * Asynchronously reads a vNode file with the given UUID.
+ * @param {string} uuid - The UUID of the vNode file to read.
+ * @returns {boolean} - Returns true if the file was read successfully, false otherwise.
+ */
 async function fileRead(uuid) {
     cl("|📘 Reading vNode with uuid: ", uuid);
     const response = await ajax({ "method": "read", "fileUuid": uuid });
@@ -118,7 +163,23 @@ async function fileRead(uuid) {
     }
 }
 
+/**
+ * Adds an event listener to the window that listens for a mouseout event.
+ * When the mouseout event is triggered, it removes the "upload" class from the uploadElement.
+ * @returns None
+ */
+window.addEventListener("mouseout", () => {
+    uploadElement.classList.remove("upload");
+});
+
+/**
+ * Event listener that triggers when the window loses focus. It performs a series of actions
+ * to handle the blur event, including removing a CSS class from an upload element, closing
+ * various menus and calendars, deselecting icons, and setting the active state for a specific app.
+ * @returns None
+ */
 window.addEventListener("blur", () => {
+    uploadElement.classList.remove("upload");
     if (iframesHelper.iframeMouseOver) {
         closeMainMenu();
         closeSearchbarMenu()
@@ -127,7 +188,6 @@ window.addEventListener("blur", () => {
         deselectDesktopIcons();
         deselectAllApps();
         closeAllDesktopContextMenus();
-        uploadElement.classList.remove("upload");
         let app = iframesHelper.lastIframe;
         while (!app?.classList?.contains("windows-app")) {
             app = app.parentElement;
@@ -144,6 +204,12 @@ window.addEventListener("blur", () => {
 window.addEventListener("mousedown", deselectBasedOnClick);
 window.addEventListener("touchstart", deselectBasedOnClick);
 
+/**
+ * Handles the click event based on the element clicked.
+ * Closes various menus based on the clicked element.
+ * @param {Event} event - The click event object.
+ * @returns None
+ */
 function deselectBasedOnClick(event) {
     if (!(bubbleToClass(event, "navbar-menu") || bubbleToClass(event, "main-menu"))) {
         closeMainMenu();
@@ -168,6 +234,11 @@ function deselectBasedOnClick(event) {
     uploadElement.classList.remove("upload");
 }
 
+/**
+ * Adds a click event listener to the navbar menu that toggles the "open" class on the main menu.
+ * @param {Event} event - The click event object.
+ * @returns None
+ */
 navbar.querySelector(".navbar-menu").addEventListener("click", (event) => {
     if (bubbleToClass(event, "main-menu") != navbar.querySelector(".navbar-menu > .main-menu")) {
         navbar.querySelector(".navbar-menu > .main-menu").classList.toggle("open");
@@ -175,6 +246,12 @@ navbar.querySelector(".navbar-menu").addEventListener("click", (event) => {
 });
 
 
+/**
+ * Event listener for handling the search functionality in the navbar.
+ * Toggles the visibility of the search menu and focuses on the search input field when opened.
+ * @param None
+ * @returns None
+ */
 let searchEnterHandler = null;
 navbar.querySelector(".navbar-search .navbar-button-content").addEventListener("click", () => {
     navbar.querySelector(".navbar-search > .search-menu").classList.toggle("open");
@@ -183,16 +260,34 @@ navbar.querySelector(".navbar-search .navbar-button-content").addEventListener("
     }
 });
 
+/**
+ * Adds a click event listener to a navbar button that toggles the "open" class
+ * on the screen menu element.
+ * @param {Event} event - The event object triggered by the click.
+ * @returns None
+ */
 navbar.querySelector(".navbar-screen .navbar-button-content").addEventListener("click", (event) => {
     navbar.querySelector(".navbar-screen .screen-menu").classList.toggle("open");
 });
 
+/**
+ * Adds a click event listener to the navbar notifications button to toggle the visibility of notifications.
+ * If the notifications are filled and the notifications container is not open, it removes the fill class.
+ * @param None
+ * @returns None
+ */
 navbar.querySelector(".navbar-notifications .navbar-button-content").addEventListener("click", () => {
     if (navbar.querySelector(".navbar-notifications #notifications").classList.contains("fill") && !navbar.querySelector(".navbar-time > .notifications-container").classList.contains("open")) {
         navbar.querySelector(".navbar-notifications #notifications").classList.remove("fill");
     }
 });
 
+/**
+ * Adds a click event listener to the "Clear All Notifications" button in the navbar.
+ * Removes all notification elements with a closing animation.
+ * @param None
+ * @returns None
+ */
 navbar.querySelector(".navbar-notifications .notifications-container .clear-all-notifications").addEventListener("click", () => {
     navbar.querySelectorAll(".navbar-notifications .notifications-content > div.notification").forEach((element) => {
         element.classList.add("closing");
@@ -202,10 +297,22 @@ navbar.querySelector(".navbar-notifications .notifications-container .clear-all-
     });
 });
 
+/**
+ * Adds a click event listener to a specific element within the navbar to toggle the visibility
+ * of the calendar container.
+ * @param {string} selector - The CSS selector for the element to add the event listener to.
+ * @returns None
+ */
 navbar.querySelector(".navbar-time .navbar-button-content").addEventListener("click", () => {
     navbar.querySelector(".navbar-time > .calendar-container").classList.toggle("open");
 });
 
+/**
+ * Adds a click event listener to the navbar minimize button that minimizes all windows apps.
+ * Deselects all apps and adds the 'minimized' class to each app element.
+ * @param None
+ * @returns None
+ */
 navbar.querySelector(".navbar-minimize").addEventListener("click", () => {
     // cl(".navbar-minimize");
     deselectAllApps();
@@ -214,6 +321,12 @@ navbar.querySelector(".navbar-minimize").addEventListener("click", () => {
     });
 });
 
+/**
+ * Adds event listeners to the navigation icons in the calendar.
+ * Updates the month and year based on the icon clicked and calls updateCalendar function.
+ * @param None
+ * @returns None
+ */
 document.querySelectorAll(".calendar-navigation span").forEach(icon => {
     icon.addEventListener("click", () => {
         month = icon.id === "calendar-prev" ? month - 1 : month + 1;
@@ -228,12 +341,22 @@ document.querySelectorAll(".calendar-navigation span").forEach(icon => {
     });
 });
 
+/**
+ * Function to handle the event when the app iframe has finished loading.
+ * It adds classes to the navbarHolder element to indicate that the iframe is running and active.
+ * @returns None
+ */
 const appIframeLoaded = () => {
     cl("loaded iframe");
     navbarHolder.classList.add("running");
     navbarHolder.classList.add("active");
 };
 
+/**
+ * Sets up a periodic check to monitor for timeouts.
+ * @param {number} periodInS - The period in seconds at which to check for timeouts.
+ * @returns None
+ */
 const timeoutCheck = (periodInS) => {
     setInterval(() => {
         ajax({ "method": "timeoutCheck" }).then(response => {
@@ -246,13 +369,18 @@ const timeoutCheck = (periodInS) => {
     }, periodInS * 1000);
 }
 
+/**
+ * Sets up a message event listener on the window object to handle messages received from iframes.
+ * @param {Event} event - The event object containing information about the message.
+ * @returns None
+ */
 window.onmessage = async function (event) {
     // console.log(event);
     if (event.origin != location.origin) {
         cl("!📕 Origins do not match!!!")
         return;
     }
-    console.log("receivedFromIframe: ", event.data);
+    cl("|📘 ReceivedFromIframe: ", event.data);
     switch (event.data[0]) {
         case "appOpen":
             const node = await localDatabase.getColumn("vNodes", "uuid", event.data[1]);
@@ -264,35 +392,79 @@ window.onmessage = async function (event) {
             }
             shutdown = true;
             break;
+        case "fileUploading":
+            handleFileUpload(event.data[1]);
+            break;
         default:
             cl("!📕 Neznámá zpráva z okna!")
     }
 };
 
-addEventListener("resize", () => {
+/**
+ * Adds an event listener for the "resize" event that triggers the windowResize method
+ * of the appResizing object.
+ * @param {string} "resize" - The event type to listen for.
+ * @param {function} () => { appResizing.windowResize(); } - The callback function to execute when the event is triggered.
+ * @returns None
+ */
+window.addEventListener("resize", () => {
     appResizing.windowResize();
 });
 
+/**
+ * Sets the appResizing status to true and assigns the current object as the second element in the status array.
+ * @returns None
+ */
 function appResizeDown() {
     appResizing.status = [true, this];
 }
+/**
+ * Set the appResizing status to false, indicating that the app is not resizing up.
+ * @returns None
+ */
 function appResizeUp() {
     appResizing.status = [false];
 }
 
+/**
+ * Event listener for the "dragover" event that prevents the default behavior.
+ * @param {Event} event - The event object for the "dragover" event.
+ * @returns None
+ */
 desktop.addEventListener("dragover", (event) => {
     event.preventDefault();
 });
 
+/**
+ * Event listener for the "dragenter" event that prevents the default behavior
+ * and adds the "upload" class to the upload element.
+ * @param {Event} event - The event object for the dragenter event.
+ * @returns None
+ */
 desktop.addEventListener("dragenter", (event) => {
     event.preventDefault();
     uploadElement.classList.add("upload");
 });
+/**
+ * Adds an event listener to handle the "dragleave" event on the upload element.
+ * Prevents the default behavior of the event and removes the "upload" class from the upload element.
+ * @param {Event} event - The dragleave event object.
+ * @returns None
+ */
 uploadElement.addEventListener("dragleave", (event) => {
     event.preventDefault();
     uploadElement.classList.remove("upload");
 });
 
+/**
+ * Adds an event listener for the "drop" event to handle file uploads.
+ * Removes the "upload" class from the upload element, prevents the default behavior of the event,
+ * retrieves the files from the data transfer, assigns the files to the fileUpload element, and
+ * calls the handleFileUpload function with the files.
+ * @param {string} event - The event to listen for ("drop").
+ * @param {function} callback - The function to execute when the event occurs.
+ * @returns None
+ */
 desktop.addEventListener("drop", (event) => {
     uploadElement.classList.remove("upload");
     event.preventDefault();
@@ -303,6 +475,12 @@ desktop.addEventListener("drop", (event) => {
     }
 });
 
+/**
+ * Adds a double click event listener to the given element to open a context menu.
+ * Retrieves data from local database based on the element's UUID and updates the timestamp.
+ * @param {Element} element - The element to attach the event listener to.
+ * @returns None
+ */
 function desktopIconOpener(element) {
     element.addEventListener("dblclick", (event) => {
         closeAllDesktopContextMenus();
@@ -329,7 +507,17 @@ function desktopIconOpener(element) {
     });
 }
 
+/**
+ * Allows the user to edit the name of a desktop icon by double-clicking on it.
+ * @param {Element} element - The desktop icon element to edit the name of.
+ * @returns None
+ */
 function desktopIconEditName(element) {
+    /**
+     * Function to handle the 'Enter' key press event to save the changes.
+     * @param {Event} event - The event object triggered by the key press.
+     * @returns None
+     */
     function enterToSave(event) {
         event.stopImmediatePropagation();
         if (event.key == "Enter") {
@@ -338,6 +526,11 @@ function desktopIconEditName(element) {
         }
     }
 
+    /**
+     * Disables editing on the target element, deselects any text, and removes the event listener for saving on keydown.
+     * @param {Event} event - The event object triggered by the action.
+     * @returns None
+     */
     function stopEdit(event) {
         event.target.readOnly = true;
         textDeSelect();
@@ -348,6 +541,13 @@ function desktopIconEditName(element) {
         }
     }
 
+    /**
+     * Event listener for double click event on an element. 
+     * Closes all desktop context menus, adds event listener for keydown event to save changes,
+     * selects text within the element, toggles the readOnly property of the element, and stops event propagation.
+     * @param {Event} event - The double click event object.
+     * @returns None
+     */
     element.addEventListener("dblclick", (event) => {
         closeAllDesktopContextMenus();
         let element = event.toElement;
@@ -358,6 +558,11 @@ function desktopIconEditName(element) {
         }
         event.stopPropagation();
     });
+    /**
+     * Event listener for the "focusout" event that calls the stopEdit function.
+     * @param {Event} event - The event object triggered by the "usout" event.
+     * @returns None
+     */
     element.addEventListener("focusout", (event) => {
         // cl("srcElement deprecated; Event: ", event)
         // event.target.readOnly = true;
@@ -366,6 +571,10 @@ function desktopIconEditName(element) {
     });
 }
 
+/**
+ * Deselects all desktop icons by removing the "icon-selected" class from each selected icon.
+ * @returns None
+ */
 function deselectDesktopIcons() {
     // cl("deselecting desktop icons");
     document.querySelectorAll("figure.icon.icon-selected").forEach((el) => {
@@ -414,7 +623,7 @@ desktop.addEventListener("contextmenu", (event) => {
             timeout = null;
         }
     }), new ElementEvent("click", (event) => {
-        event.stopImmediatePropagation();
+        // event.stopImmediatePropagation();
     }));
 
 

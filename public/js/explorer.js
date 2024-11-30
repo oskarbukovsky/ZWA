@@ -171,6 +171,12 @@ files.querySelectorAll(".file").forEach((element) => {
     });
 });
 
+window.addEventListener("mouseover", () => {
+    if (document.querySelector(".uploading").classList.contains("upload")){
+        document.querySelector(".uploading").classList.remove("upload");
+    }
+});
+
 document.addEventListener("DOMContentLoaded", async () => {
     cl("|📙 Opening indexedDB");
     await openDb();
@@ -194,11 +200,15 @@ document.querySelector(".uploading").addEventListener("dragleave", (event) => {
 
 document.body.addEventListener("drop", (event) => {
     document.querySelector(".uploading").classList.remove("upload");
-    event.preventDefault();
-    window.top.postMessage(["fileUploading"]);
+    event.preventDefault(); 
+
     const files = event.dataTransfer.files;
     if (files.length) {
         fileUpload.files = files;
-        handleFileUpload(files)
+        window.top.postMessage(["fileUploading", files]);
     }
+});
+
+document.addEventListener("click", ()=>{
+    document.querySelector(".uploading").classList.remove("upload");
 });

@@ -194,13 +194,16 @@ async function appOpen(node) {
     }
     const iframe = createElement("iframe", new Src(getDestination(node)), sandBox,
         new ElementEvent("load", appIframeLoaded), new ElementEvent("mouseover", ElementEvents.appIframeMouseOver), new ElementEvent("mouseout", ElementEvents.appIframeMouseOut),
-        new AppendTo(content));
+        new AppendTo(content), new ElementEvent("dragenter", (event)=>{
+            cl(999);
+        }));
     iframe.allow = "accelerometer *; attribution-reporting *; autoplay *; bluetooth *; browsing-topics *; camera *; compute-pressure *; display-capture *; encrypted-media *; fullscreen *; gamepad *; gyroscope *; hid *; identity-credentials-get *; idle-detection *; local-fonts *; magnetometer *; microphone *; microphone *; otp-credentials *; payment *; picture-in-picture *; publickey-credentials-create *; publickey-credentials-get *; screen-wake-lock *; serial *; storage-access *; usb *; web-share *; window-management *; window-management"
     // let detector = document.createElement("div");
     // detector.classList.add("detect");
     // content.appendChild(detector);
 
     //TODO: resizing
+    
 
     resizingElementsPrefixes.forEach((item) => {
         const grip = createElement("div", new ClassList("resizable", item + "-grip"), new AppendTo(holder));
@@ -295,6 +298,7 @@ async function changeFile() {
 }
 
 // input.addEventListener('change', changeFile);
+
 
 
 async function uploadFiles(data) {
