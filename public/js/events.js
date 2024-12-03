@@ -1,149 +1,6 @@
 "use strict";
 
 /**
- * Class containing static methods related to element events.
- */
-class ElementEvents {
-    /**
-     * Sets the `iframeMouseOver` property to true and updates the `lastIframe` property
-     * with the target of the mouseover event.
-     * @param {Event} event - The mouseover event object.
-     * @returns None
-     */
-    static appIframeMouseOver = (event) => {
-        iframesHelper.iframeMouseOver = true;
-        iframesHelper.lastIframe = event.target;
-        // if (document.querySelector(".uploading").classList.containg("upload")) {
-        //     document.querySelector(".uploading").classList.remove("upload");
-        // }
-        // cl(event.target)
-    };
-
-    /**
-     * Sets the iframeMouseOver property to false and clears the lastIframe reference.
-     * @returns None
-     */
-    static appIframeMouseOut = () => {
-        iframesHelper.iframeMouseOver = false;
-        iframesHelper.lastIframe = null;
-    };
-
-    /**
-     * Handles the click event on a navbar icon by toggling the active state of the icon
-     * and showing/hiding the corresponding app window.
-     * @param {Event} event - The click event object.
-     * @returns None
-     */
-    static navbarIconClick = (event) => {
-        setTimeout(() => { }, 20);
-        const icon = bubbleToClass(event, "navbar-icon");
-        const id = icon.dataset.uuid;
-        const selector = windows.querySelector('[data-uuid="' + id + '"]');
-        if (icon.classList.contains("active")) {
-            deselectAllApps();
-            selector.classList.add("minimized");
-        } else {
-            selector.classList.remove("minimized");
-            selectApp(id);
-        }
-    };
-
-    /**
-     * Creates a new file vNode by sending a request to the server and processing the response.
-     * @param {Event} event - The event that triggered the file creation.
-     * @returns None
-     */
-    static fileCreate = (event) => {
-        cl("|📘 Creating new file vNode");
-        localDatabase.getColumn("vNodes", "type", "desktop").then(desktopNode => {
-            const data = { "method": "create", "type": "file", "parent": desktopNode[0].uuid };
-            cl("|📗 Sending data:", data);
-            ajax(data).then(response => {
-                if (response.status == "ok") {
-                    const newNode = nodeFromAjax(response);
-                    addNotification({ "head": "Vytvoření", "body": "Ok: " + newNode.uuid }, false, null, "info");
-                    processVNodes([newNode]);
-                    addDesktopIcon(newNode);
-                } else {
-                    addNotification({ "head": "Vytvoření", "body": "Chyba: " + response.details }, false, null, "warning");
-                }
-            });
-        });
-    }
-
-    /**
-     * Creates a new folder vNode in the desktop.
-     * @param {Event} event - The event that triggered the folder creation.
-     * @returns None
-     */
-    static folderCreate = (event) => {
-        cl("|📘 Creating new folder vNode");
-        localDatabase.getColumn("vNodes", "type", "desktop").then(desktopNode => {
-            const data = { "method": "create", "type": "folder", "parent": desktopNode[0].uuid };
-            cl("|📗 Sending data:", data);
-            ajax(data).then(response => {
-                if (response.status == "ok") {
-                    const newNode = nodeFromAjax(response);
-                    addNotification({ "head": "Vytvoření", "body": "Ok: " + newNode.uuid }, false, null, "info");
-                    processVNodes([newNode]);
-                    addDesktopIcon(newNode);
-                } else {
-                    addNotification({ "head": "Vytvoření", "body": "Chyba: " + response.details }, false, null, "warning");
-                }
-            });
-        });
-    }
-
-    /**
-     * Modifies a vNode file based on the event triggered.
-     * @param {Event} event - The event that triggered the file modification.
-     * @returns None
-     */
-    static fileModify = (event) => {
-        const uuid = bubbleToClass(event, "icon").querySelector("[data-uuid]").dataset.uuid;
-        cl("|📘 Modifying vNode with uuid: ", uuid);
-        ajax({ "method": "modify", "fileUuid": uuid }).then(response => {
-            if (response.status == "ok") {
-                addNotification({ "head": "Upravení", "body": "Ok: " + response.uuid }, false, null, "info");
-            } else {
-                addNotification({ "head": "Upravení", "body": "Chyba: " + response.details }, false, null, "warning");
-            }
-        });
-    }
-
-    /**
-     * Deletes a file based on the event triggered.
-     * @param {Event} event - The event that triggered the file deletion.
-     * @returns None
-     */
-    static fileDelete = (event) => {
-        const uuid = bubbleToClass(event, "icon").querySelector("[data-uuid]").dataset.uuid;
-        cl("|📘 Deleting vNode with uuid: ", uuid);
-        ajax({ "method": "delete", "fileUuid": uuid }).then(response => {
-            if (response.status == "ok") {
-                addNotification({ "head": "Odstanění", "body": "Ok: " + response.uuid }, false, null, "info");
-
-                if (window.location.pathname.split("/").pop().includes("desktop")) {
-                    desktop.querySelector('.icon:has([data-uuid="' + uuid + '"])').remove();
-                } else {
-                    files.querySelector('.file[data-uuid="' + 1 + '"]').remove();
-                }
-                const app = windows.querySelector('.windows-app[data-uuid="' + uuid + '"]');
-                if (app) {
-                    closeApp(app, true)
-                }
-            } else {
-                addNotification({ "head": "Odstanění", "body": "Chyba: " + response.details }, false, null, "warning");
-            }
-        });
-    }
-
-    static NoPropagation(event) {
-        event.stopPropagation();
-    }
-}
-
-/**
  * Asynchronously reads a vNode file with the given UUID.
  * @param {string} uuid - The UUID of the vNode file to read.
  * @returns {boolean} - Returns true if the file was read successfully, false otherwise.
@@ -395,6 +252,16 @@ window.onmessage = async function (event) {
         case "fileUploading":
             handleFileUpload(event.data[1]);
             break;
+        case "focus":
+            document.querySelector(".uploading").classList.remove("upload");
+            const sourceIframe = [...windows.querySelectorAll('iframe')].find(
+                iframe => iframe.contentWindow === event.source
+            );
+            selectApp(bubbleToClassFromElement(sourceIframe, "windows-app").dataset.uuid);
+            break;
+        case "notification":
+            addNotification(event.data[1], event.data[2], event.data[3], event.data[4]);
+            break;
         default:
             cl("!📕 Neznámá zpráva z okna!")
     }
@@ -584,6 +451,14 @@ function deselectDesktopIcons() {
     // navbar.querySelector(".navbar-search").children[0].classList.remove("open");
 }
 
+/**
+ * Adds a context menu event listener to the desktop.
+ * This creates a custom right-click menu for the desktop area.
+ *
+ * @param {string} "contextmenu" - The event type to listen for.
+ * @param {function} event => {...} - The callback function to handle the context menu event.
+ * @listens {Event} contextmenu
+ */
 desktop.addEventListener("contextmenu", (event) => {
     const container = createElement("div", new ClassList("context-menu", "open", "no-select"), new ElementEvent("contextmenu", (event) => {
         event.preventDefault();
@@ -632,6 +507,12 @@ desktop.addEventListener("contextmenu", (event) => {
     positionContextMenu(container, desktop);
 });
 
+/**
+ * Adds a context menu event listener to a desktop icon element.
+ * @param {HTMLElement} element - The desktop icon element to add the event listener to.
+ * @param {vNode} node - The vNode element containing the information about the desktop icon.
+ * @returns None
+ */
 function desktopIconContextMenu(element, node) {
     element.addEventListener("contextmenu", function (event) {
         event.stopPropagation();
@@ -698,6 +579,14 @@ function desktopIconContextMenu(element, node) {
     });
 }
 
+/**
+ * Adds a context menu event listener to the desktop.
+ * This creates a custom right-click menu for the desktop area.
+ *
+ * @param {string} "contextmenu" - The event type to listen for.
+ * @param {function} event => {...} - The callback function to handle the context menu event.
+ * @listens {Event} contextmenu
+ */
 const fileSearchInputHandler = debounce((query) => {
     cl("|📘 Searching for vNode: ", query);
     localDatabase.getColumn("vNodes", "type", "desktop").then(desktopNode => {
@@ -713,11 +602,20 @@ const fileSearchInputHandler = debounce((query) => {
     });
 }, 350);
 
+/**
+ * Adds an input event listener to the search bar in the navbar.
+ * This listener triggers a search function when the user types in the search bar.
+ */
 navbar.querySelector(".navbar-search .search-bar>input[type=search]").addEventListener("input", async (event) => {
     const query = event.target.value;
     fileSearchInputHandler(query)
 });
 
+/**
+ * Adds a keydown event listener to the document for handling various keyboard shortcuts for selecting desktop icons.
+ * @param {Event} event - The event object containing information about the keyboard event.
+ * @returns None
+ */
 document.addEventListener("keydown", async (event) => {
     if (event.ctrlKey && (event.key == "a" || event.key == "A") && event.target != navbar.querySelector(".navbar-search input[type=search]")) {
         deselectDesktopIcons();
@@ -769,6 +667,10 @@ document.addEventListener("keydown", async (event) => {
     }
 });
 
+/**
+ * Adds click event listener to a desktop icon element for selection functionality.
+ * @param {HTMLElement} element - The desktop icon element to add the event listener to.
+ */
 function desktopIconSelect(element) {
     element.addEventListener("click", (event) => {
         if (!is_key_down("Control")) {
@@ -784,6 +686,9 @@ function desktopIconSelect(element) {
     })
 }
 
+/**
+ * Adds event listeners for brightness and blue light filter controls
+ */
 window.addEventListener("DOMContentLoaded", () => {
     let brightness = navbar.querySelector(".screen-menu > .slider-brightness > input")
     function brightnessChange() {
@@ -802,6 +707,11 @@ window.addEventListener("DOMContentLoaded", () => {
     blueLightFilterChange(blueLightFilter);
 });
 
+/**
+ * Sets up mouse selection functionality for desktop icons.
+ * This function creates a selection box that allows users to select multiple desktop icons
+ * by clicking and dragging the mouse.
+ */
 function mouseSelectBox() {
     let selecting;
     let startX, startY;

@@ -50,15 +50,16 @@ function printFile($uuid)
 
     try {
         if (!isset($file) || !file_exists($file)) {
-            echo "file didnt exist";
-            br();
-            echo $file;
+            // echo "file didnt exist";
+            // br();
+            // echo $file;
             header("Location: error.php?code=404");
             die();
         }
 
         $finfo = new finfo(FILEINFO_MIME);
         $fileContentType = finfo_file($finfo, $file);
+        // TODO: check: mime_content_type($file);
         header("Content-Type: " . $fileContentType);
         finfo_close($finfo);
 

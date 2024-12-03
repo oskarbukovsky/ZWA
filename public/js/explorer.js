@@ -63,6 +63,56 @@ function sort(sortBy) {
     }
 }
 
+document.addEventListener("contextmenu", (event) => {
+    closeAllExplorerContextMenus();
+    event.preventDefault();
+    const container = createElement("div", new ClassList("context-menu", "open", "no-select"), new ElementEvent("contextmenu", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+    }), new ElementEvent("click", (event) => {
+        container.remove();
+    }));
+
+    let timeout;
+    let newPopup;
+    const createNew = createElement("span", new ClassList("extra", "material-symbols-rounded-after"), new TextContent("Nový"), new AppendTo(container), new ElementEvent("mouseenter", (event) => {
+        timeout = setTimeout(() => {
+            if (!newPopup && createNew.matches(':hover')) {
+                newPopup = createElement("div", new ClassList("context-menu", "open", "no-select"), new AppendTo(createNew));
+                const newFolder = createElement("span", new TextContent("Složka"), new AppendTo(newPopup), new ElementEvent("click", ElementEvents.folderCreate));
+                const newHr = createElement("hr", new AppendTo(newPopup));
+                const newText = createElement("span", new TextContent("Textový dokument"), new AppendTo(newPopup), new ElementEvent("click", ElementEvents.fileCreate));
+
+                newPopup.style.left = createNew.getBoundingClientRect().width + 1 + "px";
+                if (newPopup.getBoundingClientRect().right > files.getBoundingClientRect().right) {
+                    newPopup.style.left = "unset";
+                    newPopup.style.right = createNew.getBoundingClientRect().width + 1 + "px";
+
+                }
+                newPopup.style.bottom = "-2px";
+            }
+        }, 450);
+    }), new ElementEvent("mouseleave", (event) => {
+        if (newPopup) {
+            createNew.querySelectorAll(".context-menu").forEach(element => {
+                element.remove();
+            });
+            newPopup = null;
+            if (timeout) {
+                clearTimeout(timeout);
+            }
+            timeout = null;
+        }
+    }), new ElementEvent("click", (event) => {
+        // event.stopImmediatePropagation();
+    }));
+
+
+    const properties = createElement("span", new TextContent("Vlastnosti"), new AppendTo(container));
+
+    positionContextMenu(container, files);
+});
+
 function deselectAll() {
     document.querySelectorAll("#files > *").forEach((element) => {
         element.classList.remove("selected");
@@ -70,11 +120,11 @@ function deselectAll() {
 }
 
 function countSelectedFiles() {
-    const selected = document.querySelectorAll("#files > .selected");
+    const selected = files.querySelectorAll(".file.selected");
     if (selected.length > 0) {
         let totalSelectedSize = 0;
         let selectedSizes = [];
-        document.querySelectorAll("#files > .selected").forEach((element) => { selectedSizes.push(element.querySelector(".size").textContent.split(" ")) });
+        files.querySelectorAll(".file.selected").forEach((element) => { selectedSizes.push(element.querySelector(".size").textContent.split(" ")) });
         selectedSizes.forEach((element) => {
             totalSelectedSize += element[0] * sizePrefixes[element[1]];
         });
@@ -85,21 +135,13 @@ function countSelectedFiles() {
     }
 }
 
-document.querySelectorAll("#files > *").forEach((element) => {
-    element.addEventListener("click", () => {
-        if (!is_key_down("Control")) {
-            deselectAll();
-        }
-        element.classList.toggle("selected");
-        document.querySelectorAll("#files > *").forEach((element) => { element.classList.remove("last-selected"); });
-        element.classList.add("last-selected");
-        countSelectedFiles();
-    });
-});
+function countAllFiles() {
+    cssVar("--files-total", files.querySelectorAll(".file").length);
+}
 
 document.addEventListener("keydown", (event) => {
     if (event.ctrlKey && (event.key == "a" || event.key == "A")) {
-        const allFiles = document.querySelectorAll("#files > *")
+        const allFiles = files.querySelectorAll(".file")
         if (allFiles) {
             allFiles[0].classList.remove("last-selected");
         }
@@ -112,11 +154,10 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-
 document.addEventListener("keydown", async (event) => {
     event.preventDefault();
     if (event.ctrlKey && (event.key == "a" || event.key == "A")) {
-        const allFiles = document.querySelectorAll("#files > *")
+        const allFiles = files.querySelectorAll(".file")
         if (allFiles) {
             allFiles[0].classList.remove("last-selected");
         }
@@ -180,9 +221,25 @@ window.addEventListener("mouseover", () => {
 document.addEventListener("DOMContentLoaded", async () => {
     cl("|📙 Opening indexedDB");
     await openDb();
-    countSelectedFiles();
     cl("|📙 Processing vNodes...");
     await processVNodes(vNodes);
+    
+    cl("|📙 Processing explorer...");
+    await processExplorerIcons(vNodes);
+    countSelectedFiles();
+    countAllFiles();
+
+    files.querySelectorAll(".file").forEach((element) => {
+        element.addEventListener("click", () => {
+            if (!is_key_down("Control")) {
+                deselectAll();
+            }
+            element.classList.toggle("selected");
+            document.querySelectorAll("#files > *").forEach((element) => { element.classList.remove("last-selected"); });
+            element.classList.add("last-selected");
+            countSelectedFiles();
+        });
+    });
 });
 
 document.body.addEventListener("dragover", (event) => {
@@ -211,4 +268,16 @@ document.body.addEventListener("drop", (event) => {
 
 document.addEventListener("click", ()=>{
     document.querySelector(".uploading").classList.remove("upload");
+});
+window.addEventListener("dragleave", ()=>{
+    document.querySelector(".uploading").classList.remove("upload");
+});
+
+window.addEventListener("click", ()=>{
+    window.top.postMessage(["focus"]);
+    closeAllExplorerContextMenus();
+});
+
+window.addEventListener("dragenter", ()=>{
+    window.top.postMessage(["focus"]);
 });

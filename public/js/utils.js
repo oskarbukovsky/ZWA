@@ -637,14 +637,29 @@ function getIcon(node) {
  * @returns The `bubbleToClass` return closes parent of given class relative to event.target source
  */
 function bubbleToClass(event, className) {
-    let app = event.target;
-    while (app && app.classList && !app?.classList?.contains(className)) {
-        app = app.parentElement;
-        if (app === null) {
+    let element = event.target;
+    while (element && element.classList && !element?.classList?.contains(className)) {
+        element = element.parentElement;
+        if (element === null) {
             return false;
         }
     }
-    return app;
+    return element;
+}
+
+/**
+ * The function `bubbleToClassFromElement` used for retrieving closest parent containing given class from user element
+ * @param start - The `start` arguments determine search starting point
+ * @returns The `bubbleToClass` return closes parent of given class relative to start source
+ */
+function bubbleToClassFromElement(start, className) {
+    while (start && start.classList && !start?.classList?.contains(className)) {
+        start = start.parentElement;
+        if (start === null) {
+            return false;
+        }
+    }
+    return start;
 }
 
 /**
@@ -713,13 +728,13 @@ function positionContextMenu(container, appendTo) {
     appendTo.appendChild(container);
     let left = event.clientX + 1 + "px";
     container.style.left = left;
-    let bottom = desktop.getBoundingClientRect().height - event.clientY + 1;
+    let bottom = appendTo.getBoundingClientRect().height - event.clientY + 1;
     if (container.getBoundingClientRect().height >= event.clientY) {
-        bottom = desktop.getBoundingClientRect().height - container.getBoundingClientRect().height - 1;
+        bottom = appendTo.getBoundingClientRect().height - container.getBoundingClientRect().height - 1;
     }
 
-    if (container.getBoundingClientRect().right >= desktop.getBoundingClientRect().width) {
-        left = desktop.getBoundingClientRect().width - container.getBoundingClientRect().width - 1;
+    if (container.getBoundingClientRect().right >= appendTo.getBoundingClientRect().width) {
+        left = appendTo.getBoundingClientRect().width - container.getBoundingClientRect().width - 1;
     }
 
     container.style.bottom = bottom + "px";
@@ -886,6 +901,16 @@ function createElement() {
  */
 function closeAllDesktopContextMenus() {
     desktop.querySelectorAll(".context-menu").forEach((element) => {
+        element.classList.remove("open");
+        setTimeout(() => element.remove(), 250);
+    });
+}
+
+/**
+ * The function `closeAllExplorerContextMenus` closes all explorer context menus
+ */
+function closeAllExplorerContextMenus() {
+    files.querySelectorAll(".context-menu").forEach((element) => {
         element.classList.remove("open");
         setTimeout(() => element.remove(), 250);
     });
@@ -1133,6 +1158,60 @@ function handleFileUpload(files) {
     });
 }
 
+async function processExplorerIcons(vNodes) {
+    let time1 = new Date();
+    // let rootId = await localDatabase.getColumn("vNodes", "type", "root");
+    // let desktopNode = await localDatabase.getColumn("vNodes", "parent", rootId[0]?.uuid).then((result) => result.find((node) => node.type === "desktop"));
+    // let desktopNodes = await localDatabase.getColumn("vNodes", "parent", desktopNode?.uuid);
+    // desktopNodes.forEach((node) => addDesktopIcon(node));
+
+    // cl(getParam("folder"));
+    // cl("nodes: ", vNodes);
+
+    vNodes.forEach((node) => addExplorerIcon(node));
+
+    cl("|📗 Explorer processed in " + (new Date() - time1) + "ms");
+}
+
+function addExplorerIcon(node) {
+    const holder = createElement("div", new ClassList("file"), new Data("uuid", node.uuid), new ElementEvent("dblclick", () => {
+        cl("opening window ", node.uuid);
+        window.top.postMessage(["appOpen", node.uuid]);
+    }));
+    const name = createElement("div", new ClassList("name"), new AppendTo(holder));
+    const icon = createElement("img", new Src(getIcon(node)), new AppendTo(name));
+    const fileName = createElement("span", new ClassList("name"), new TextContent(node.name), new AppendTo(name));
+    const change = createElement("span", new ClassList("change"), new TextContent(timestampToHuman(node.timeEdit)), new AppendTo(holder));
+    const type = createElement("span", new ClassList("type"), new TextContent(node.description), new AppendTo(holder));
+    const size = createElement("span", new ClassList("size"), new TextContent(sizeNumberToString(node.size)), new AppendTo(holder));
+
+    files.appendChild(holder);
+}
+
+async function processDesktopIcons() {
+    let time1 = new Date();
+    let rootId = await localDatabase.getColumn("vNodes", "type", "root");
+    let desktopNode = await localDatabase.getColumn("vNodes", "parent", rootId[0]?.uuid).then((result) => result.find((node) => node.type === "desktop"));
+    let desktopNodes = await localDatabase.getColumn("vNodes", "parent", desktopNode?.uuid);
+    desktopNodes.forEach((node) => addDesktopIcon(node));
+
+    cl("|📗 Desktop processed in " + (new Date() - time1) + "ms");
+}
+
+function addDesktopIcon(node) {
+    const holder = createElement("figure", new ClassList("icon"));
+    const icon = createElement("img", new Src(getIcon(node)), new AppendTo(holder));
+    const caption = createElement("figcaption", new Data("uuid", node.uuid), new AppendTo(holder));
+    const textarea = createElement("textarea", new Name("icon-name"), new Cols(11), new ReadOnly(true), new TextContent(node.name), new AppendTo(caption));
+    desktop.appendChild(holder);
+
+    desktopIconTooltip(holder, node);
+    desktopIconSelect(holder);
+    desktopIconOpener(holder);
+    desktopIconContextMenu(holder, node);
+    desktopIconEditName(caption);
+}
+
 /**
  * Check if the file type is valid based on a list of allowed file types.
  * @param file - The file to check its type.
@@ -1209,6 +1288,11 @@ if (!String.prototype.capitalize) {
  * @returns The created notification element.
  */
 function addNotification(content, permanent = false, nodeOrSystem = null, icon = null) {
+    if (pageInIframe()) {
+        window.postMessage(["notification", content, permanent, nodeOrSystem, icon]);
+        return;
+    }
+
     navbar.querySelector(".navbar-notifications #notifications").classList.add("fill");
 
     const defaultIcons = {
@@ -1345,4 +1429,156 @@ function debounce(callback, delay) {
             callback.apply(context, args);
         }, delay);
     };
+}
+
+
+/**
+ * Class containing static methods related to element events.
+ */
+class ElementEvents {
+    /**
+     * Sets the `iframeMouseOver` property to true and updates the `lastIframe` property
+     * with the target of the mouseover event.
+     * @param {Event} event - The mouseover event object.
+     * @returns None
+     */
+    static appIframeMouseOver = (event) => {
+        iframesHelper.iframeMouseOver = true;
+        iframesHelper.lastIframe = event.target;
+        // if (document.querySelector(".uploading").classList.containg("upload")) {
+        //     document.querySelector(".uploading").classList.remove("upload");
+        // }
+        // cl(event.target)
+    };
+
+    /**
+     * Sets the iframeMouseOver property to false and clears the lastIframe reference.
+     * @returns None
+     */
+    static appIframeMouseOut = () => {
+        iframesHelper.iframeMouseOver = false;
+        iframesHelper.lastIframe = null;
+    };
+
+    /**
+     * Handles the click event on a navbar icon by toggling the active state of the icon
+     * and showing/hiding the corresponding app window.
+     * @param {Event} event - The click event object.
+     * @returns None
+     */
+    static navbarIconClick = (event) => {
+        setTimeout(() => { }, 20);
+        const icon = bubbleToClass(event, "navbar-icon");
+        const id = icon.dataset.uuid;
+        const selector = windows.querySelector('[data-uuid="' + id + '"]');
+        if (icon.classList.contains("active")) {
+            deselectAllApps();
+            selector.classList.add("minimized");
+        } else {
+            selector.classList.remove("minimized");
+            selectApp(id);
+        }
+    };
+
+    /**
+     * Creates a new file vNode by sending a request to the server and processing the response.
+     * @param {Event} event - The event that triggered the file creation.
+     * @returns None
+     */
+    static fileCreate = (event) => {
+        cl("|📘 Creating new file vNode");
+        localDatabase.getColumn("vNodes", "type", "desktop").then(desktopNode => {
+            const data = { "method": "create", "type": "file", "parent": desktopNode[0].uuid };
+            cl("|📗 Sending data:", data);
+            ajax(data).then(response => {
+                if (response.status == "ok") {
+                    const newNode = nodeFromAjax(response);
+                    addNotification({ "head": "Vytvoření", "body": "Ok: " + newNode.uuid }, false, null, "info");
+                    processVNodes([newNode]);
+                    if (!location.href.includes("explorer")) {
+                        addDesktopIcon(newNode);
+                    } else {
+                        addExplorerIcon(newNode);
+                    }
+                } else {
+                    addNotification({ "head": "Vytvoření", "body": "Chyba: " + response.details }, false, null, "warning");
+                }
+            });
+        });
+    }
+
+    /**
+     * Creates a new folder vNode in the desktop.
+     * @param {Event} event - The event that triggered the folder creation.
+     * @returns None
+     */
+    static folderCreate = (event) => {
+        cl("|📘 Creating new folder vNode");
+        localDatabase.getColumn("vNodes", "type", "desktop").then(desktopNode => {
+            const data = { "method": "create", "type": "folder", "parent": desktopNode[0].uuid };
+            cl("|📗 Sending data:", data);
+            ajax(data).then(response => {
+                if (response.status == "ok") {
+                    const newNode = nodeFromAjax(response);
+                    addNotification({ "head": "Vytvoření", "body": "Ok: " + newNode.uuid }, false, null, "info");
+                    processVNodes([newNode]);
+                    if (!location.href.includes("explorer")) {
+                        addDesktopIcon(newNode);
+                    }else {
+                        addExplorerIcon(newNode);
+                    }
+                } else {
+                    addNotification({ "head": "Vytvoření", "body": "Chyba: " + response.details }, false, null, "warning");
+                }
+            });
+        });
+    }
+
+    /**
+     * Modifies a vNode file based on the event triggered.
+     * @param {Event} event - The event that triggered the file modification.
+     * @returns None
+     */
+    static fileModify = (event) => {
+        const uuid = bubbleToClass(event, "icon").querySelector("[data-uuid]").dataset.uuid;
+        cl("|📘 Modifying vNode with uuid: ", uuid);
+        ajax({ "method": "modify", "fileUuid": uuid }).then(response => {
+            if (response.status == "ok") {
+                addNotification({ "head": "Upravení", "body": "Ok: " + response.uuid }, false, null, "info");
+            } else {
+                addNotification({ "head": "Upravení", "body": "Chyba: " + response.details }, false, null, "warning");
+            }
+        });
+    }
+
+    /**
+     * Deletes a file based on the event triggered.
+     * @param {Event} event - The event that triggered the file deletion.
+     * @returns None
+     */
+    static fileDelete = (event) => {
+        const uuid = bubbleToClass(event, "icon").querySelector("[data-uuid]").dataset.uuid;
+        cl("|📘 Deleting vNode with uuid: ", uuid);
+        ajax({ "method": "delete", "fileUuid": uuid }).then(response => {
+            if (response.status == "ok") {
+                addNotification({ "head": "Odstanění", "body": "Ok: " + response.uuid }, false, null, "info");
+
+                if (window.location.pathname.split("/").pop().includes("desktop")) {
+                    desktop.querySelector('.icon:has([data-uuid="' + uuid + '"])').remove();
+                } else {
+                    files.querySelector('.file[data-uuid="' + 1 + '"]').remove();
+                }
+                const app = windows.querySelector('.windows-app[data-uuid="' + uuid + '"]');
+                if (app) {
+                    closeApp(app, true)
+                }
+            } else {
+                addNotification({ "head": "Odstanění", "body": "Chyba: " + response.details }, false, null, "warning");
+            }
+        });
+    }
+
+    static NoPropagation(event) {
+        event.stopPropagation();
+    }
 }

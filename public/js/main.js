@@ -126,26 +126,6 @@ async function processUserIdentifier() {
     cl("|📗 userIdentifier processed in " + (new Date() - time1) + "ms");
 }
 
-async function processDesktopIcons() {
-    let time1 = new Date();
-    let rootId = await localDatabase.getColumn("vNodes", "type", "root");
-
-    //TODO: fetch vNodes from data[] of rootId
-
-    let desktopNode = await localDatabase.getColumn("vNodes", "parent", rootId[0]?.uuid).then((result) => result.find((node) => node.type === "desktop"));
-    // cl("desktopNode: ", desktopNode);
-
-    //TODO: fetch vNodes from data[] of desktopNode
-
-    let desktopNodes = await localDatabase.getColumn("vNodes", "parent", desktopNode?.uuid);
-
-    // cl("desktopNodes: ", desktopNodes);
-
-    desktopNodes.forEach((node) => addDesktopIcon(node));
-
-    cl("|📗 Desktop processed in " + (new Date() - time1) + "ms");
-}
-
 async function appOpen(node) {
     const status = await fileRead(node.uuid);
     if (!status) {
@@ -218,20 +198,6 @@ async function appOpen(node) {
     closeApp(close);
     iframe.contentWindow.postMessage("Tu máš Áj Frejme", "*");
     selectApp(node.uuid);
-}
-
-function addDesktopIcon(node) {
-    const holder = createElement("figure", new ClassList("icon"));
-    const icon = createElement("img", new Src(getIcon(node)), new AppendTo(holder));
-    const caption = createElement("figcaption", new Data("uuid", node.uuid), new AppendTo(holder));
-    const textarea = createElement("textarea", new Name("icon-name"), new Cols(11), new ReadOnly(true), new TextContent(node.name), new AppendTo(caption));
-    desktop.appendChild(holder);
-
-    desktopIconTooltip(holder, node);
-    desktopIconSelect(holder);
-    desktopIconOpener(holder);
-    desktopIconContextMenu(holder, node);
-    desktopIconEditName(caption);
 }
 
 async function fetchAndLoadImage(imagePath) {
