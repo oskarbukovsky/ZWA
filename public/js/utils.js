@@ -545,27 +545,36 @@ function getIconTooltipText(node) {
  * @returns The `getDestination` function is returning string representation of URL for iframe
  */
 function getDestination(node) {
-    if (node.type == "link") {
-        switch (node.data.data[0].split(":\/\/").shift()) {
-            case "vLinkTrash":
-                return location.origin + "/~bukovja4/public/user-data/" + node.owner + node.data.data[0] + node.name;
-            case "admin":
-                return location.origin + "/~bukovja4/public/administration.php";
-            case "vComputer":
-                return location.origin + "/~bukovja4/public/explorer.php?folder=user-data/" + node.owner;
-            case "http":
-            case "https":
-                return node.data.data[0];
-            default:
-                cl("should not happen");
-            // return location.origin + "/~bukovja4/public/user-data/" + node.owner + node.data.data[0] + node.name;
-        }
-    } else if (node.type == "folder") {
-        return location.origin + "/~bukovja4/public/explorer.php?folder=" + node.data.data[0].split("vComputer://")[1];
-    } else {
-        return location.origin + "/~bukovja4/public/viewer.php?uuid=" + node.uuid;
-        // return location.origin + "/~bukovja4/public/user-data/" + node.owner + node.data.data[0] + node.name;
+    switch (node.type) {
+        case "link":
+            switch (node.data.data[0].split(":\/\/").shift()) {
+                case "vLinkTrash":
+                    // return location.origin + "/~bukovja4/public/" + node.owner + node.data.data[0] + node.name;
+                    return location.origin + "/~bukovja4/public/viewer.php?uuid=" + node.uuid + "&warning=js-not-implemented-for-now";
+                    return ""
+                case "admin":
+                    return location.origin + "/~bukovja4/public/administration.php";
+                case "vComputer":
+                    return location.origin + "/~bukovja4/public/explorer.php?folder=" + node.owner;
+                case "http":
+                case "https":
+                    return node.data.data[0];
+                default:
+                    cl("should not happen");
+                // return location.origin + "/~bukovja4/public/user-data/" + node.owner + node.data.data[0] + node.name;
+            }
+            break;
+        case "images":
+        case "documents":
+        case "desktop":
+        case "folder":
+            // + node.data.data[0].replace("vComputer://", "")
+            return location.origin + "/~bukovja4/public/explorer.php?folder=" + node.uuid;
+            break;
+        default:
+            return location.origin + "/~bukovja4/public/viewer.php?uuid=" + node.uuid + "&warning=js-unknown-destination";
     }
+    // return location.origin + "/~bukovja4/public/user-data/" + node.owner + node.data.data[0] + node.name;
 }
 
 /**
@@ -602,9 +611,13 @@ function getIcon(node) {
                 } else {
                     return "./media/file-icons/link.webp";
                 }
-            case "folder":
-            case "images":
+            case "desktop":
+                return "./media/file-icons/desktop.webp";
             case "documents":
+                return "./media/file-icons/documents.webp";
+            case "images":
+                return "./media/file-icons/images.webp";
+            case "folder":
                 return "./media/file-icons/folder.webp";
             case "file":
                 if (node.name) {
@@ -1125,7 +1138,7 @@ function getBattery() {
  * Handles the upload of files, checking if the file size exceeds the maximum allowed size. And run ajax calls for them separately
  * @param files - The list of files to be uploaded.
  */
-function handleFileUpload(files) {
+function handleFileUpload(files, parentUuid) {
     const maxSize = 50 * (1024 * 1024); // 50 MB
 
     [...files].forEach(function (file) {
@@ -1141,18 +1154,16 @@ function handleFileUpload(files) {
                 return;
             }
             cl("|📘 File to be uploaded: ", file);
-            localDatabase.getColumn("vNodes", "type", "desktop").then(desktopNode => {
-                const data = { "method": "upload", "parent": desktopNode[0].uuid, "fileUpload": file };
-                ajax(data).then(response => {
-                    if (response.status == "ok") {
-                        const newNode = nodeFromAjax(response);
-                        addNotification({ "head": "Nahrání", "body": "Ok: " + newNode.uuid }, false, null, "info");
-                        processVNodes([newNode]);
-                        addDesktopIcon(newNode);
-                    } else {
-                        addNotification({ "head": "Nahrání", "body": "Chyba: " + response.details }, false, null, "warning");
-                    }
-                });
+            const data = { "method": "upload", "parent": parentUuid, "fileUpload": file };
+            ajax(data).then(response => {
+                if (response.status == "ok") {
+                    const newNode = nodeFromAjax(response);
+                    addNotification({ "head": "Nahrání", "body": "Ok: " + newNode.uuid }, false, null, "info");
+                    processVNodes([newNode]);
+                    addDesktopIcon(newNode);
+                } else {
+                    addNotification({ "head": "Nahrání", "body": "Chyba: " + response.details }, false, null, "warning");
+                }
             });
         }
     });
@@ -1368,14 +1379,15 @@ async function timeoutNotification() {
 /**
  * Performs an AJAX request to the server using the provided data.
  * @param data - The data to be sent in the request.
+ * @param url - API endpoint address
  * @returns  A promise that resolves to the response content in JSON format.
  */
-async function ajax(data) {
+async function ajax(data, url = "ajax.php") {
     let formData = new FormData();
     for (const [key, value] of Object.entries(data)) {
         formData.append(key, value);
     }
-    const rawResponse = await fetch('ajax.php', {
+    const rawResponse = await fetch(url, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -1385,7 +1397,7 @@ async function ajax(data) {
     });
     const content = await rawResponse.json();
 
-    cl("|📙 Recieved: ", content);
+    cl("|📙 Received: ", content);
     return content;
 }
 
@@ -1488,7 +1500,12 @@ class ElementEvents {
     static fileCreate = (event) => {
         cl("|📘 Creating new file vNode");
         localDatabase.getColumn("vNodes", "type", "desktop").then(desktopNode => {
-            const data = { "method": "create", "type": "file", "parent": desktopNode[0].uuid };
+            let data;
+            if (getParam("folder")) {
+                data = { "method": "create", "type": "file", "parent": getParam("folder") };
+            } else {
+                data = { "method": "create", "type": "file", "parent": desktopNode[0].uuid };
+            }
             cl("|📗 Sending data:", data);
             ajax(data).then(response => {
                 if (response.status == "ok") {
@@ -1503,6 +1520,8 @@ class ElementEvents {
                 } else {
                     addNotification({ "head": "Vytvoření", "body": "Chyba: " + response.details }, false, null, "warning");
                 }
+            }).catch(error => {
+                addNotification({ "head": "Vytvoření", "body": "Chyba: internal" }, false, null, "warning");
             });
         });
     }
@@ -1515,7 +1534,12 @@ class ElementEvents {
     static folderCreate = (event) => {
         cl("|📘 Creating new folder vNode");
         localDatabase.getColumn("vNodes", "type", "desktop").then(desktopNode => {
-            const data = { "method": "create", "type": "folder", "parent": desktopNode[0].uuid };
+            let data;
+            if (getParam("folder")) {
+                data = { "method": "create", "type": "folder", "parent": getParam("folder") };
+            } else {
+                data = { "method": "create", "type": "folder", "parent": desktopNode[0].uuid };
+            }
             cl("|📗 Sending data:", data);
             ajax(data).then(response => {
                 if (response.status == "ok") {
@@ -1524,12 +1548,15 @@ class ElementEvents {
                     processVNodes([newNode]);
                     if (!location.href.includes("explorer")) {
                         addDesktopIcon(newNode);
-                    }else {
+                    } else {
                         addExplorerIcon(newNode);
                     }
                 } else {
                     addNotification({ "head": "Vytvoření", "body": "Chyba: " + response.details }, false, null, "warning");
                 }
+            }).catch(error => {
+                cl("!!!!!!!!");
+                addNotification({ "head": "Vytvoření", "body": "Chyba: internal" }, false, null, "warning");
             });
         });
     }

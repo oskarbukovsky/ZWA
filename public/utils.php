@@ -45,7 +45,7 @@ function printFile($uuid)
 
     foreach ($results as $result) {
         // $file = "user-data/" . $result["owner"] . json_decode($result["data"])->data[0] . $result["name"];
-        $file = dirname(__FILE__) . getParentDir($result["parent"]) . $result["parent"] . "/" . $result["name"];
+        $file = getParentDir($result["parent"]) . $result["name"];
     }
 
     try {
@@ -91,15 +91,21 @@ function uploadFile($parentUuid)
         }
 
         $parentDir = getParentDir($parentUuid);
+        // print(" 111 ");
+        // var_dump(str_replace('vComputer://user-data/', "", $parentDir));
+        // print(" 222 ");
 
-        if (file_exists(dirname(__FILE__) . $parentDir . $parentUuid . "/" . $_FILES["fileUpload"]["name"])) {
+        if (file_exists($parentDir . $_FILES["fileUpload"]["name"])) {
             return null;
         }
 
         $query = $conn->prepare($sql);
-        $query->execute(array($newUuid, "file", $parentUuid, $timestamp, $timestamp, $timestamp, $_SESSION["userUuid"], '{"canDelete":true}', $_FILES["fileUpload"]["name"], "Nahraný soubor", 0, '{"data":["' . $parentDir . '"]}', null));
-        move_uploaded_file($_FILES["fileUpload"]["tmp_name"], dirname(__FILE__) . $parentDir . $parentUuid . "/" . $_FILES["fileUpload"]["name"]);
-
+        $sqlPart = $query->execute(array($newUuid, "file", $parentUuid, $timestamp, $timestamp, $timestamp, $_SESSION["userUuid"], '{"canDelete":true}', $_FILES["fileUpload"]["name"], "Nahraný soubor", 0, '{"data":["' . $parentDir . '"]}', null));
+        $ioPart = move_uploaded_file($_FILES["fileUpload"]["tmp_name"], $parentDir . $_FILES["fileUpload"]["name"]);
+        if (!($sqlPart && $ioPart)) {
+            // TODO: handle (partial) fails
+            return null;
+        }
         return [getDataForJson("vNodes", "uuid,type,parent,timeCreate,timeEdit,timeRead,owner,permissions,name,description,size,data,icon", ["uuid"], [$newUuid])];
     } catch (Exception $e) {
         echo $e->getMessage();
@@ -124,18 +130,28 @@ function createFile($type, $parentUuid)
         }
 
         $parentDir = getParentDir($parentUuid);
+        // print("111 " . $parentDir . " 222");
 
-        if (file_exists(dirname(__FILE__) . $parentDir . $parentUuid . "/" . $newUuid)) {
+        if (file_exists($parentDir . $newUuid)) {
             return null;
         }
 
         $query = $conn->prepare($sql);
         if ($type == "file") {
-            $query->execute(array($newUuid, "file", $parentUuid, $timestamp, $timestamp, $timestamp, $_SESSION["userUuid"], '{"canDelete":true}', $newUuid . ".txt", "Typ: Textový dokument", 0, '{"data":["' . $parentDir . '"]}', null));
-            file_put_contents(dirname(__FILE__) . $parentDir . $parentUuid . "/" . $newUuid . ".txt", "\xEF\xBB\xBF");
+            $sqlPart = $query->execute(array($newUuid, "file", $parentUuid, $timestamp, $timestamp, $timestamp, $_SESSION["userUuid"], '{"canDelete":true}', $newUuid . ".txt", "Typ: Textový dokument", 0, '{"data":["' . $parentUuid . '"]}', null));
+            $ioPart = file_put_contents($parentDir . $newUuid . ".txt", "\xEF\xBB\xBF");
+            if (!($sqlPart && $ioPart)) {
+                // TODO: handle (partial) fails
+                return null;
+            }
         } elseif ($type == "folder") {
-            $query->execute(array($newUuid, "folder", $parentUuid, $timestamp, $timestamp, $timestamp, $_SESSION["userUuid"], '{"canDelete":true}', $newUuid, "Složka", 0, '{"data":["vComputer:/' . $parentDir . $newUuid . '"]}', null));
-            mkdir(dirname(__FILE__) . $parentDir . $parentUuid . "/" . $newUuid);
+            $sqlPart = $query->execute(array($newUuid, "folder", $parentUuid, $timestamp, $timestamp, $timestamp, $_SESSION["userUuid"], '{"canDelete":true}', $newUuid, "Složka", 0, '{"data":["vComputer://' . $parentUuid . '"]}', null));
+            $ioPart = mkdir($parentDir . $newUuid);
+            if (!($sqlPart && $ioPart)) {
+                // TODO: handle (partial) fails
+                return null;
+            }
+            // print ("1111 " . $parentDir . $newUuid . " 2222 " . $parentDir . " 3333");
         }
         return [getDataForJson("vNodes", "uuid,type,parent,timeCreate,timeEdit,timeRead,owner,permissions,name,description,size,data,icon", ["uuid"], [$newUuid])];
     } catch (Exception $e) {
@@ -146,12 +162,18 @@ function createFile($type, $parentUuid)
 
 function getParentDir($uuid)
 {
-    $parentDir = "/user-data";
+    $parentDir = dirname(__FILE__) . "/user-data/";
 
     $query = getData("vNodes", "uuid, data, parent", ["uuid"], [$uuid]);
     $results = $query->fetchAll();
 
-    return $parentDir . json_decode($results[0]["data"])->data[0];
+    $json = json_decode($results[0]["data"]);
+    if (count($json->data) < 1) {
+        return $parentDir . $uuid . "/";
+    } else {
+        return $parentDir . str_replace("vComputer://", "", $json->data[0]) . $uuid . "/";
+    }
+
 }
 
 function modifyFile($uuid)

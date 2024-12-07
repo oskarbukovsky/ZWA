@@ -231,6 +231,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     files.querySelectorAll(".file").forEach((element) => {
         element.addEventListener("click", () => {
+            event.stopPropagation();
             if (!is_key_down("Control")) {
                 deselectAll();
             }
@@ -276,6 +277,10 @@ window.addEventListener("dragleave", ()=>{
 window.addEventListener("click", ()=>{
     window.top.postMessage(["focus"]);
     closeAllExplorerContextMenus();
+});
+
+files.addEventListener("click",()=> {
+    deselectAll();
 });
 
 window.addEventListener("dragenter", ()=>{

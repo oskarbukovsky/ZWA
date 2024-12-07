@@ -283,6 +283,8 @@ function newUser($username, $password)
 
 function createDefaultFiles($ownerUuid)
 {
+    // TODO: sloučit data s js a přidávat /user/data/
+
     global $conn;
     $sql = "INSERT INTO vNodes (uuid, type, parent, timeCreate, timeEdit, timeRead, owner, permissions, name, description, size, data, icon) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
@@ -294,17 +296,17 @@ function createDefaultFiles($ownerUuid)
 
     $query = $conn->prepare($sql);
     $desktopUuid = newUuid();
-    $query->execute(array($desktopUuid, "desktop", $ownerUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":false}', "Plocha", "Obsahuje soubory a složky na ploše", 0, '{"data":["/' . $ownerUuid . '/"]}', null));
+    $query->execute(array($desktopUuid, "desktop", $ownerUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":false}', "Plocha", "Obsahuje soubory a složky na ploše", 0, '{"data":["vComputer://' . $ownerUuid . '/"]}', null));
     mkdir(dirname(__FILE__) . "/user-data/" . $ownerUuid . "/" . $desktopUuid . "/");
 
     $query = $conn->prepare($sql);
     $documentsUuid = newUuid();
-    $query->execute(array($documentsUuid, "documents", $ownerUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":false}', "Dokumenty", "Složka pro ukládání dokumentů", 0, '{"data":["/' . $ownerUuid . '/"]}', null));
+    $query->execute(array($documentsUuid, "documents", $ownerUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":false}', "Dokumenty", "Složka pro ukládání dokumentů", 0, '{"data":["vComputer://' . $ownerUuid . '/"]}', null));
     mkdir(dirname(__FILE__) . "/user-data/" . $ownerUuid . "/" . $documentsUuid . "/");
 
     $query = $conn->prepare($sql);
     $imagesUuid = newUuid();
-    $query->execute(array($imagesUuid, "images", $ownerUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":false}', "Obrázky", "Složka pro ukládání obrázků", 0, '{"data":["/' . $ownerUuid . '/"]}', null));
+    $query->execute(array($imagesUuid, "images", $ownerUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":false}', "Obrázky", "Složka pro ukládání obrázků", 0, '{"data":["vComputer://' . $ownerUuid . '/"]}', null));
     mkdir(dirname(__FILE__) . "/user-data/" . $ownerUuid . "/" . $imagesUuid);
 
     $query = $conn->prepare($sql);
@@ -315,11 +317,11 @@ function createDefaultFiles($ownerUuid)
 
     copy(dirname(__FILE__) . "/user-data/defaults/Nový textový dokument.txt", dirname(__FILE__) . "/user-data/" . $ownerUuid . "/" . $desktopUuid . "/Nový textový dokument.txt");
     $query = $conn->prepare($sql);
-    $query->execute(array(newUuid(), "file", $desktopUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":true}', "Nový textový dokument.txt", "Typ: Textový dokument", filesize(dirname(__FILE__) . "/user-data/defaults/Nový textový dokument.txt"), '{"data":["/' . $desktopUuid . '/"]}', null));
+    $query->execute(array(newUuid(), "file", $desktopUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":true}', "Nový textový dokument.txt", "Typ: Textový dokument", filesize(dirname(__FILE__) . "/user-data/defaults/Nový textový dokument.txt"), '{"data":["vComputer://' . $desktopUuid . '/"]}', null));
 
     copy(dirname(__FILE__) . "/user-data/defaults/sample.pdf", dirname(__FILE__) . "/user-data/" . $ownerUuid . "/" . $desktopUuid . "/sample.pdf");
     $query = $conn->prepare($sql);
-    $query->execute(array(newUuid(), "file", $desktopUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":true}', "sample.pdf", "Typ: PDF dokument", filesize(dirname(__FILE__) . "/user-data/defaults/sample.pdf"), '{"data":["/' . $desktopUuid . '/"]}', null));
+    $query->execute(array(newUuid(), "file", $desktopUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":true}', "sample.pdf", "Typ: PDF dokument", filesize(dirname(__FILE__) . "/user-data/defaults/sample.pdf"), '{"data":["vComputer://' . $desktopUuid . '/"]}', null));
 
     $query = $conn->prepare($sql);
     $query->execute(array(newUuid(), "link", $desktopUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":false}', "Mapy", "OpenStreetMaps based map app", 0, '{"data":["https://facilmap.org/#9/50.1443/14.4470/Lima"]}', "https://cdn-icons-png.flaticon.com/512/235/235861.png"));

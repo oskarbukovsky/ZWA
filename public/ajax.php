@@ -80,7 +80,7 @@ if ($_POST["method"] == "upload") {
     if ($status !== null) {
         returnJSONResponse(["status" => "ok", "details" => "searchResults", "results" => $status]);
     } else {
-        returnJSONResponse(["status" => "error", "details" => "ErroInDB"]);
+        returnJSONResponse(["status" => "error", "details" => "ErrorInDB"]);
     }
 }
 

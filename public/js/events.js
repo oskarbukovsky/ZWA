@@ -238,6 +238,9 @@ window.onmessage = async function (event) {
         return;
     }
     cl("|📘 ReceivedFromIframe: ", event.data);
+    const sourceIframe = [...windows.querySelectorAll('iframe')].find(
+        iframe => iframe.contentWindow === event.source
+    );
     switch (event.data[0]) {
         case "appOpen":
             const node = await localDatabase.getColumn("vNodes", "uuid", event.data[1]);
@@ -250,13 +253,13 @@ window.onmessage = async function (event) {
             shutdown = true;
             break;
         case "fileUploading":
-            handleFileUpload(event.data[1]);
+            handleFileUpload(event.data[1], bubbleToClassFromElement(sourceIframe, "windows-app").dataset.uuid);
+            break;
+        case "processVNodes":
+            processVNodes(event.data[1]);
             break;
         case "focus":
             document.querySelector(".uploading").classList.remove("upload");
-            const sourceIframe = [...windows.querySelectorAll('iframe')].find(
-                iframe => iframe.contentWindow === event.source
-            );
             selectApp(bubbleToClassFromElement(sourceIframe, "windows-app").dataset.uuid);
             break;
         case "notification":
@@ -332,13 +335,14 @@ uploadElement.addEventListener("dragleave", (event) => {
  * @param {function} callback - The function to execute when the event occurs.
  * @returns None
  */
-desktop.addEventListener("drop", (event) => {
+desktop.addEventListener("drop", async (event) => {
     uploadElement.classList.remove("upload");
     event.preventDefault();
     const files = event.dataTransfer.files;
     if (files.length) {
         fileUpload.files = files;
-        handleFileUpload(files)
+        const desktopNode = localDatabase.getColumn("vNodes", "type", "desktop");
+        handleFileUpload(files, parentUuid[0].uuid);
     }
 });
 

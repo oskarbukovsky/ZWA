@@ -13,73 +13,134 @@ if ((isset($_POST["method"]) && $_POST["method"] == "logout") || (isset($_GET["m
     die();
 }
 
-if (isset($_SESSION["logged"])) {
-    header("Location: desktop.php");
-    die;
-}
+if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != "XMLHttpRequest") {
+    if (isset($_SESSION["logged"])) {
+        header("Location: desktop.php");
+        die;
+    }
 
-if (!isset($_POST["method"])) {
-    header("Location: index.php");
-    die();
+    if (!isset($_POST["method"])) {
+        header("Location: index.php");
+        die();
+    }
 }
 
 if ($_POST["method"] == "login") {
     if (!isset($_POST["username"])) {
-        header("Location: index.php?type=login&error=missing-username");
-        die();
+        if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != "XMLHttpRequest") {
+            header("Location: index.php?type=login&error=missing-username");
+            die();
+        } else {
+            returnJSONResponse(["status" => "error", "details" => "missingUsername", "method" => "login"]);
+            die();
+        }
     }
     if (strlen($_POST["username"]) < 5 || strlen($_POST["username"]) >= 16) {
-        header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
-        header("Location: index.php?type=login&error=username-too-short");
-        die();
+        if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != "XMLHttpRequest") {
+            header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
+            header("Location: index.php?type=login&error=username-too-short");
+            die();
+        } else {
+            returnJSONResponse(["status" => "error", "details" => "usernameTooShort", "method" => "login"]);
+            die();
+        }
     }
     if (!isset($_POST["password"])) {
-        header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
-        header("Location: index.php?type=login&error=missing-password");
-        die();
+        if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != "XMLHttpRequest") {
+            header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
+            header("Location: index.php?type=login&error=missing-password");
+            die();
+        } else {
+            returnJSONResponse(["status" => "error", "details" => "missingPassword", "method" => "login"]);
+            die();
+        }
     }
     if (!userExist($_POST["username"])) {
-        header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
-        header("Location: index.php?type=login&error=user-do-not-exist");
-        die();
+        if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != "XMLHttpRequest") {
+            header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
+            header("Location: index.php?type=login&error=user-do-not-exist");
+            die();
+        } else {
+            returnJSONResponse(["status" => "error", "details" => "userDoNotExist", "method" => "login"]);
+            die();
+        }
     }
     if (!loginAuth($_POST["username"], $_POST["password"])) {
-        header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
-        header("Location: index.php?type=login&error=wrong-credentials");
+        if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != "XMLHttpRequest") {
+            header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
+            header("Location: index.php?type=login&error=wrong-credentials");
+            die();
+        } else {
+            returnJSONResponse(["status" => "error", "details" => "wrongCredentials", "method" => "login"]);
+            die();
+        }
+    }
+    if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != "XMLHttpRequest") {
+        sessionSet($_POST["username"]);
+        header("Location: desktop.php");
+    } else {
+        returnJSONResponse(["status" => "ok", "details" => "loginSuccess", "method" => "login"]);
         die();
     }
-
-    sessionSet($_POST["username"]);
-    header("Location: desktop.php");
     die();
 } elseif ($_POST["method"] == "register") {
     if (!isset($_POST["username"])) {
-        header("Location: index.php?type=register&error=missing-username");
-        die();
+        if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != "XMLHttpRequest") {
+            header("Location: index.php?type=register&error=missing-username");
+            die();
+        } else {
+            returnJSONResponse(["status" => "error", "details" => "missingUsername", "method" => "register"]);
+            die();
+        }
     }
     if (strlen($_POST["username"]) < 5 || strlen($_POST["username"]) >= 16) {
-        header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
-        header("Location: index.php?type=register&error=username-too-short");
-        die();
+        if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != "XMLHttpRequest") {
+            header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
+            header("Location: index.php?type=register&error=username-too-short");
+            die();
+        } else {
+            returnJSONResponse(["status" => "error", "details" => "usernameTooShort", "method" => "register"]);
+            die();
+        }
     }
     if (!isset($_POST["password"]) || !isset($_POST["passwordAgain"])) {
-        header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
-        header("Location: index.php?type=register&error=missing-password");
-        die();
+        if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != "XMLHttpRequest") {
+            header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
+            header("Location: index.php?type=register&error=missing-password");
+            die();
+        } else {
+            returnJSONResponse(["status" => "error", "details" => "missingPassword", "method" => "register"]);
+            die();
+        }
     }
     if (userExist($_POST["username"])) {
-        header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
-        header("Location: index.php?type=register&error=user-already-exist");
-        die();
+        if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != "XMLHttpRequest") {
+            header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
+            header("Location: index.php?type=register&error=user-already-exist");
+            die();
+        } else {
+            returnJSONResponse(["status" => "error", "details" => "userAlreadyExist", "method" => "register"]);
+            die();
+        }
     }
     if ($_POST["password"] != $_POST["passwordAgain"]) {
-        header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
-        header("Location: index.php?type=register&error=password-do-not-match");
+        if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != "XMLHttpRequest") {
+            header("Set-cookie: " . "Prefill-username=" . htmlspecialchars($_POST["username"]) . "; expires=" . date('D, Y-M-d H:i:s', time() + 3600) . " GMT; path=/; HttpOnly; secure=true; SameSite=Strict");
+            header("Location: index.php?type=register&error=passwords-do-not-match");
+            die();
+        } else {
+            returnJSONResponse(["status" => "error", "details" => "passwordsDoNotMatch", "method" => "register"]);
+            die();
+        }
+    }
+    if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != "XMLHttpRequest") {
+        newUser($_POST["username"], $_POST["password"]);
+
+        sessionSet($_POST["username"]);
+        header("Location: desktop.php?welcome=true");
+        die();
+    } else {
+        returnJSONResponse(["status" => "ok", "details" => "registerSuccess", "method" => "register"]);
         die();
     }
-    newUser($_POST["username"], $_POST["password"]);
-
-    sessionSet($_POST["username"]);
-    header("Location: desktop.php?welcome=true");
-    die();
 }

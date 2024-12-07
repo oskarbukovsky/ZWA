@@ -36,7 +36,7 @@ async function authSubmit(event) {
 
 async function handleLogin() {
     cl("Login:");
-    loginPassword.value = await sha256Hash(loginPassword.value);
+    // loginPassword.value = await sha256Hash(loginPassword.value);
     return true;
 }
 
@@ -46,8 +46,8 @@ async function handleRegister() {
         return false;
     }
 
-    registerPassword.value = await sha256Hash(registerPassword.value);
-    registerPasswordAgain.value = await sha256Hash(registerPasswordAgain.value);
+    // registerPassword.value = await sha256Hash(registerPassword.value);
+    // registerPasswordAgain.value = await sha256Hash(registerPasswordAgain.value);
     return true;
 }
 
