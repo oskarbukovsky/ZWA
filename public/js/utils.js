@@ -737,17 +737,20 @@ function closeApp(target, forced = false) {
  * @param container - The `container` as DOM Element which context menu to position
  * @param appendTo - DOM Icon element to insert contextMenu to
  */
-function positionContextMenu(container, appendTo) {
+function positionContextMenu(container, appendTo, relativeTo = null) {
+    if (!relativeTo) {
+        relativeTo = appendTo;
+    }
     appendTo.appendChild(container);
     let left = event.clientX + 1 + "px";
     container.style.left = left;
-    let bottom = appendTo.getBoundingClientRect().height - event.clientY + 1;
+    let bottom = relativeTo.getBoundingClientRect().height - event.clientY + 1;
     if (container.getBoundingClientRect().height >= event.clientY) {
-        bottom = appendTo.getBoundingClientRect().height - container.getBoundingClientRect().height - 1;
+        bottom = relativeTo.getBoundingClientRect().height - container.getBoundingClientRect().height - 1;
     }
 
-    if (container.getBoundingClientRect().right >= appendTo.getBoundingClientRect().width) {
-        left = appendTo.getBoundingClientRect().width - container.getBoundingClientRect().width - 1;
+    if (container.getBoundingClientRect().right >= relativeTo.getBoundingClientRect().width) {
+        left = relativeTo.getBoundingClientRect().width - container.getBoundingClientRect().width - 1;
     }
 
     container.style.bottom = bottom + "px";
@@ -1027,6 +1030,126 @@ function resizeWindow(app) {
     })
 }
 
+let appResizing = {
+    top: null,
+    left: null,
+    width: null,
+    height: null,
+    _status: false,
+    element: null,
+    grip: null,
+    app: null,
+    maxX: null,
+    maxY: null,
+    boundingBox: null,
+    windowResize: function () {
+        const defaultAppsSizes = document.querySelector("#windows").getBoundingClientRect();
+        this.maxX = defaultAppsSizes.width;
+        this.maxY = defaultAppsSizes.height;
+    },
+    resizingEvent: function (event) {
+        let x = event.pageX < 0 ? 0 : event.pageX;
+        let y = event.pageY < 0 ? 0 : event.pageY;
+
+        if (x > appResizing.maxX) {
+            x = appResizing.maxX;
+        }
+        if (y > appResizing.maxY) {
+            y = appResizing.maxY;
+        }
+
+        if (!appResizing.grip) {
+            // cl("no grip");
+            return;
+        }
+        let headerBoundingBox = appResizing.app.querySelector(".app-header").getBoundingClientRect();
+        appResizing.grip.split("").forEach(grip => {
+            switch (grip) {
+                case "n":
+                    // cl("nahoře", appResizing.boundingBox, "\n", `${x}:${y}`);
+                    let height = (appResizing.boundingBox.top - y) + appResizing.boundingBox.height - 2;
+                    if (height < 300) {
+                        height = 300
+                    }
+                    let top = y;
+                    if (y + 303 + headerBoundingBox.height > appResizing.boundingBox.bottom) {
+                        top = appResizing.boundingBox.bottom - headerBoundingBox.height - 303;
+                    }
+                    appResizing.app.style.top = top + "px";
+                    appResizing.app.style.height = height + "px";
+                    break;
+                case "e":
+                    // cl("pravá", appResizing.boundingBox, "\n", `${x}:${y}`);
+                    appResizing.app.style.width = x - appResizing.boundingBox.left + "px";
+                    break;
+                case "s":
+                    // cl("dole", appResizing.boundingBox, "\n", `${x}:${y}`);
+                    appResizing.app.style.height = y - appResizing.boundingBox.top + "px";
+                    break;
+                case "w":
+                    // cl("levá", appResizing.boundingBox, "\n", `${x}:${y}`);
+                    let width = (appResizing.boundingBox.left - x) + appResizing.boundingBox.width - 2;
+                    if (width < 400) {
+                        width = 400
+                    }
+                    let left = x;
+                    if (x + 402 > appResizing.boundingBox.right) {
+                        left = appResizing.boundingBox.right - 402;
+                    }
+                    appResizing.app.style.left = left + "px";
+                    appResizing.app.style.width = width + "px";
+                    break;
+                // case "nw":
+                default:
+                    cl("Error");
+                    break;
+            }
+        });
+    },
+    changeEvent: function (val) {
+        let app = this.element;
+        if (app) {
+            this.grip = app.classList[1].split("-grip")[0];
+            while (!app?.classList?.contains("windows-app")) {
+                if (app === null) {
+                    return false;
+                } else {
+                    app = app.parentElement;
+                }
+            }
+            this.app = app;
+        }
+        if (val) {
+            // cl("true: ", this.app, " this.grip: ", this.grip);
+            this.boundingBox = this.app.getBoundingClientRect();
+            deselectAllApps();
+            this.app.classList.add("active");
+            navbar.querySelector('[data-uuid="' + this.app.dataset.uuid + '"]').classList.add("active");
+            this.app.classList.add("resizing");
+            this.app.style.zIndex = getLowestMaxAppZIndex();
+            window.addEventListener("mousemove", this.resizingEvent);
+        } else {
+            // cl("false: ", this.app);
+            if (this.app) {
+                this.app.classList.remove("resizing");
+            }
+            window.removeEventListener("mousemove", this.resizingEvent);
+        }
+    },
+    get status() {
+        return this._status;
+    },
+    set status(parameters) {
+        let newValue = parameters[0];
+        let localThis = parameters[1];
+        this._status = newValue;
+        if (localThis && localThis.classList.contains("resizable")) {
+            this.element = localThis;
+        }
+        this.changeEvent(newValue);
+    }
+};
+
 /**
  * The function `updateCalendar` handles calendar generation
  */
@@ -1211,7 +1334,7 @@ async function processDesktopIcons() {
 
 function addDesktopIcon(node) {
     const holder = createElement("figure", new ClassList("icon"));
-    const icon = createElement("img", new Src(getIcon(node)), new AppendTo(holder));
+    const icon = createElement("img", new Src(getIcon(node)), new Alt("desktop-icon"), new AppendTo(holder));
     const caption = createElement("figcaption", new Data("uuid", node.uuid), new AppendTo(holder));
     const textarea = createElement("textarea", new Name("icon-name"), new Cols(11), new ReadOnly(true), new TextContent(node.name), new AppendTo(caption));
     desktop.appendChild(holder);
@@ -1296,11 +1419,15 @@ if (!String.prototype.capitalize) {
  * @param permanent - Whether the notification should be permanent or dismissible.
  * @param nodeOrSystem - The node or system to associate the notification with.
  * @param icon - The icon to display with the notification.
- * @returns The created notification element.
- */
-function addNotification(content, permanent = false, nodeOrSystem = null, icon = null) {
+* @returns The created notification element.
+*/
+function addNotification(content, permanent = false, nodeOrSystem = null, icon = null, debugOnly = false) {
+    if ((debugOnly) && !DEBUG) {
+        return;
+    }
+    // TODO: add debugOnly=true on dev calls
     if (pageInIframe()) {
-        window.postMessage(["notification", content, permanent, nodeOrSystem, icon]);
+        window.top.postMessage(["notification", content, permanent, nodeOrSystem, icon]);
         return;
     }
 
@@ -1361,8 +1488,8 @@ function addNotification(content, permanent = false, nodeOrSystem = null, icon =
 
 /**
  * Displays a timeout notification that counts down from 60 seconds and redirects the user
- * to a session timeout page when the countdown reaches 0.
- */
+* to a session timeout page when the countdown reaches 0.
+*/
 async function timeoutNotification() {
     const notification = await addNotification({ "head": "Relace vypršela | Přihlaš se prosím znovu" }, true, null, "error");
     let i = 60;
@@ -1584,7 +1711,9 @@ class ElementEvents {
      * @returns None
      */
     static fileDelete = (event) => {
-        const uuid = bubbleToClass(event, "icon").querySelector("[data-uuid]").dataset.uuid;
+        const icon = bubbleToClass(event, "icon")
+        // cl(event, icon);
+        const uuid = icon.querySelector("[data-uuid]").dataset.uuid;
         cl("|📘 Deleting vNode with uuid: ", uuid);
         ajax({ "method": "delete", "fileUuid": uuid }).then(response => {
             if (response.status == "ok") {

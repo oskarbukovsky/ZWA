@@ -14,6 +14,11 @@ if ((isset($_POST["method"]) && $_POST["method"] == "logout") || (isset($_GET["m
 }
 
 if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != "XMLHttpRequest") {
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        header("Location: error.php?code=403");
+        die();
+    }
+    
     if (isset($_SESSION["logged"])) {
         header("Location: desktop.php");
         die;

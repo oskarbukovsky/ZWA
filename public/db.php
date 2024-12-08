@@ -65,15 +65,46 @@ function getDataVisual($type, $tablename, $what)
     echo "</table>\n";
 }
 
-function getData($tableName, $what, $where, $input)
+function getData($tableName, $what, $where = [], $input = [])
 {
     global $conn;
-    $sql = "SELECT $what FROM $tableName WHERE";
+    $sql = "SELECT $what FROM $tableName";
+    if (count($where) > 0) {
+        $sql .= " WHERE";
+    }
     // echo $sql;
-    foreach ($where as $key => $value) {
+    foreach ($where as $value) {
         $sql .= " " . $value . "=:" . $value;
     }
     $query = $conn->prepare($sql);
+    foreach ($where as $key => $value) {
+        $query->bindParam(":" . $value, $input[$key], PDO::PARAM_STR);
+    }
+    try {
+        $query->execute();
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+    return $query;
+}
+
+function updateData($tableName, $what, $with, $where = [], $input = [])
+{
+    global $conn;
+    $sql = "UPDATE $tableName SET ";
+    foreach ($what as $value) {
+        $sql .= " " . $value . "=:" . $value;
+    }
+    if (count($where) > 0) {
+        $sql .= " WHERE";
+    }
+    foreach ($where as $value) {
+        $sql .= " " . $value . "=:" . $value;
+    }
+    $query = $conn->prepare($sql);
+    foreach ($what as $key => $value) {
+        $query->bindParam(":" . $value, $with[$key], PDO::PARAM_STR);
+    }
     foreach ($where as $key => $value) {
         $query->bindParam(":" . $value, $input[$key], PDO::PARAM_STR);
     }
@@ -105,12 +136,14 @@ function deleteData($tableName, $where, $input, $cmp = "=")
     return false;
 }
 
-function getDataForJs($variable, $class, $tablename, $what, $where, $input, $operator = "AND")
+function getDataForJs($variable, $class, $tablename, $what, $where = [], $input = [], $operator = "AND")
 {
     global $conn;
 
-
-    $sql = "SELECT $what FROM $tablename WHERE";
+    $sql = "SELECT $what FROM $tablename";
+    if (count($where) > 0) {
+        $sql .= " WHERE";
+    }
     foreach ($where as $key => $value) {
         if ($key != 0) {
             $sql .= " " . $operator;

@@ -245,3 +245,45 @@ function returnJSONResponse($jsonData)
     echo json_encode($jsonData);
     die();
 }
+
+function resetPassword($uuid, $newPassword)
+{
+    updateData("users", ["passwordHash"], [$newPassword], ["uuid"], [$uuid]);
+    $query = getData("users", "passwordHash", ["uuid"], [$uuid]);
+    $data = $query->fetchAll();
+    if (count($data) != 1) {
+        return false;
+    }
+    if ($data[0]["passwordHash"] != $newPassword) {
+        return false;
+    }
+    return true;
+}
+
+function promoteUser($uuid)
+{
+    updateData("users", ["role"], ["100"], ["uuid"], [$uuid]);
+    $query = getData("users", "role", ["uuid"], [$uuid]);
+    $data = $query->fetchAll();
+    if (count($data) != 1) {
+        return false;
+    }
+    if ($data[0]["role"] != "100") {
+        return false;
+    }
+    return true;
+}
+
+function demoteUser($uuid)
+{
+    updateData("users", ["role"], ["000"], ["uuid"], [$uuid]);
+    $query = getData("users", "role", ["uuid"], [$uuid]);
+    $data = $query->fetchAll();
+    if (count($data) != 1) {
+        return false;
+    }
+    if ($data[0]["role"] != "000") {
+        return false;
+    }
+    return true;
+}

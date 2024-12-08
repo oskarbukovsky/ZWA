@@ -20,7 +20,33 @@ if ($_POST["method"] == "timeoutCheck") {
     returnJSONResponse(["status" => "ok"]);
 }
 
-if ($_POST["method"] == "upload") {
+switch ($_POST["method"]) {
+    case "upload":
+        handleUpload();
+    case "create":
+        handleCreate();
+    case "modify":
+        handleModify();
+    case "delete":
+        handleDelete();
+    case "read":
+        handleRead();
+    case "search":
+        handleSearch();
+    case "userResetPassword":
+        handleUserResetPassword();
+    case "userPromote":
+        handleUserPromote();
+    case "userDemote":
+        handleUserDemote();
+    case "userDelete":
+        handleUserDelete();
+    default:
+        returnJSONResponse(["status" => "error", "details" => "unknownMethod"]);
+}
+
+function handleUpload()
+{
     if (!isset($_POST["parent"])) {
         returnJSONResponse(["status" => "error", "errorType" => "missingParent"]);
     }
@@ -30,7 +56,10 @@ if ($_POST["method"] == "upload") {
     } else {
         returnJSONResponse(["status" => "error", "details" => "unableToUpload"]);
     }
-} elseif ($_POST["method"] == "create") {
+}
+
+function handleCreate()
+{
     if (!isset($_POST["type"])) {
         returnJSONResponse(["status" => "error", "details" => "missingType"]);
     }
@@ -43,17 +72,23 @@ if ($_POST["method"] == "upload") {
     } else {
         returnJSONResponse(["status" => "error", "details" => "unableToCreate"]);
     }
-} elseif ($_POST["method"] == "modify") {
+}
+
+function handleModify()
+{
     if (!isset($_POST["fileUuid"])) {
         returnJSONResponse(["status" => "error", "details" => "missingFileUuid"]);
     }
     $status = modifyFile($_POST["fileUuid"]);
     if ($status !== null) {
-        returnJSONResponse(["status" => "ok", "details" => "entryUpdated", "uuid" => $updatedNode, "timestamp" => $status]);
+        returnJSONResponse(["status" => "ok", "details" => "entryUpdated", "uuid" => $_POST["fileUuid"], "timestamp" => $status]);
     } else {
         returnJSONResponse(["status" => "error", "details" => "unableToUpdate", "uuid" => $_POST["fileUuid"]]);
     }
-} elseif ($_POST["method"] == "delete") {
+}
+
+function handleDelete()
+{
     if (!isset($_POST["fileUuid"])) {
         returnJSONResponse(["status" => "error", "details" => "missingFileUuid"]);
     }
@@ -62,7 +97,10 @@ if ($_POST["method"] == "upload") {
     } else {
         returnJSONResponse(["status" => "error", "details" => "unableToDelete", "uuid" => $_POST["fileUuid"]]);
     }
-} elseif ($_POST["method"] == "read") {
+}
+
+function handleRead()
+{
     if (!isset($_POST["fileUuid"])) {
         returnJSONResponse(["status" => "error", "details" => "missingFileUuid"]);
     }
@@ -72,7 +110,10 @@ if ($_POST["method"] == "upload") {
     } else {
         returnJSONResponse(["status" => "error", "details" => "unableToRead", "uuid" => $_POST["fileUuid"]]);
     }
-} elseif ($_POST["method"] == "search") {
+}
+
+function handleSearch()
+{
     if (!isset($_POST["query"])) {
         returnJSONResponse(["status" => "error", "details" => "missingQuery"]);
     }
@@ -84,4 +125,53 @@ if ($_POST["method"] == "upload") {
     }
 }
 
-returnJSONResponse(["status" => "error", "details" => "unknownMethod"]);
+function handleUserResetPassword()
+{
+    if (!isset($_POST["uuid"])) {
+        returnJSONResponse(["status" => "error", "details" => "missingUuid"]);
+    }
+    if (!isset($_POST["newPassword"])) {
+        returnJSONResponse(["status" => "error", "details" => "missingNewPassword"]);
+    }
+    if (resetPassword($_POST["uuid"], password_hash(htmlspecialchars($_POST["newPassword"]), PASSWORD_DEFAULT))) {
+        returnJSONResponse(["status" => "ok", "details" => "passwordChangeSuccess", "uuid" => $_POST["uuid"]]);
+    } else {
+        returnJSONResponse(["status" => "error", "details" => "unableToChangePassword", "uuid" => $_POST["uuid"]]);
+    }
+}
+
+function handleUserPromote()
+{
+    if (!isset($_POST["uuid"])) {
+        returnJSONResponse(["status" => "error", "details" => "missingUuid"]);
+    }
+    if (promoteUser($_POST["uuid"])) {
+        returnJSONResponse(["status" => "ok", "details" => "promotionSuccess", "uuid" => $_POST["uuid"]]);
+    } else {
+        returnJSONResponse(["status" => "error", "details" => "unableToDemote", "uuid" => $_POST["uuid"]]);
+    }
+}
+
+function handleUserDemote()
+{
+    if (!isset($_POST["uuid"])) {
+        returnJSONResponse(["status" => "error", "details" => "missingUuid"]);
+    }
+    if (demoteUser($_POST["uuid"])) {
+        returnJSONResponse(["status" => "ok", "details" => "demotionSuccess", "uuid" => $_POST["uuid"]]);
+    } else {
+        returnJSONResponse(["status" => "error", "details" => "unableToPromote", "uuid" => $_POST["uuid"]]);
+    }
+}
+
+function handleUserDelete()
+{
+    if (!isset($_POST["uuid"])) {
+        returnJSONResponse(["status" => "error", "details" => "missingUuid"]);
+    }
+    if (deleteUser($_POST["uuid"])) {
+        returnJSONResponse(["status" => "ok", "details" => "deletionSuccess", "uuid" => $_POST["uuid"]]);
+    } else {
+        returnJSONResponse(["status" => "error", "details" => "unableToDelete", "uuid" => $_POST["uuid"]]);
+    }
+}

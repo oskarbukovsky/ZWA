@@ -579,7 +579,7 @@ function desktopIconContextMenu(element, node) {
 
         const properties = createElement("span", new TextContent("Vlastnosti"), new AppendTo(container));
 
-        positionContextMenu(container, element);
+        positionContextMenu(container, element, desktop);
     });
 }
 
