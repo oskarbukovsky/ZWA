@@ -7,7 +7,7 @@
 	},
 	"opts": {
 		"encoding": "utf8",
-		"destination": "./docs/",
+		"destination": "./public/docs/",
 		"recurse": true,
 		"template": "./jsdoc-extra/clean-jsdoc-theme",
 		"readme": "./README.md"
@@ -19,9 +19,9 @@
 	"theme_opts": {
 		"default_theme": "fallback-dark",
 		"base_url": "https://ankdev.me/v4/",
-		"favicon": "path/to/img",
-		"homepageTitle": "Clean JSDoc theme",
-		"title": "<img src='path/to/img' class='my-custom-class'/>",
+		"favicon": "./public/media/favicon.ico",
+		"homepageTitle": "NetOs",
+		"title": "NetOs",
 		"includeFilesListInHomepage": true,
 		"menu": [
 			{

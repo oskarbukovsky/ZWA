@@ -1,7 +1,11 @@
 "use strict";
 
-const DEBUG = true;
+/**
+ * @file Utility file for a lot of function etc.
+ * @author Jan Oskar Bukovský
+ */
 
+const DEBUG = true;
 
 // Remove usual way of showing context menu on right click
 if (!DEBUG) {

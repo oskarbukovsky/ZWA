@@ -1,5 +1,10 @@
 "use strict";
 
+/**
+ * @file Login page script
+ * @author Jan Oskar Bukovský
+ */
+
 window.addEventListener("DOMContentLoaded", () => {
     document.getElementById("loginForm").addEventListener("submit", async (event) => {
         await authSubmit(event);

@@ -1,5 +1,10 @@
 "use strict";
 
+/**
+ * @file Explorer page script
+ * @author Jan Oskar Bukovský
+ */
+
 const urlParams = new URLSearchParams(window.location.search);
 
 const folder = urlParams.get("folder");

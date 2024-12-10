@@ -1,5 +1,10 @@
 "use strict";
 
+/**
+ * @file Utility file for classes.
+ * @author Jan Oskar Bukovský
+ */
+
 const htmlSpecialCharsDecode = (text) => {
     const map = {
         '&amp;': '&',

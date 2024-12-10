@@ -1,6 +1,11 @@
 "use strict";
 
 /**
+ * @file Events handling script file
+ * @author Jan Oskar Bukovský
+ */
+
+/**
  * Asynchronously reads a vNode file with the given UUID.
  * @param {string} uuid - The UUID of the vNode file to read.
  * @returns {boolean} - Returns true if the file was read successfully, false otherwise.

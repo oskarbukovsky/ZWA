@@ -1,5 +1,10 @@
 "use strict";
 
+/**
+ * @file Main file for the desktop page
+ * @author Jan Oskar Bukovský
+ */
+
 //TODO document.querySelectorAll("[data-uuid='66285580-f084-43fd-b3aa-308399055455']");
 
 // https://cdn-factory.marketjs.com/en/trixology-classic-responsive-hd/index.html
@@ -60,7 +65,7 @@ window.addEventListener("DOMContentLoaded", async () => {
             return;
         }
         // Tricky thing to force newest browsers ! :D Maybe not the best idea for testing 
-        // scheduler.yield();
+        scheduler.yield();
     }
 
     cl("|📙 Processing userIdentifier...");

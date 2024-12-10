@@ -1,5 +1,10 @@
 "use strict";
 
+/**
+ * @file Utility setup file for desktop app
+ * @author Jan Oskar Bukovský
+ */
+
 let localDatabase
 const dbName = "ZWA";
 const dbStores = [new dbShape("vNodes", Object.keys(new vNode()), "uuid"), new dbShape("user", Object.keys(new user()), "uuid")];
