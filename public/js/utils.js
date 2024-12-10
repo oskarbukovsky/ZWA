@@ -5,6 +5,11 @@
  * @author Jan Oskar Bukovský
  */
 
+
+/**
+ * A flag to enable or disable debug mode.
+ * @constant {boolean}
+ */
 const DEBUG = true;
 
 // Remove usual way of showing context menu on right click
@@ -1033,13 +1038,12 @@ function desktopIconTooltip(element, node) {
     });
 }
 
-// TODO: Docs
 function resizeWindow(app) {
-    resizingElementsPrefixes.forEach((side) => {
-        let resizingElement = app.querySelector("." + side + "grip");
-
-        // TODO: move appResizing here and whole to events.js
-    })
+    resizingElementsPrefixes.forEach((item) => {
+        const grip = createElement("div", new ClassList("resizable", item + "-grip"), new AppendTo(app));
+        grip.addEventListener("mousedown", appResizeDown);
+        window.addEventListener("mouseup", appResizeUp);
+    });
 }
 
 let appResizing = {
@@ -1054,11 +1058,18 @@ let appResizing = {
     maxX: null,
     maxY: null,
     boundingBox: null,
+    /**
+    * Updates the maximum dimensions (maxX and maxY) based on the size of the free space for apps.
+    */
     windowResize: function () {
         const defaultAppsSizes = document.querySelector("#windows").getBoundingClientRect();
         this.maxX = defaultAppsSizes.width;
         this.maxY = defaultAppsSizes.height;
     },
+    /**
+    * Resizes the application window based on the mouse event and the grip direction.
+    * @param {MouseEvent} event - The mouse event containing the cursor position.
+    */
     resizingEvent: function (event) {
         let x = event.pageX < 0 ? 0 : event.pageX;
         let y = event.pageY < 0 ? 0 : event.pageY;
@@ -1118,7 +1129,13 @@ let appResizing = {
             }
         });
     },
-    changeEvent: function (val) {
+    /**
+    * Toggles the resizing state of the application window.
+    * Sets up or removes the necessary event listeners and updates the application state.
+    * @param {boolean} value - A boolean indicating whether to start or stop resizing.
+    * @returns {boolean} Returns false if the application element is not found.
+    */
+    changeEvent: function (value) {
         let app = this.element;
         if (app) {
             this.grip = app.classList[1].split("-grip")[0];
@@ -1131,7 +1148,7 @@ let appResizing = {
             }
             this.app = app;
         }
-        if (val) {
+        if (value) {
             // cl("true: ", this.app, " this.grip: ", this.grip);
             this.boundingBox = this.app.getBoundingClientRect();
             deselectAllApps();

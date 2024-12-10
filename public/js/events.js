@@ -63,6 +63,8 @@ window.addEventListener("blur", () => {
     }
 });
 
+
+// Run `deselectBasedOnClick` when the user clicks to determine habavior of the app
 window.addEventListener("mousedown", deselectBasedOnClick);
 window.addEventListener("touchstart", deselectBasedOnClick);
 
@@ -375,8 +377,6 @@ function desktopIconOpener(element) {
                 // cl("put success: ", putRequest);
             }
 
-            //TODO Sync with server
-
             appOpen(data);
         }
         event.preventDefault();
@@ -509,7 +509,6 @@ desktop.addEventListener("contextmenu", (event) => {
     }), new ElementEvent("click", (event) => {
         // event.stopImmediatePropagation();
     }));
-
 
     const properties = createElement("span", new TextContent("Vlastnosti"), new AppendTo(container));
 
@@ -801,12 +800,7 @@ function mouseSelectBox() {
     window.addEventListener("blur", deSelect);
 }
 
-// window.ontouchstart = function (event) {
-//     if (event.touches.length > 1) { //If there is more than one touch
-//         event.preventDefault();
-//     }
-// }
-
+// Handles logout from main menu
 powerButton.addEventListener("click", async () => {
     const exitVideo = createElement("video", new Id("logoutAnimation"));
     const source = createElement("source", new Src("media/login/bloomReverse.mp4"), new Type("video/mp4"), new AppendTo(exitVideo));
@@ -816,6 +810,9 @@ powerButton.addEventListener("click", async () => {
     location.replace(location.origin + "/~bukovja4/public/auth.php?method=logout");
 });
 
-navbar.querySelector(".main-menu .controls > .user").addEventListener("click", () => {
-    addNotification({ "head": "Hlavní menu", "body": "Kliknul jsi na ikonku uživatele" });
-});
+// Testing
+if (DEBUG) {
+    navbar.querySelector(".main-menu .controls > .user").addEventListener("click", () => {
+        addNotification({ "head": "Hlavní menu", "body": "Kliknul jsi na ikonku uživatele" });
+    });
+}

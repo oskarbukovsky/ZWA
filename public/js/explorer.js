@@ -6,9 +6,7 @@
  */
 
 const urlParams = new URLSearchParams(window.location.search);
-
 const folder = urlParams.get("folder");
-let parent;
 
 window.onmessage = function (event) {
     // console.log(event);
@@ -18,6 +16,36 @@ window.onmessage = function (event) {
     }
     console.log("receivedFromParent: ", event.data);
 };
+
+/**
+ * Initializes the explorer once the DOM content is loaded.
+ * Opens the indexedDB, processes vNodes, updates the explorer icons,
+ * and sets up event listeners for file selection.
+ */
+document.addEventListener("DOMContentLoaded", async () => {
+    cl("|📙 Opening indexedDB");
+    await openDb();
+    cl("|📙 Processing vNodes...");
+    await processVNodes(vNodes);
+
+    cl("|📙 Processing explorer...");
+    await processExplorerIcons(vNodes);
+    countSelectedFiles();
+    countAllFiles();
+
+    files.querySelectorAll(".file").forEach((element) => {
+        element.addEventListener("click", () => {
+            event.stopPropagation();
+            if (!is_key_down("Control")) {
+                deselectAll();
+            }
+            element.classList.toggle("selected");
+            document.querySelectorAll("#files > *").forEach((element) => { element.classList.remove("last-selected"); });
+            element.classList.add("last-selected");
+            countSelectedFiles();
+        });
+    });
+});
 
 document.querySelector("#sorting > .name").addEventListener("click", (event) => {
     sort(event.target);
@@ -32,8 +60,12 @@ document.querySelector("#sorting > .size").addEventListener("click", (event) => 
     sort(event.target);
 });
 
+/**
+ * Sorts files based on the specified criteria.
+ * @param {HTMLElement} sortBy - The HTML element representing the sorting criteria.
+ */
 function sort(sortBy) {
-    sortBy.classList[0]
+    cl("Sorting files by: " + sortBy.classList[0]);
     document.querySelectorAll("#sorting > *").forEach((element) => {
         element.classList.remove("by-this");
         if (element != sortBy) {
@@ -68,6 +100,7 @@ function sort(sortBy) {
     }
 }
 
+// Handles right mouse button click on the explorer for files and folders
 document.addEventListener("contextmenu", (event) => {
     closeAllExplorerContextMenus();
     event.preventDefault();
@@ -118,12 +151,18 @@ document.addEventListener("contextmenu", (event) => {
     positionContextMenu(container, files);
 });
 
+/**
+ * Deselects all files by removing the "selected" class from each file element.
+ */
 function deselectAll() {
     document.querySelectorAll("#files > *").forEach((element) => {
         element.classList.remove("selected");
     });
 }
 
+/**
+ * Updates the footer with the number and total size of selected files.
+ */
 function countSelectedFiles() {
     const selected = files.querySelectorAll(".file.selected");
     if (selected.length > 0) {
@@ -140,10 +179,15 @@ function countSelectedFiles() {
     }
 }
 
+/**
+ * Updates the CSS variable with the total number of files.
+ */
 function countAllFiles() {
+    // TODO: bug when ::after cannot have content from var ?
     cssVar("--files-total", files.querySelectorAll(".file").length);
 }
 
+// Handling keyboard event for selecting and deselecting all files
 document.addEventListener("keydown", (event) => {
     if (event.ctrlKey && (event.key == "a" || event.key == "A")) {
         const allFiles = files.querySelectorAll(".file")
@@ -159,6 +203,7 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
+// Handling keyboard event for navigating through files
 document.addEventListener("keydown", async (event) => {
     event.preventDefault();
     if (event.ctrlKey && (event.key == "a" || event.key == "A")) {
@@ -211,47 +256,29 @@ document.addEventListener("keydown", async (event) => {
     }
 });
 
+/**
+ * Adds a double-click event listener to each element to post a message to the parent window.
+ */
 files.querySelectorAll(".file").forEach((element) => {
     element.addEventListener("dblclick", (event) => {
         window.top.postMessage(["appOpen", "66285580-f084-43fd-b3aa-308399055455"]);
     });
 });
 
+/**
+ * Checks if the element with the class "uploading" has the class "upload" and removes it if present.
+ */
 window.addEventListener("mouseover", () => {
-    if (document.querySelector(".uploading").classList.contains("upload")){
+    if (document.querySelector(".uploading").classList.contains("upload")) {
         document.querySelector(".uploading").classList.remove("upload");
     }
 });
 
-document.addEventListener("DOMContentLoaded", async () => {
-    cl("|📙 Opening indexedDB");
-    await openDb();
-    cl("|📙 Processing vNodes...");
-    await processVNodes(vNodes);
-    
-    cl("|📙 Processing explorer...");
-    await processExplorerIcons(vNodes);
-    countSelectedFiles();
-    countAllFiles();
 
-    files.querySelectorAll(".file").forEach((element) => {
-        element.addEventListener("click", () => {
-            event.stopPropagation();
-            if (!is_key_down("Control")) {
-                deselectAll();
-            }
-            element.classList.toggle("selected");
-            document.querySelectorAll("#files > *").forEach((element) => { element.classList.remove("last-selected"); });
-            element.classList.add("last-selected");
-            countSelectedFiles();
-        });
-    });
-});
-
+// Handling of the files uploads
 document.body.addEventListener("dragover", (event) => {
     event.preventDefault();
 });
-
 document.body.addEventListener("dragenter", (event) => {
     event.preventDefault();
     document.querySelector(".uploading").classList.add("upload");
@@ -260,10 +287,9 @@ document.querySelector(".uploading").addEventListener("dragleave", (event) => {
     event.preventDefault();
     document.querySelector(".uploading").classList.remove("upload");
 });
-
 document.body.addEventListener("drop", (event) => {
     document.querySelector(".uploading").classList.remove("upload");
-    event.preventDefault(); 
+    event.preventDefault();
 
     const files = event.dataTransfer.files;
     if (files.length) {
@@ -272,22 +298,25 @@ document.body.addEventListener("drop", (event) => {
     }
 });
 
-document.addEventListener("click", ()=>{
+// Handling of the files uploads area
+document.addEventListener("click", () => {
     document.querySelector(".uploading").classList.remove("upload");
 });
-window.addEventListener("dragleave", ()=>{
+window.addEventListener("dragleave", () => {
     document.querySelector(".uploading").classList.remove("upload");
 });
 
-window.addEventListener("click", ()=>{
+
+// Propagate click to the main app and close all context menus onClick
+window.addEventListener("click", () => {
     window.top.postMessage(["focus"]);
     closeAllExplorerContextMenus();
 });
-
-files.addEventListener("click",()=> {
-    deselectAll();
+window.addEventListener("dragenter", () => {
+    window.top.postMessage(["focus"]);
 });
 
-window.addEventListener("dragenter", ()=>{
-    window.top.postMessage(["focus"]);
+// Deselect all files on another files click selection
+files.addEventListener("click", () => {
+    deselectAll();
 });

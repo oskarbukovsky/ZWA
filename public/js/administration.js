@@ -5,12 +5,14 @@
  * @author Jan Oskar Bukovský
  */
 
+// Propagate click to the main app
 window.addEventListener("click", () => {
     window.top.postMessage(["focus"]);
 });
 
+// Run the logic after the page is loaded
 window.addEventListener("DOMContentLoaded", () => {
-    // document.querySelectorAll("table tr:not(:first-child)").forEach((element) => {
+    // Process password reset buttons
     document.querySelectorAll("table > tbody > tr").forEach((element) => {
         element.querySelector(".reset>button").addEventListener("click", () => {
             let newPassword = prompt("Zadejte nové heslo uživateli " + element.querySelector(".username").textContent + ":");
@@ -30,6 +32,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 });
             }
         });
+        // Process promote buttons (admin)
         element.querySelector(".promote>button").addEventListener("click", () => {
             if (!confirm("Opravdu si přejete uživateli " + element.querySelector(".username").textContent + " změnit roli na Administrátora ?")) {
                 alert("Operace zrušena");
@@ -48,6 +51,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 });
             }
         });
+        // Process demote buttons (user)
         element.querySelector(".demote>button").addEventListener("click", () => {
             if (!confirm("Opravdu si přejete uživateli " + element.querySelector(".username").textContent + " změnit roli na Uživatel ?")) {
                 alert("Operace zrušena");
@@ -66,6 +70,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 });
             }
         });
+        // Process delete buttons (delete user with his data)
         element.querySelector(".delete>button").addEventListener("click", () => {
             if (!confirm("Opravdu si přejete smazat uživatele " + element.querySelector(".username").textContent + " a všechna jeho data?")) {
                 alert("Operace zrušena");

@@ -29,6 +29,14 @@
 
 // https://ash-speed.hetzner.com/1GB.bin
 
+
+/**
+ * Initializes the application once the DOM content is loaded.
+ * Sets up the GPU, CPU, RAM, and network information logging.
+ * Initializes various application components such as Bluetooth, battery, calendar, and clock.
+ * Opens and processes the indexedDB, user identifiers, and desktop icons.
+ * Logs the initialization time and sets up a timeout check.
+ */
 window.addEventListener("DOMContentLoaded", async () => {
     await navigator.gpu.requestAdapter().then((gpu) => {
         cl("|📗OS : " + (navigator.platform.includes("MacIntel") ? ("MacIntel") : (navigator.platform.includes("Win32") ? ((navigator.userAgent.includes("Win64") ? ("Win64") : ("Win32"))) : (navigator.platform))));
@@ -94,6 +102,11 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 //TODO: custom získávání columns např. pro permissions a settings
 
+/**
+ * Processes the user identifier by adding it to the local database and updating the UI with user settings.
+ * Sets the user avatar, username, and various CSS variables based on the user settings.
+ * Logs the time taken to process the user identifier.
+ */
 async function processUserIdentifier() {
     let time1 = new Date();
     await localDatabase.add("user", userIdentifier);
@@ -125,6 +138,12 @@ async function processUserIdentifier() {
     cl("|📗 userIdentifier processed in " + (new Date() - time1) + "ms");
 }
 
+/**
+ * Opens an application window based on the provided node information.
+ * Reads the vNode, creates the application window with its header, controls, and content,
+ * and sets up the necessary event listeners and UI elements.
+ * @param {vNode} node - The node object containing information about the application to open.
+ */
 async function appOpen(node) {
     const status = await fileRead(node.uuid);
     if (!status) {
@@ -132,6 +151,8 @@ async function appOpen(node) {
     }
     deselectAllApps();
     cl("opening window", node);
+
+    //TODO Sync with server
 
     if (windows.querySelector('[data-uuid="' + node.uuid + '"]')) {
         cl("app is already open", node);
@@ -181,15 +202,6 @@ async function appOpen(node) {
     // detector.classList.add("detect");
     // content.appendChild(detector);
 
-    //TODO: resizing
-    
-
-    resizingElementsPrefixes.forEach((item) => {
-        const grip = createElement("div", new ClassList("resizable", item + "-grip"), new AppendTo(holder));
-        grip.addEventListener("mousedown", appResizeDown);
-        window.addEventListener("mouseup", appResizeUp);
-    });
-
     resizeWindow(holder);
     dragApp(holder);
     minimizeApp(minimize);
@@ -199,14 +211,14 @@ async function appOpen(node) {
     selectApp(node.uuid);
 }
 
-async function fetchAndLoadImage(imagePath) {
-    try {
-        let response = await fetch(imagePath);
-        return await response.blob();
-    } catch (error) {
-        console.error(error);
-    }
-};
+// async function fetchAndLoadImage(imagePath) {
+//     try {
+//         let response = await fetch(imagePath);
+//         return await response.blob();
+//     } catch (error) {
+//         console.error(error);
+//     }
+// };
 
 // let a, b, c;
 
@@ -245,38 +257,52 @@ async function fetchAndLoadImage(imagePath) {
 //     reader.readAsText(file);
 // }
 
+// /**
+//  * Handles the file read event.
+//  * Creates a Blob from the file data, generates a URL for the Blob, and opens it in a new window.
+//  * @param {Event} event - The file read event.
+//  */
+// function readFile(event) {
+//     let data = new Blob([event.target.result], JSON.parse('{"type":"' + file.type + '"}'));
+//     let textFile = window.URL.createObjectURL(data);
+//     let window2 = window.open(textFile, "log." + new Date() + ".txt");
+//     // window2.onload = e => window.URL.revokeObjectURL(textFile);
+// }
 
-function readFile(event) {
-    let data = new Blob([event.target.result], JSON.parse('{"type":"' + file.type + '"}'));
-    let textFile = window.URL.createObjectURL(data);
-    let window2 = window.open(textFile, "log." + new Date() + ".txt");
-    // window2.onload = e => window.URL.revokeObjectURL(textFile);
-}
-async function changeFile() {
-    let file = input.files[0];
-    let reader = new FileReader();
-    let data = reader.readAsArrayBuffer(file)
-    reader.addEventListener("load", readFile);
+// /**
+//  * Handles the file input change event.
+//  * Reads the selected file as an ArrayBuffer and processes the file data.
+//  */
+// async function changeFile() {
+//     let file = input.files[0];
+//     let reader = new FileReader();
+//     let data = reader.readAsArrayBuffer(file)
+//     reader.addEventListener("load", readFile);
 
-    input.value = null;
-    cl(await uploadFiles(data));
-}
+//     input.value = null;
+//     cl(await uploadFiles(data));
+// }
 
 // input.addEventListener('change', changeFile);
 
 
+// /**
+//  * Uploads the file data to the specified URL.
+//  * Creates a FormData object from the file data and sends it using the Fetch API.
+//  * @param data - The file data to upload.
+//  * @returns {Promise<Response>} A promise that resolves to the response of the fetch request.
+//  */
+// async function uploadFiles(data) {
+//     const url = "https://zwa.toad.cz/~xklima/vypisform.php";
+//     const formData = new FormData(data);
 
-async function uploadFiles(data) {
-    const url = "https://zwa.toad.cz/~xklima/vypisform.php";
-    const formData = new FormData(data);
+//     const fetchOptions = {
+//         method: "post",
+//         redirect: "follow",
+//         body: formData
+//     };
 
-    const fetchOptions = {
-        method: "post",
-        redirect: "follow",
-        body: formData
-    };
-
-    let response = fetch(url, fetchOptions);
-    // window.location.replace("https://zwa.toad.cz/~xklima/vypisform.php")
-    return response;
-}
+//     let response = fetch(url, fetchOptions);
+//     // window.location.replace("https://zwa.toad.cz/~xklima/vypisform.php")
+//     return response;
+// }
