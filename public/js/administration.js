@@ -29,12 +29,12 @@ window.addEventListener("DOMContentLoaded", () => {
             if (!confirm("Opravdu si přejete uživateli " + element.querySelector(".username").textContent + " změnit roli na Administrátora ?")) {
                 alert("Operace zrušena");
             } else {
-                const data = { "method": "userPromote", "uuid": element.querySelector(".uuid").textContent};
+                const data = { "method": "userPromote", "uuid": element.querySelector(".uuid").textContent };
                 cl("|📗 Sending data:", data);
                 ajax(data).then(response => {
                     if (response.status == "ok") {
                         addNotification({ "head": "Promote", "body": "Ok: \"" + response.details + "\"" }, false, null, "info");
-                        element.querySelector(".role").textContent = "Administrátor";
+                        element.querySelector(".role>div").dataset.role = "admin";
                         alert("Uživatel " + element.querySelector(".username").textContent + " je nyní Administrátor");
                     } else {
                         addNotification({ "head": "Promote", "body": "Chyba: " + response.details }, false, null, "warning");
@@ -47,12 +47,12 @@ window.addEventListener("DOMContentLoaded", () => {
             if (!confirm("Opravdu si přejete uživateli " + element.querySelector(".username").textContent + " změnit roli na Uživatel ?")) {
                 alert("Operace zrušena");
             } else {
-                const data = { "method": "userDemote", "uuid": element.querySelector(".uuid").textContent};
+                const data = { "method": "userDemote", "uuid": element.querySelector(".uuid").textContent };
                 cl("|📗 Sending data:", data);
                 ajax(data).then(response => {
                     if (response.status == "ok") {
                         addNotification({ "head": "Demote", "body": "Ok: \"" + response.details + "\"" }, false, null, "info");
-                        element.querySelector(".role").textContent = "Uživatel";
+                        element.querySelector(".role>div").dataset.role = "user";
                         alert("Uživatel " + element.querySelector(".username").textContent + " již není Administrátor");
                     } else {
                         addNotification({ "head": "Demote", "body": "Chyba: " + response.details }, false, null, "warning");
@@ -65,7 +65,7 @@ window.addEventListener("DOMContentLoaded", () => {
             if (!confirm("Opravdu si přejete smazat uživatele " + element.querySelector(".username").textContent + " a všechna jeho data?")) {
                 alert("Operace zrušena");
             } else {
-                const data = { "method": "userDelete", "uuid": element.querySelector(".uuid").textContent};
+                const data = { "method": "userDelete", "uuid": element.querySelector(".uuid").textContent };
                 cl("|📗 Sending data:", data);
                 ajax(data).then(response => {
                     if (response.status == "ok") {

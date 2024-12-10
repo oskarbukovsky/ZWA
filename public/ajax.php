@@ -142,36 +142,48 @@ function handleUserResetPassword()
 
 function handleUserPromote()
 {
-    if (!isset($_POST["uuid"])) {
-        returnJSONResponse(["status" => "error", "details" => "missingUuid"]);
+    $query = getData("users", "role", ["uuid"], [$_SESSION["userUuid"]]);
+    $data = $query->fetchAll();
+
+    if ($data[0]["role"] == "100") {
+        if (!isset($_POST["uuid"])) {
+            returnJSONResponse(["status" => "error", "details" => "missingUuid"]);
+        }
+        if (promoteUser($_POST["uuid"])) {
+            returnJSONResponse(["status" => "ok", "details" => "promotionSuccess", "uuid" => $_POST["uuid"]]);
+        }
     }
-    if (promoteUser($_POST["uuid"])) {
-        returnJSONResponse(["status" => "ok", "details" => "promotionSuccess", "uuid" => $_POST["uuid"]]);
-    } else {
-        returnJSONResponse(["status" => "error", "details" => "unableToDemote", "uuid" => $_POST["uuid"]]);
-    }
+    returnJSONResponse(["status" => "error", "details" => "unableToDemote", "uuid" => $_POST["uuid"]]);
 }
 
 function handleUserDemote()
 {
-    if (!isset($_POST["uuid"])) {
-        returnJSONResponse(["status" => "error", "details" => "missingUuid"]);
+    $query = getData("users", "role", ["uuid"], [$_SESSION["userUuid"]]);
+    $data = $query->fetchAll();
+
+    if ($data[0]["role"] == "100") {
+        if (!isset($_POST["uuid"])) {
+            returnJSONResponse(["status" => "error", "details" => "missingUuid"]);
+        }
+        if (demoteUser($_POST["uuid"])) {
+            returnJSONResponse(["status" => "ok", "details" => "demotionSuccess", "uuid" => $_POST["uuid"]]);
+        }
     }
-    if (demoteUser($_POST["uuid"])) {
-        returnJSONResponse(["status" => "ok", "details" => "demotionSuccess", "uuid" => $_POST["uuid"]]);
-    } else {
-        returnJSONResponse(["status" => "error", "details" => "unableToPromote", "uuid" => $_POST["uuid"]]);
-    }
+    returnJSONResponse(["status" => "error", "details" => "unableToPromote", "uuid" => $_POST["uuid"]]);
 }
 
 function handleUserDelete()
 {
-    if (!isset($_POST["uuid"])) {
-        returnJSONResponse(["status" => "error", "details" => "missingUuid"]);
+    $query = getData("users", "role", ["uuid"], [$_SESSION["userUuid"]]);
+    $data = $query->fetchAll();
+
+    if ($data[0]["role"] == "100") {
+        if (!isset($_POST["uuid"])) {
+            returnJSONResponse(["status" => "error", "details" => "missingUuid"]);
+        }
+        if (deleteUser($_POST["uuid"])) {
+            returnJSONResponse(["status" => "ok", "details" => "deletionSuccess", "uuid" => $_POST["uuid"]]);
+        }
     }
-    if (deleteUser($_POST["uuid"])) {
-        returnJSONResponse(["status" => "ok", "details" => "deletionSuccess", "uuid" => $_POST["uuid"]]);
-    } else {
-        returnJSONResponse(["status" => "error", "details" => "unableToDelete", "uuid" => $_POST["uuid"]]);
-    }
+    returnJSONResponse(["status" => "error", "details" => "unableToDelete", "uuid" => $_POST["uuid"]]);
 }

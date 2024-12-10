@@ -1,0 +1,49 @@
+{
+	"sourceType": "module",
+	"recurseDepth": 100,
+	"source": {
+		"include": ["./public"],
+		"includePattern": ".+\\.js(doc|x)?$"
+	},
+	"opts": {
+		"encoding": "utf8",
+		"destination": "./docs/",
+		"recurse": true,
+		"template": "./jsdoc-extra/clean-jsdoc-theme",
+		"readme": "./README.md"
+	},
+	"markdown": {
+		"hardwrap": false,
+		"idInHeadings": true
+	},
+	"theme_opts": {
+		"default_theme": "fallback-dark",
+		"base_url": "https://ankdev.me/v4/",
+		"favicon": "path/to/img",
+		"homepageTitle": "Clean JSDoc theme",
+		"title": "<img src='path/to/img' class='my-custom-class'/>",
+		"includeFilesListInHomepage": true,
+		"menu": [
+			{
+				"title": "Website",
+				"link": "https://ankdev.me/clean-jsdoc-theme/dark/",
+				"target": "_blank",
+				"class": "some-class",
+				"id": "some-id"
+			}
+		],
+		"meta": [
+			{
+				"name": "author",
+				"content": "Jan Oskar Bukovský"
+			},
+			{
+				"name": "description",
+				"content": "JSDoc for ZWA-NetOs project"
+			}
+		],
+		"search": true,
+		"static_dir": ["./public/media"],
+		"footer": "©️ 2024 Jan Oskar Bukovský"
+	}
+}

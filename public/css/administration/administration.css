@@ -1,68 +1,100 @@
 body {
-	background-color: rgb(25, 25, 25);
-	color: hsl(0, 0%, 87%);
+	background-color: #fff;
+	color: hsl(0, 0%, 25%);
+	overflow-x: hidden;
 }
 
-table,
-th,
+table {
+	border: none;
+}
+
+th {
+	border: 1px solid rgba(179,179,179,1);
+}
+
 td {
-	border: 1px solid rgb(179, 179, 179);
+	border: 1px solid hsl(220, 13%, 91%);
 }
 
 table {
 	width: 100%;
-	background-color: white;
-	border-collapse: separate;
-	border-spacing: 0;
-	border-radius: 8px;
+	background-color: #fff;
+	border-collapse: collapse;
 	overflow: hidden;
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 thead {
-	background-color: #3b82f6;
+	background-color: rgb(60, 131, 246);
 	color: white;
 	text-transform: uppercase;
-	font-size: 0.875rem;
+	font-size: 0.8rem;
 }
 
 thead > tr > th {
+	border-top: none;
 	padding: 0.75rem 1.5rem;
 	text-align: left;
 }
 
+th:first-child,
+td:first-child {
+	border-left: none;
+}
+
+th:last-child,
+td:last-child {
+	border-right: none;
+}
+
+tbody {
+	width: 100%;
+}
+
+tbody > tr {
+	width: 100%;
+}
+
 tbody > tr:hover {
-	background-color: #f3f4f6;
+	background-color: hsl(220, 14%, 96%);
+}
+
+tbody > tr:hover > td {
+	background-color: hsl(220, 14%, 98%);
 }
 
 tbody > tr > td {
-	padding: 0.75rem 1.5rem;
-	border-bottom: 1px solid #e5e7eb;
+	font-size: 0.75rem;
+	padding: 0.3rem 0.7rem;
 }
 
 .uuid {
-	font-family: monospace;
-	font-size: 0.75rem;
-	color: #6b7280;
+	color: hsl(220, 9%, 46%);
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	min-width: 14ch;
-	max-width: 100%;
+    min-width: 15ch;
+    max-width: 0;
 	position: relative;
-	cursor: pointer;
 }
 
-.role {
-	background-color: #d1fae5;
-	color: #065f46;
-	padding: 0.25rem 0.75rem;
+.role > div::before {
+	padding: 10px 12.5px;
 	border-radius: 9999px;
-	font-size: 0.75rem;
+}
+
+.role > div[data-role="admin"]::before {
+	background-color: rgb(250, 212, 209);
+	color: rgb(95, 9, 6);
+	content: "Administrátor";
+}
+
+.role > div[data-role="user"]::before {
+	background-color: rgb(209, 250, 229);
+	color: hwb(163 2% 63%);
+	content: "Uživatel";
 }
 
 button {
-	font-size: 0.75rem;
 	font-weight: 500;
 	padding: 0.25rem 0.75rem;
 	border-radius: 0.375rem;
@@ -71,42 +103,42 @@ button {
 	cursor: pointer;
 }
 
-.reset {
-	background-color: #dbeafe;
-	color: #1e40af;
-	border-color: #bfdbfe;
+.reset > button {
+	background-color: rgb(219, 234, 254);
+	color: rgb(30, 64, 175);
+	border-color: rgb(191, 219, 254);
 }
 
-.reset:hover {
-	background-color: #bfdbfe;
+.reset > button:hover {
+	background-color: rgb(191, 219, 254);
 }
 
-.promote {
-	background-color: #d1fae5;
-	color: #065f46;
-	border-color: #a7f3d0;
+.promote > button {
+	background-color: rgb(209, 250, 229);
+	color: rgb(6, 95, 70);
+	border-color: rgb(167, 243, 208);
 }
 
-.promote:hover {
-	background-color: #a7f3d0;
+.promote > button:hover {
+	background-color: rgb(167, 243, 208);
 }
 
-.demote {
-	background-color: #fef3c7;
-	color: #92400e;
-	border-color: #fde68a;
+.demote > button {
+	background-color: rgb(254, 243, 199);
+	color: rgb(146, 64, 14);
+	border-color: rgb(253, 230, 138);
 }
 
-.demote:hover {
-	background-color: #fde68a;
+.demote > button:hover {
+	background-color: rgb(253, 230, 138);
 }
 
-.delete {
-	background-color: #fee2e2;
-	color: #b91c1c;
-	border-color: #fecaca;
+.delete > button {
+	background-color: rgb(254, 226, 226);
+	color: rgb(185, 28, 28);
+	border-color: rgb(254, 202, 202);
 }
 
-.delete:hover {
-	background-color: #fecaca;
+.delete > button:hover {
+	background-color: rgb(254, 202, 202);
 }

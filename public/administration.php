@@ -9,6 +9,14 @@ if (!sessionIsValid()) {
 //     header("Location: error.php?code=403");
 //     die();
 // }
+
+$query = getData("users", "role", ["uuid"], [$_SESSION["userUuid"]]);
+$data = $query->fetchAll();
+
+if ($data[0]["role"] != "100") {
+    header("Location: error.php?code=403");
+    die();
+}
 ?>
 
 <!DOCTYPE html>
@@ -38,18 +46,18 @@ if (!sessionIsValid()) {
     <table>
         <thead>
             <tr>
-                <th>Uživatelské jméno</th>
+                <th>Uživatel</th>
                 <th>Uuid</th>
                 <th>Role</th>
                 <th>Resetovat heslo</th>
-                <th>Povýšení na administrátora</th>
-                <th>Degradace na uživatele</th>
+                <th>Povýšení&nbsp;na administrátora</th>
+                <th>Degradace na&nbsp;uživatele</th>
                 <th>Smazat</th>
             </tr>
         </thead>
         <tbody>
             <?php
-            $roles = ["000" => "Uživatel", "100" => "Administrátor"];
+            $roles = ["000" => "user", "100" => "admin"];
             try {
                 $query = getData("users", "username,uuid,role");
                 $data = $query->fetchAll();
@@ -57,43 +65,7 @@ if (!sessionIsValid()) {
                     print ("<tr>");
                     print ('<td class="username">' . htmlspecialchars($user["username"]) . '</td>');
                     print ('<td class="uuid" title="' . htmlspecialchars($user["uuid"]) . '">' . htmlspecialchars($user["uuid"]) . '</td>');
-                    print ('<td class="role">' . htmlspecialchars($roles[$user["role"]]) ?? htmlspecialchars($user["role"]) . '</td>');
-                    print ('<td class="reset"><button>Resetovat heslo</button></td>');
-                    print ('<td class="promote"><button>Povýšit</button></td>');
-                    print ('<td class="demote"><button>Degradovat</button></td>');
-                    print ('<td class="delete"><button>Smazat</button></td>');
-                    print ("</tr>");
-                    print ("<tr>");
-                    print ('<td class="username">' . htmlspecialchars($user["username"]) . '</td>');
-                    print ('<td class="uuid" title="' . htmlspecialchars($user["uuid"]) . '">' . htmlspecialchars($user["uuid"]) . '</td>');
-                    print ('<td class="role">' . htmlspecialchars($roles[$user["role"]]) ?? htmlspecialchars($user["role"]) . '</td>');
-                    print ('<td class="reset"><button>Resetovat heslo</button></td>');
-                    print ('<td class="promote"><button>Povýšit</button></td>');
-                    print ('<td class="demote"><button>Degradovat</button></td>');
-                    print ('<td class="delete"><button>Smazat</button></td>');
-                    print ("</tr>");
-                    print ("<tr>");
-                    print ('<td class="username">' . htmlspecialchars($user["username"]) . '</td>');
-                    print ('<td class="uuid" title="' . htmlspecialchars($user["uuid"]) . '">' . htmlspecialchars($user["uuid"]) . '</td>');
-                    print ('<td class="role">' . htmlspecialchars($roles[$user["role"]]) ?? htmlspecialchars($user["role"]) . '</td>');
-                    print ('<td class="reset"><button>Resetovat heslo</button></td>');
-                    print ('<td class="promote"><button>Povýšit</button></td>');
-                    print ('<td class="demote"><button>Degradovat</button></td>');
-                    print ('<td class="delete"><button>Smazat</button></td>');
-                    print ("</tr>");
-                    print ("<tr>");
-                    print ('<td class="username">' . htmlspecialchars($user["username"]) . '</td>');
-                    print ('<td class="uuid" title="' . htmlspecialchars($user["uuid"]) . '">' . htmlspecialchars($user["uuid"]) . '</td>');
-                    print ('<td class="role">' . htmlspecialchars($roles[$user["role"]]) ?? htmlspecialchars($user["role"]) . '</td>');
-                    print ('<td class="reset"><button>Resetovat heslo</button></td>');
-                    print ('<td class="promote"><button>Povýšit</button></td>');
-                    print ('<td class="demote"><button>Degradovat</button></td>');
-                    print ('<td class="delete"><button>Smazat</button></td>');
-                    print ("</tr>");
-                    print ("<tr>");
-                    print ('<td class="username">' . htmlspecialchars($user["username"]) . '</td>');
-                    print ('<td class="uuid" title="' . htmlspecialchars($user["uuid"]) . '">' . htmlspecialchars($user["uuid"]) . '</td>');
-                    print ('<td class="role">' . htmlspecialchars($roles[$user["role"]]) ?? htmlspecialchars($user["role"]) . '</td>');
+                    print ('<td class="role"><div data-role="' . (htmlspecialchars($roles[$user["role"]]) ?? htmlspecialchars($user["role"])) . '"></div></td>');
                     print ('<td class="reset"><button>Resetovat heslo</button></td>');
                     print ('<td class="promote"><button>Povýšit</button></td>');
                     print ('<td class="demote"><button>Degradovat</button></td>');

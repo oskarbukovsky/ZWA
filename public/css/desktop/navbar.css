@@ -180,7 +180,7 @@
 	flex-flow: row;
 	border-radius: 6px;
 	padding: 8px;
-	background-color: rgba(0,0,0,0);
+	background-color: rgba(0, 0, 0, 0);
 	transition: background-color 100ms ease-in-out;
 }
 
@@ -780,6 +780,7 @@ div.notification.hide-extra {
 
 .notification > header > img {
 	height: 20px;
+	min-width: auto;
 }
 
 .notification > header > .title {
@@ -803,6 +804,7 @@ div.notification.hide-extra {
 	transform: scale(1);
 	transition: color 100ms ease-in-out, opacity 100ms ease-in-out,
 		scale 65ms linear;
+	min-width: auto;
 }
 
 .notification:hover > header > .close {

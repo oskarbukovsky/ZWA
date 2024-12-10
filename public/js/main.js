@@ -89,12 +89,6 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 //TODO: custom získávání columns např. pro permissions a settings
 
-// if (!DEBUG) {
-    window.addEventListener("contextmenu", (event) => {
-        event.preventDefault();
-    });
-// }
-
 async function processUserIdentifier() {
     let time1 = new Date();
     await localDatabase.add("user", userIdentifier);
