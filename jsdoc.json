@@ -3,7 +3,8 @@
 	"recurseDepth": 100,
 	"source": {
 		"include": ["./public"],
-		"includePattern": ".+\\.js(doc|x)?$"
+		"includePattern": ".+\\.js(doc|x)?$",
+		"exclude": ["./public/docs"]
 	},
 	"opts": {
 		"encoding": "utf8",
@@ -17,7 +18,7 @@
 		"idInHeadings": true
 	},
 	"theme_opts": {
-		"default_theme": "fallback-dark",
+		"default_theme": "fallback-light",
 		"base_url": "https://ankdev.me/v4/",
 		"favicon": "./public/media/favicon.ico",
 		"homepageTitle": "NetOs",
