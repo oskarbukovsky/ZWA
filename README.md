@@ -8,7 +8,7 @@
 [![ProductDoc](https://img.shields.io/badge/Produktov%C3%A1%20dokumentace-018EF5?logo=readme&logoColor=fff)](https://docs.google.com/document/d/e/2PACX-1vQ9HZv98J8ROu6DwA4wkBkyWoFUudRgMbB2lCuysDly0rzsSG-XnPYMa3ZdlWFw4q9lyr2lwflYD7Vu/pub)
 [![ProgrammerDoc](https://img.shields.io/badge/Program%C3%A1torsk%C3%A1%20dokumentace-018EF5?logo=docusaurus&logoColor=fff)](https://docs.google.com/document/d/e/2PACX-1vRugoyD5ZTO4sVwjqYwlzqIBuur-Y_jEfh5hhBSP5ptIj6JYhR-5OXuR-N_6tAS1oQ7lNFnXxKzEffD/pub)
 
-![Commits](https://img.shields.io/github/commits-since/oskarbukovsky/ZWA/v0.0.svg?label=Po%C4%8Det%20commit%C5%AF)
+![Commits](https://img.shields.io/github/commit-activity/t/oskarbukovsky/zwa?label=Po%C4%8Det%20commit%C5%AF)
 ![Čas na projektu](https://img.shields.io/badge/%C4%8Cas%20na%20projektu-200+h-green?style=flat)
 
 <!-- ![Calendar](https://ghchart.rshah.org/oskarbukovsky) -->
