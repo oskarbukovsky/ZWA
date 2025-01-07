@@ -90,7 +90,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     // 📕📙📗📘
 
     timeoutCheck(DEBUG ? 300 : 15);
-    
+
     //Temporary FPS/frameTime/ram usage counter
     if (DEBUG) {
         // (function () { var script = document.createElement('script'); script.onload = function () { var stats = new Stats(); document.body.appendChild(stats.dom); requestAnimationFrame(function loop() { stats.update(); requestAnimationFrame(loop) }); }; script.src = 'https://mrdoob.github.io/stats.js/build/stats.min.js'; document.head.appendChild(script); })()
@@ -149,6 +149,12 @@ async function appOpen(node) {
     if (!status) {
         return;
     }
+    closeMainMenu();
+    closeSearchbarMenu();
+    closeDesktopCalendar();
+    closeScreenMenu();
+    closeAllDesktopContextMenus();
+
     deselectAllApps();
     cl("opening window", node);
 
@@ -194,7 +200,7 @@ async function appOpen(node) {
     }
     const iframe = createElement("iframe", new Src(getDestination(node)), sandBox,
         new ElementEvent("load", appIframeLoaded), new ElementEvent("mouseover", ElementEvents.appIframeMouseOver), new ElementEvent("mouseout", ElementEvents.appIframeMouseOut),
-        new AppendTo(content), new ElementEvent("dragenter", (event)=>{
+        new AppendTo(content), new ElementEvent("dragenter", (event) => {
             cl(999);
         }));
     iframe.allow = "accelerometer *; attribution-reporting *; autoplay *; bluetooth *; browsing-topics *; camera *; compute-pressure *; display-capture *; encrypted-media *; fullscreen *; gamepad *; gyroscope *; hid *; identity-credentials-get *; idle-detection *; local-fonts *; magnetometer *; microphone *; microphone *; otp-credentials *; payment *; picture-in-picture *; publickey-credentials-create *; publickey-credentials-get *; screen-wake-lock *; serial *; storage-access *; usb *; web-share *; window-management *; window-management"

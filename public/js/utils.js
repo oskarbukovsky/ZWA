@@ -13,7 +13,8 @@
 const DEBUG = true;
 
 // Remove usual way of showing context menu on right click
-if (!DEBUG) {
+// TODO: remove
+if (true || !DEBUG) {
     window.addEventListener("contextmenu", (event) => {
         event.preventDefault();
     });
@@ -471,6 +472,30 @@ function openDb() {
                         return resolve(event);
                     }
                     try {
+                        dbStore.put(item);
+                    } catch (error) {
+                        cl("!📕 ERROR: ", error, item);
+                    }
+                    dbStore.transaction.oncomplete = (event) => success(event);
+                });
+            }
+
+            // TODO: update
+
+            localDatabase.update = async function (store, column, filter, keys = [], values = []) {
+                return new Promise(async (resolve) => {
+                    let item = (await localDatabase.getColumn(store, column, filter))[0];
+                    let dbStore = localDatabase.getStore(store);
+                    function success(event) {
+                        return resolve(event);
+                    }
+                    try {
+                        if (keys.length != values.length) {
+                            throw "Keys and values must have the same length";
+                        }
+                        keys.forEach((key, index) => {
+                            item[key] = values[index];
+                        })
                         dbStore.put(item);
                     } catch (error) {
                         cl("!📕 ERROR: ", error, item);
@@ -1766,4 +1791,11 @@ class ElementEvents {
     static NoPropagation(event) {
         event.stopPropagation();
     }
+}
+
+function processLoginErrors(url) {
+    history.replaceState({}, "", url);
+    const authType = url.searchParams.entries().find(item => item[0] == "type")[1];
+    const error = url.searchParams.entries().find(item => item[0] == "error")[1];
+    cl("Auth type: ", authType, "Error: ", error);
 }

@@ -36,7 +36,7 @@ if ($_POST["method"] == "login") {
             header("Location: index.php?type=login&error=missing-username");
             die();
         } else {
-            returnJSONResponse(["status" => "error", "details" => "missingUsername", "method" => "login"]);
+            returnJSONResponse(["status" => "error", "details" => "missing-username", "method" => "login"]);
             die();
         }
     }
@@ -46,7 +46,7 @@ if ($_POST["method"] == "login") {
             header("Location: index.php?type=login&error=username-too-short");
             die();
         } else {
-            returnJSONResponse(["status" => "error", "details" => "usernameTooShort", "method" => "login"]);
+            returnJSONResponse(["status" => "error", "details" => "username-too-short", "method" => "login"]);
             die();
         }
     }
@@ -56,7 +56,7 @@ if ($_POST["method"] == "login") {
             header("Location: index.php?type=login&error=missing-password");
             die();
         } else {
-            returnJSONResponse(["status" => "error", "details" => "missingPassword", "method" => "login"]);
+            returnJSONResponse(["status" => "error", "details" => "missing-password", "method" => "login"]);
             die();
         }
     }
@@ -66,7 +66,7 @@ if ($_POST["method"] == "login") {
             header("Location: index.php?type=login&error=user-do-not-exist");
             die();
         } else {
-            returnJSONResponse(["status" => "error", "details" => "userDoNotExist", "method" => "login"]);
+            returnJSONResponse(["status" => "error", "details" => "user-do-not-exist", "method" => "login"]);
             die();
         }
     }
@@ -76,7 +76,7 @@ if ($_POST["method"] == "login") {
             header("Location: index.php?type=login&error=wrong-credentials");
             die();
         } else {
-            returnJSONResponse(["status" => "error", "details" => "wrongCredentials", "method" => "login"]);
+            returnJSONResponse(["status" => "error", "details" => "wrong-credentials", "method" => "login"]);
             die();
         }
     }
@@ -94,7 +94,7 @@ if ($_POST["method"] == "login") {
             header("Location: index.php?type=register&error=missing-username");
             die();
         } else {
-            returnJSONResponse(["status" => "error", "details" => "missingUsername", "method" => "register"]);
+            returnJSONResponse(["status" => "error", "details" => "missing-username", "method" => "register"]);
             die();
         }
     }
@@ -104,7 +104,7 @@ if ($_POST["method"] == "login") {
             header("Location: index.php?type=register&error=username-too-short");
             die();
         } else {
-            returnJSONResponse(["status" => "error", "details" => "usernameTooShort", "method" => "register"]);
+            returnJSONResponse(["status" => "error", "details" => "username-too-short", "method" => "register"]);
             die();
         }
     }
@@ -114,7 +114,7 @@ if ($_POST["method"] == "login") {
             header("Location: index.php?type=register&error=missing-password");
             die();
         } else {
-            returnJSONResponse(["status" => "error", "details" => "missingPassword", "method" => "register"]);
+            returnJSONResponse(["status" => "error", "details" => "missing-password", "method" => "register"]);
             die();
         }
     }
@@ -124,7 +124,7 @@ if ($_POST["method"] == "login") {
             header("Location: index.php?type=register&error=user-already-exist");
             die();
         } else {
-            returnJSONResponse(["status" => "error", "details" => "userAlreadyExist", "method" => "register"]);
+            returnJSONResponse(["status" => "error", "details" => "user-already-exist", "method" => "register"]);
             die();
         }
     }
@@ -134,7 +134,7 @@ if ($_POST["method"] == "login") {
             header("Location: index.php?type=register&error=passwords-do-not-match");
             die();
         } else {
-            returnJSONResponse(["status" => "error", "details" => "passwordsDoNotMatch", "method" => "register"]);
+            returnJSONResponse(["status" => "error", "details" => "passwords-do-not-match", "method" => "register"]);
             die();
         }
     }

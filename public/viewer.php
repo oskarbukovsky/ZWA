@@ -30,7 +30,7 @@ if (isset($_GET["method"]) && ($_GET["method"] == "sharing")) {
     }
 } else {
     if (!sessionIsValid()) {
-        header("Location: error.php?code=403");
+        header("Location: error.php?code=401");
         die();
     }
 
@@ -40,7 +40,7 @@ if (isset($_GET["method"]) && ($_GET["method"] == "sharing")) {
     }
 
     if (!printFile($_GET["uuid"])){
-        header("Location: error.php?code=401");
+        header("Location: error.php?code=403");
         die();
     }
 }

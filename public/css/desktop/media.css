@@ -37,3 +37,10 @@
 		content: "Do NOT print this page !!!";
 	}
 }
+
+@media (prefers-reduced-motion: reduce) {
+	* {
+		animation: none !important;
+		transition: 0ms !important;
+	}
+}

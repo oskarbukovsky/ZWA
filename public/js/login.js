@@ -69,14 +69,28 @@ async function authSubmit(event) {
     event.target.submit();
 }
 
+window.addEventListener("popstate", (event) => {
+    console.log(
+        `location: ${document.location}, state: ${JSON.stringify(event.state)}`,
+    );
+});
+
 /**
  * Handles the login process.
  * Logs the login attempt and returns true to indicate successful handling.
  * @returns {boolean} Returns true if the login process is handled successfully.
  */
 async function handleLogin() {
-    cl("Login:");
     // loginPassword.value = await sha256Hash(loginPassword.value);
+    cl("Login:");
+    const response = await ajax({ "method": "login", "username": loginUsername.value, "password": loginPassword.value }, "auth.php");
+    if (response.status !== "ok") {
+        let url = new URL(location);
+        url.searchParams.set("type", response.method);
+        url.searchParams.set("error", response.details);
+        processLoginErrors(url);
+        return false;
+    }
     return true;
 }
 
@@ -87,13 +101,20 @@ async function handleLogin() {
  * @returns {boolean} Returns true if the registration process is handled successfully, false otherwise.
  */
 async function handleRegister() {
+    // registerPassword.value = await sha256Hash(registerPassword.value);
+    // registerPasswordAgain.value = await sha256Hash(registerPasswordAgain.value);
     cl("Register:");
     if (registerPassword.value !== registerPasswordAgain.value) {
         return false;
     }
-
-    // registerPassword.value = await sha256Hash(registerPassword.value);
-    // registerPasswordAgain.value = await sha256Hash(registerPasswordAgain.value);
+    const response = await ajax({ "method": "register", "username": registerUsername.value, "password": registerPassword.value, "passwordAgain": registerPasswordAgain.value }, "auth.php");
+    if (response.status !== "ok") {
+        let url = new URL(location);
+        url.searchParams.set("type", response.method);
+        url.searchParams.set("error", response.details);
+        processLoginErrors(url);    
+        return false;
+    }
     return true;
 }
 

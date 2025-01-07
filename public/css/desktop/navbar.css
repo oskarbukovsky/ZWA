@@ -149,9 +149,23 @@
 	height: calc(100% - 34px);
 }
 
-.search-menu:has(input:valid):has(.search-results > .search-result)
+.search-menu:has(.search-results > .search-result)
 	.search-content {
 	gap: 12px;
+}
+
+.search-menu:not(:has(.search-results > .search-result))
+	.search-item-description {
+	padding: 0;
+}
+
+.search-menu:has(.search-results > .search-result) .search-item-description {
+	min-width: 385px;
+}
+
+.search-menu:not(:has(.search-results > .search-result))
+	.search-item-description {
+	display: none;
 }
 
 .search-results {
@@ -160,18 +174,69 @@
 	gap: 10px;
 	width: 100%;
 	height: 100%;
+	overflow-y: auto;
+}
+
+.search-results::-webkit-scrollbar {
+	background: rgba(23, 23, 23, 0.3);
 }
 
 .search-item-description {
 	width: 0;
-	height: 100%;
 	border-radius: 6px;
 	background-color: rgba(36, 79, 143, 0.6);
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	align-items: center;
+	/* justify-content: space-evenly; */
+	padding: 14px;
 }
 
-.search-menu:has(input:valid):has(.search-results > .search-result)
-	.search-item-description {
-	min-width: 385px;
+.search-item-description > img {
+	width: 56px;
+	height: 56px;
+	min-height: 56px;
+	max-height: 56px;
+	padding: 12px 0;
+}
+
+.search-item-description > span.name {
+	padding-bottom: 24px;
+}
+
+.search-item-description > hr {
+	width: 100%;
+	border: 1px solid rgba(51, 90, 147, 0.729);
+	margin-bottom: 12px;
+}
+
+.search-item-description > .actions {
+	padding-top: 4px;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	font-size: 0.8rem;
+	font-weight: 300;
+	gap: 4px;
+}
+
+.search-item-description > .actions > div {
+	display: flex;
+	padding: 4px 8px;
+	border-radius: 6px;
+	background-color: rgb(54 115 205 / 0%);
+	transition: all 100ms ease-in-out;
+}
+
+.search-item-description > .actions > div:hover {
+	background-color: rgb(54 115 205 / 28%);
+}
+
+.search-item-description > .actions span.material-symbols-rounded {
+	font-size: 1.2rem;
+	padding-right: 12px;
 }
 
 .search-result {
@@ -203,11 +268,25 @@
 
 .search-result > img {
 	-webkit-user-drag: none;
+	width: 48px;
+	height: 48px;
+	padding-right: 8px;
 }
 
 .search-result > div {
 	display: flex;
 	flex-flow: column;
+}
+
+.search-result > div > .name {
+	font-size: 0.85rem;
+	font-weight: 300;
+}
+
+.search-result > div > .type {
+	font-size: 0.7rem;
+	font-weight: 300;
+	color: hsl(0deg 0% 100% / 89%);
 }
 
 /* input:valid {

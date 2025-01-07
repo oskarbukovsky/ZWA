@@ -13,40 +13,31 @@
 		"template": "./jsdoc-extra/clean-jsdoc-theme",
 		"readme": "./README.md",
 		"debug": true,
-		"verbose": true
+		"verbose": true,
+		"theme_opts": {
+			"default_theme": "fallback-light",
+			"base_url": "./docs/",
+			"favicon": "./public/media/favicon.ico",
+			"homepageTitle": "NetOs",
+			"title": "NetOs",
+			"includeFilesListInHomepage": true,
+			"meta": [
+				{
+					"name": "author",
+					"content": "Jan Oskar Bukovský"
+				},
+				{
+					"name": "description",
+					"content": "JSDoc for ZWA-NetOs project"
+				}
+			],
+			"search": true,
+			"static_dir": ["./public/media"],
+			"footer": "©️ 2024 Jan Oskar Bukovský"
+		}
 	},
 	"markdown": {
 		"hardwrap": false,
 		"idInHeadings": true
-	},
-	"theme_opts": {
-		"default_theme": "fallback-light",
-		"base_url": "https://ankdev.me/v4/",
-		"favicon": "./public/media/favicon.ico",
-		"homepageTitle": "NetOs",
-		"title": "NetOs",
-		"includeFilesListInHomepage": true,
-		"menu": [
-			{
-				"title": "Website",
-				"link": "https://ankdev.me/clean-jsdoc-theme/dark/",
-				"target": "_blank",
-				"class": "some-class",
-				"id": "some-id"
-			}
-		],
-		"meta": [
-			{
-				"name": "author",
-				"content": "Jan Oskar Bukovský"
-			},
-			{
-				"name": "description",
-				"content": "JSDoc for ZWA-NetOs project"
-			}
-		],
-		"search": true,
-		"static_dir": ["./public/media"],
-		"footer": "©️ 2024 Jan Oskar Bukovský"
 	}
 }

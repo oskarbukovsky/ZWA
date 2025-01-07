@@ -1,7 +1,7 @@
 <?php
 require("db.php");
 if (!sessionIsValid()) {
-    header("Location: error.php?code=403");
+    header("Location: error.php?code=401");
     die();
 }
 ?>
@@ -80,40 +80,14 @@ if (!sessionIsValid()) {
             <div class="navbar-button-content searchbar"></div>
             <div class="search-menu navbar-popup">
                 <div class="search-bar">
-                    <input id="navbar-search-bar" type="search" placeholder="Sem zadejte hledaný výraz" pattern=".{1,}" autocomplete="off" required>
+                    <input id="navbar-search-bar" type="search" placeholder="Sem zadejte hledaný výraz" pattern=".{1,}"
+                        autocomplete="off" required>
                 </div>
                 <div class="search-content">
                     <div class="search-results">
-                        <div class="search-result selected">
-                            <img src="./media/ui/info.webp" alt="search-result-item">
-                            <div>
-                                <span class="name">Systém</span>
-                                <span class="type">Aplikace</span>
-                            </div>
-                        </div>
-                        <div class="search-result">
-                            <img src="./media/file-icons/pdf.webp" alt="search-result-item">
-                            <div>
-                                <span class="name">Example.pdf</span>
-                                <span class="type">PDF Dokument</span>
-                            </div>
-                        </div>
-                        <div class="search-result">
-                            <img src="./media/ui/info.webp" alt="search-result-item">
-                            <div>
-                                <span class="name">Systém</span>
-                                <span class="type">Aplikace</span>
-                            </div>
-                        </div>
-                        <div class="search-result">
-                            <img src="./media/file-icons/pdf.webp" alt="search-result-item">
-                            <div>
-                                <span class="name">Example.pdf</span>
-                                <span class="type">PDF Dokument</span>
-                            </div>
-                        </div>
                     </div>
-                    <div class="search-item-description"></div>
+                    <div class="search-item-description">
+                    </div>
                 </div>
             </div>
         </div>

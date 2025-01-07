@@ -15,6 +15,7 @@ async function fileRead(uuid) {
     const response = await ajax({ "method": "read", "fileUuid": uuid });
     if (response.status == "ok") {
         addNotification({ "head": "Čtení", "body": "Ok: " + response.uuid }, false, null, "info");
+        await localDatabase.update("vNodes", "uuid", uuid, ["timeRead"], [response.timestamp]);
         return true;
     } else {
         addNotification({ "head": "Čtení", "body": "Chyba: " + response.details }, false, null, "warning");
@@ -603,12 +604,54 @@ const fileSearchInputHandler = debounce((query) => {
         ajax(data).then(response => {
             if (response.status == "ok") {
                 addNotification({ "head": "Hledání", "body": "Ok: \"" + query + "\"" }, false, null, "info");
+                fileSearchResultsBuilder(response.results);
             } else {
                 addNotification({ "head": "Hledání", "body": "Chyba: " + response.details }, false, null, "warning");
             }
         });
     });
 }, 350);
+
+function fileSearchResultsBuilder(response) {
+    const searchResults = navbar.querySelector(".search-menu .search-results");
+    searchResults.innerHTML = "";
+    response.forEach(async (responseItem) => {
+        let node = (await localDatabase.getColumn("vNodes", "uuid", responseItem.uuid))[0];
+
+        const result = createElement("div", new ClassList("search-result"),
+            new ElementEvent("mouseenter", (event) => fileSearchResultHover(event, node)),
+            new ElementEvent("click", () => { appOpen(node) }));
+        const icon = createElement("img", new Src(getIcon(node)), new Alt("search-result-item"), new AppendTo(result));
+        const dataHolder = createElement("div", new AppendTo(result));
+        const name = createElement("span", new ClassList("name"), new TextContent(node.name), new AppendTo(dataHolder));
+        const type = createElement("span", new ClassList("type"), new TextContent(node.description), new AppendTo(dataHolder));
+        if (navbar.querySelector(".search-menu .search-results").childElementCount == 0) {
+            fileSearchResultHover({ "target": result }, node);
+        }
+
+        searchResults.appendChild(result);
+    });
+}
+
+function fileSearchResultHover(event, node) {
+    navbar.querySelectorAll(".search-menu .search-content .search-result").forEach((element) => {
+        element.classList.remove("selected");
+    });
+    event.target.classList.add("selected");
+    const searchContent = navbar.querySelector(".search-menu .search-content");
+    const desctiption = searchContent.querySelector(".search-item-description");
+    desctiption.innerHTML = "";
+    const icon = createElement("img", new Src(getIcon(node)), new Alt("search-result-item-description"), new AppendTo(desctiption));
+    const name = createElement("span", new ClassList("name"), new TextContent(node.name), new AppendTo(desctiption));
+    const hr = createElement("hr", new AppendTo(desctiption));
+    const actionsHolder = createElement("div", new ClassList("actions"), new AppendTo(desctiption));
+    const open = createElement("div", new ClassList("open"), new AppendTo(actionsHolder), new ElementEvent("click", () => { appOpen(node) }));
+    const openIcon = createElement("span", new TextContent("open_in_new"), new ClassList("material-symbols-rounded"), new AppendTo(open));
+    const openText = createElement("span", new TextContent("Otevřít"), new AppendTo(open));
+    const remove = createElement("div", new ClassList("delete"), new AppendTo(actionsHolder));
+    const removeIcon = createElement("span", new TextContent("delete"), new ClassList("material-symbols-rounded"), new AppendTo(remove));
+    const removeText = createElement("span", new TextContent("Smazat"), new AppendTo(remove));
+}
 
 /**
  * Adds an input event listener to the search bar in the navbar.

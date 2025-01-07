@@ -1,14 +1,9 @@
 <?php
 require("db.php");
 if (!sessionIsValid()) {
-    header("Location: error.php?code=403");
+    header("Location: error.php?code=401");
     die();
 }
-// TODO: remove comment
-// if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-//     header("Location: error.php?code=403");
-//     die();
-// }
 
 $query = getData("users", "role", ["uuid"], [$_SESSION["userUuid"]]);
 $data = $query->fetchAll();

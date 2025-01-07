@@ -229,12 +229,39 @@ function readFileMetadata($uuid)
 {
     $timestamp = floor(microtime(true) * 1000);
 
+    updateData("vNodes", ["timeRead"], [$uuid], ["uuid"], [$uuid]);
+    $query = getData("vNodes", "timeRead", ["uuid"], [$uuid]);
+    $data = $query->fetchAll();
+    if (count($data) != 1) {
+        return false;
+    }
+    if ($data[0]["timeRead"] != $timestamp) {
+        return false;
+    }
     return $timestamp;
 }
 
 function findFiles($query)
 {
     $results = [];
+    $searchQuery = "%$query%";
+
+    global $conn;
+    $sql = "SELECT uuid,name FROM vNodes WHERE name LIKE :query";
+    $query = $conn->prepare($sql);
+    $query->bindParam(":query", $searchQuery);
+    try {
+        $query->execute();
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+
+    $data = $query->fetchAll();
+
+    foreach ($data as $vNode) {
+        $results[] = ["uuid" => $vNode["uuid"], "name" => $vNode["name"]];
+    }
+
 
     return $results;
 }

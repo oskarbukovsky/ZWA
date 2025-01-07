@@ -65,7 +65,7 @@ function getDataVisual($type, $tablename, $what)
     echo "</table>\n";
 }
 
-function getData($tableName, $what, $where = [], $input = [])
+function getData($tableName, $what, $where = [], $input = [], $etc = "")
 {
     global $conn;
     $sql = "SELECT $what FROM $tableName";
