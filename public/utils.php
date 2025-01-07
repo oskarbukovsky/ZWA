@@ -196,10 +196,12 @@ function deleteFile($uuid)
     $vNode = $query->fetchAll();
 
     if (count($vNode) != 1) {
+        echo 1;
         return false;
     }
 
     if (!($vNode[0]["owner"] == $user[0]["uuid"] || $user[0]["role"] == 100)) {
+        echo 2;
         return false;
     }
 
@@ -208,16 +210,23 @@ function deleteFile($uuid)
     }
 
     try {
-        if (!isset($file) || !file_exists($file)) {
-            return false;
-        }
-        if ($vNode[0]["type"] == "file") {
-            if (unlink($file)) {
-                return true;
-            }
-        } elseif ($vNode[0]["type"] == "folder") {
-            removeDir("user-data/" . $result["owner"] . json_decode($result["data"])->data[0] . $result[0]["uuid"]);
-            return deleteData("vNodes", ["uuid"], [$_POST["fileUuid"]]);
+        switch ($vNode[0]["type"]) {
+            case "file":
+                if (!isset($file) || !file_exists($file)) {
+                    return false;
+                }
+                if (unlink($file)) {
+                    return deleteData("vNodes", ["uuid"], [$uuid]);
+                }
+                break;
+            case "folder":
+                if (!isset($file) || !file_exists($file)) {
+                    return false;
+                }
+                removeDir("user-data/" . $result["owner"] . json_decode($result["data"])->data[0] . $result[0]["uuid"]);
+                return deleteData("vNodes", ["uuid"], [$_POST["fileUuid"]]);
+            case "link":
+                return deleteData("vNodes", ["uuid"], [$uuid]);
         }
     } catch (Exception $e) {
         echo $e->getMessage();

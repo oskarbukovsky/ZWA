@@ -596,6 +596,13 @@ function getDestination(node) {
                     return ""
                 case "admin":
                     return location.origin + "/~bukovja4/public/administration.php";
+                case "games":
+                    switch (node.data.data[0].match("(?<=:\/\/).*?(?=(\/|$))")[0]) {
+                        case "minecraft":
+                            return "https://eaglercraft.com/mc/1.8.8-wasm/";
+                        default:
+                            return location.origin + "/~bukovja4/public/extra/" + node.data.data[0].match("(?<=:\/\/).*?(?=(\/|$))")[0] + ".html";
+                    }
                 case "vComputer":
                     return location.origin + "/~bukovja4/public/explorer.php?folder=" + node.owner;
                 case "http":
@@ -640,9 +647,11 @@ function getIcon(node) {
                             return "./media/file-icons/computer.webp";
                         case "admin":
                             return "./media/file-icons/admin.webp";
+                        case "games":
+                            return "./media/file-icons/" + node.data.data[0].match("(?<=:\/\/).*?(?=(\/|$))")[0] + ".webp";
                         case "http":
                         case "https":
-                            const link = node.data.data[0].match("(?<=:\/\/).*?(?=(\/|$))");
+                            let link = node.data.data[0].match("(?<=:\/\/).*?(?=(\/|$))");
                             if (link[0]) {
                                 return "https://favicone.com/" + link[0] + "?s=128"
                                 // return "https://www.google.com/s2/favicons?domain=" + link[0] + "&sz=128"

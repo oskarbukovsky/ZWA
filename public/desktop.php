@@ -80,7 +80,7 @@ if (!sessionIsValid()) {
             <div class="navbar-button-content searchbar"></div>
             <div class="search-menu navbar-popup">
                 <div class="search-bar">
-                    <input id="navbar-search-bar" type="search" placeholder="Sem zadejte hledaný výraz" pattern=".{1,}"
+                    <input id="navbar-search-bar" type="search" placeholder="Sem zadejte hledaný výraz" pattern="\w{1,}"
                         autocomplete="off" required>
                 </div>
                 <div class="search-content">

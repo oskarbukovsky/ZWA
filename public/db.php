@@ -348,6 +348,9 @@ function createDefaultFiles($ownerUuid)
     $query = $conn->prepare($sql);
     $query->execute(array(newUuid(), "link", $desktopUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":false}', "Administrace", "", 0, '{"data":["admin://"]}', null));
 
+    $query = $conn->prepare($sql);
+    $query->execute(array(newUuid(), "link", $desktopUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":true}', "Minecraft", "Online verze hry minecraft", 0, '{"data":["games://minecraft"]}', null));
+
     copy(dirname(__FILE__) . "/user-data/defaults/Nový textový dokument.txt", dirname(__FILE__) . "/user-data/" . $ownerUuid . "/" . $desktopUuid . "/Nový textový dokument.txt");
     $query = $conn->prepare($sql);
     $query->execute(array(newUuid(), "file", $desktopUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":true}', "Nový textový dokument.txt", "Typ: Textový dokument", filesize(dirname(__FILE__) . "/user-data/defaults/Nový textový dokument.txt"), '{"data":["vComputer://' . $desktopUuid . '/"]}', null));
