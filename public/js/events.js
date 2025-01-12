@@ -755,7 +755,7 @@ document.addEventListener("keydown", async (event) => {
         case "ArrowLeft":
             let up = null;
             if (desktop.querySelectorAll(".icon-selected").length == 0) {
-                up = desktop.querySelector(".icon");
+                up = desktop.querySelector(".icon:last-child");
             }
             else {
                 up = desktop.querySelector(".icon:has(+ .icon-selected)");
@@ -771,7 +771,7 @@ document.addEventListener("keydown", async (event) => {
         case "ArrowRight":
             let down = null;
             if (desktop.querySelectorAll(".icon-selected").length == 0) {
-                down = desktop.querySelector(".icon:last-child");
+                down = desktop.querySelector(".icon");
             }
             else {
                 down = desktop.querySelector(".icon-selected:not(:has(~ .icon-selected)) + *");

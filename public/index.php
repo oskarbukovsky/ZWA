@@ -105,9 +105,9 @@ if (sessionIsValid()) {
         <label for="toggle-login-register">
             <?php
             if (isset($_GET["type"]) && $_GET["type"] == "register") {
-                echo '<input type="checkbox" id="toggle-login-register" checked>';
+                echo '<input type="checkbox" id="toggle-login-register" aria-hidden="true"checked>';
             } else {
-                echo '<input type="checkbox" id="toggle-login-register">';
+                echo '<input type="checkbox" id="toggle-login-register" aria-hidden="true">';
             }
             ?>
         </label>

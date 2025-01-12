@@ -28,6 +28,10 @@ body,
 	font-family: "Segoe UI Variable Static Text", sans-serif;
 }
 
+label {
+	display: none;
+}
+
 /* * {
 	background: transparent;
 	background-color: transparent;
