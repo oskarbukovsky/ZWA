@@ -480,8 +480,27 @@ function openDb() {
                 });
             }
 
-            // TODO: update
+            /* The code is defining a function `delete` on the `localDatabase` object. The purpose of this function 
+            is to delete in item from a given store in a local database. */
+            localDatabase.delete = async function (store, items = []) {
+                return new Promise(async (resolve) => {
+                    let dbStore = localDatabase.getStore(store);
+                    function success(event) {
+                        return resolve(event);
+                    }
+                    try {
+                        items.forEach((item) => {
+                            dbStore.delete(item.uuid);
+                        });
+                    } catch (error) {
+                        cl("!📕 ERROR: ", error, items);
+                    }
+                    dbStore.transaction.oncomplete = (event) => success(event);
+                });
+            }
 
+            /* The code is defining a function `update` on the `localDatabase` object. The purpose of this function 
+            is to update column from a given store in a local database. */
             localDatabase.update = async function (store, column, filter, keys = [], values = []) {
                 return new Promise(async (resolve) => {
                     let item = (await localDatabase.getColumn(store, column, filter))[0];
@@ -504,7 +523,7 @@ function openDb() {
                 });
             }
 
-            /* The above code is defining a function `getColumn` on the `localDatabase` object. This
+            /* The code is defining a function `getColumn` on the `localDatabase` object. This
             function takes three parameters: `store`, `column`, and `filter`, with `filter` having a
             default value of `null`. The purpose of this function is to retrieve a specific column
             from a given store in a local database. If a `filter` is provided, it can be used to
@@ -775,12 +794,14 @@ function closeApp(target, forced = false) {
         setTimeout(() => {
             app.remove();
         }, 250);
-        const navbarIcon = navbar.querySelector('[data-uuid="' + app.dataset.uuid + '"]');
-        if (navbarIcon.dataset.persistent != "false") {
-            navbarIcon.classList.add("closing");
-            setTimeout(() => {
-                navbarIcon.remove();
-            }, 250);
+        const navbarIcon = navbar.querySelector('.navbar-icon[data-uuid="' + app.dataset.uuid + '"]');
+        if (navbarIcon) {
+            if (navbarIcon.dataset.persistent != "false") {
+                navbarIcon.classList.add("closing");
+                setTimeout(() => {
+                    navbarIcon.remove();
+                }, 250);
+            }
         }
     }
     if (forced === true) {
@@ -1017,8 +1038,10 @@ function closeDesktopCalendar() {
  * The function `closeSearchbarMenu` closes search menu
  */
 function closeSearchbarMenu() {
-    navbar.querySelector(".search-menu").classList.remove("open");
-    navbar.querySelector(".navbar-search input[type=search]").value = "";
+    navbar.querySelector(".search-menu")?.classList.remove("open");
+    if (navbar.querySelector(".navbar-search input[type=search]")) {
+        navbar.querySelector(".navbar-search input[type=search]").value = "";
+    }
 }
 
 /**
@@ -1425,7 +1448,7 @@ function addDesktopIcon(node) {
     const holder = createElement("figure", new ClassList("icon"));
     const icon = createElement("img", new Src(getIcon(node)), new Alt("desktop-icon"), new AppendTo(holder));
     const caption = createElement("figcaption", new Data("uuid", node.uuid), new AppendTo(holder));
-    const textarea = createElement("textarea", new Name("icon-name"), new Cols(11), new ReadOnly(true), new TextContent(node.name), new AriaHidden(), new AppendTo(caption));
+    const textarea = createElement("textarea", new Name("icon-name"), new Cols(11), new ReadOnly(true), new TextContent(node.name), new AppendTo(caption));
     desktop.appendChild(holder);
 
     desktopIconTooltip(holder, node);
@@ -1797,30 +1820,48 @@ class ElementEvents {
     /**
      * Deletes a file based on the event triggered.
      * @param {Event} event - The event that triggered the file deletion.
+     * @param {string} uuid - The uuid of the file to be deleted. Optional, but do not need an event
      * @returns None
      */
-    static fileDelete = (event) => {
-        const icon = bubbleToClass(event, "icon")
-        // cl(event, icon);
-        const uuid = icon.querySelector("[data-uuid]").dataset.uuid;
-        cl("|📘 Deleting vNode with uuid: ", uuid);
-        ajax({ "method": "delete", "fileUuid": uuid }).then(response => {
-            if (response.status == "ok") {
-                addNotification({ "head": "Odstanění", "body": "Ok: " + response.uuid }, false, null, "info", true);
-
-                if (window.location.pathname.split("/").pop().includes("desktop")) {
-                    desktop.querySelector('.icon:has([data-uuid="' + uuid + '"])').remove();
+    static fileDelete = async (event, uuid = null) => {
+        if (event) {
+            uuid = bubbleToClass(event, "icon").querySelector("[data-uuid]").dataset.uuid;
+        }
+        const vNode = (await localDatabase.getColumn("vNodes", "uuid", uuid))[0];
+        if (vNode.permissions.canDelete && confirm("Opravdu chcete smazat " + vNode.name + "?\nTato akce nelze vzít zpět!")) {
+            cl("|📘 Deleting vNode with uuid: ", uuid);
+            ajax({ "method": "delete", "fileUuid": uuid }).then(async (response) => {
+                if (response.status == "ok") {
+                    addNotification({ "head": "Odstanění", "body": "Ok: " + response.uuid }, false, null, "info", true);
+                    if (window.location.pathname.split("/").pop().includes("desktop")) {
+                        if (desktop.querySelector('.icon:has([data-uuid="' + uuid + '"])')) {
+                            desktop.querySelector('.icon:has([data-uuid="' + uuid + '"])').remove();
+                        }
+                        navbar.querySelector('.search-menu .search-result[data-uuid="' + uuid + '"]');
+                        closeSearchbarMenu();
+                    } else {
+                        files.querySelector('.file[data-uuid="' + 1 + '"]').remove();
+                    }
+                    let tmpVNodes = (await localDatabase.getColumn("vNodes", "uuid", uuid))[0];
+                    async function recursiveDelete(vNode) {
+                        cl(vNode);
+                        tmpVNodes = await localDatabase.getColumn("vNodes", "parent", vNode.uuid);
+                        tmpVNodes.forEach(vNode => {
+                            recursiveDelete(vNode);
+                        });
+                        localDatabase.delete("vNodes", [vNode]);
+                        const app = windows.querySelector('.windows-app[data-uuid="' + vNode.uuid + '"]');
+                        if (app) {
+                            closeApp(app, true)
+                        }
+                    }
+                    cl("|📘 RecursiveDelete:");
+                    recursiveDelete(tmpVNodes);
                 } else {
-                    files.querySelector('.file[data-uuid="' + 1 + '"]').remove();
+                    addNotification({ "head": "Odstanění", "body": "Chyba: " + response.details }, false, null, "warning");
                 }
-                const app = windows.querySelector('.windows-app[data-uuid="' + uuid + '"]');
-                if (app) {
-                    closeApp(app, true)
-                }
-            } else {
-                addNotification({ "head": "Odstanění", "body": "Chyba: " + response.details }, false, null, "warning");
-            }
-        });
+            });
+        }
     }
 
     static NoPropagation(event) {

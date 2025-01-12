@@ -345,48 +345,82 @@ function deleteFile($uuid)
     $user = $query->fetchAll();
 
     if (count($user) != 1) {
+        echo " 0 ";
         return false;
     }
 
-    $query = getData("vNodes", "owner, data, name, type, uuid", ["uuid"], [$uuid]);
+    $query = getData("vNodes", "owner, data, name, type, uuid, parent", ["uuid"], [$uuid]);
     $vNode = $query->fetchAll();
 
     if (count($vNode) != 1) {
-        echo 1;
+        // echo " 1 ";
         return false;
     }
 
     if (!($vNode[0]["owner"] == $user[0]["uuid"] || $user[0]["role"] == 100)) {
-        echo 2;
+        // echo " 2 ";
         return false;
     }
 
     foreach ($vNode as $result) {
-        $file = "user-data/" . $result["owner"] . json_decode($result["data"])->data[0] . $result["name"];
+        if ($result["type"] == "file") {
+            // echo " a ";
+            $file = getParentDir($result["parent"]) . $result["name"];
+        } else if ($result["type"] == "folder") {
+            // echo " b ";
+            $file = getParentDir($result["parent"]) . $result["uuid"];
+        } else {
+            // echo " c ";
+            $file = "user-data/" . $result["owner"] . json_decode($result["data"])->data[0] . $result["name"];
+        }
     }
 
     try {
         switch ($vNode[0]["type"]) {
             case "file":
                 if (!isset($file) || !file_exists($file)) {
+                    // echo " 3 ";
+                    // echo var_dump($file);
                     return false;
                 }
                 if (unlink($file)) {
-                    return deleteData("vNodes", ["uuid"], [$uuid]);
+                    $result = deleteData("vNodes", ["uuid"], [$uuid]);
+                    // echo " -1 ";
+                    return $result;
                 }
                 break;
             case "folder":
                 if (!isset($file) || !file_exists($file)) {
+                    // echo " 4 ";
                     return false;
                 }
-                removeDir("user-data/" . $result["owner"] . json_decode($result["data"])->data[0] . $result[0]["uuid"]);
-                return deleteData("vNodes", ["uuid"], [$_POST["fileUuid"]]);
+                removeDir($file);
+                // $result = deleteData("vNodes", ["uuid"], [$_POST["fileUuid"]]);
+
+                function recursiveDbDataDelete($uuid)
+                {
+                    $query = getData("vNodes", "uuid", ["parent"], [$uuid]);
+                    $data = $query->fetchAll();
+                    foreach ($data as $vNode) {
+                        // TODO: have to finish perfectly, cause reconstructing partial fail will be mess xd
+                        recursiveDbDataDelete($vNode["uuid"]);
+                    }
+                    deleteData("vNodes", ["uuid"], [$uuid]);
+                }
+                recursiveDbDataDelete($uuid);
+                // echo " -2 ";
+                // return $result;
+                return true;
+            // TODO: recursive to children nodes
             case "link":
-                return deleteData("vNodes", ["uuid"], [$uuid]);
+                $result = deleteData("vNodes", ["uuid"], [$uuid]);
+                // echo " -3 ";
+                return $result;
         }
     } catch (Exception $e) {
         echo $e->getMessage();
     }
+    // echo " !!! ";
     return false;
 }
 

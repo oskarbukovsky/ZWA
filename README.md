@@ -5,15 +5,15 @@
 <img src="https://ghchart.rshah.org/oskarbukovsky" alt="calendar" style="width:100%;"/>
 
 [![JSDoc](https://img.shields.io/badge/JSDoc%20Documentace-018EF5?logo=readthedocs&logoColor=fff)](https://zwa-7a9ac6.pages.fel.cvut.cz/docs/)
-[![ProductDoc](https://img.shields.io/badge/Produktov%C3%A1%20dokumentace-018EF5?logo=readme&logoColor=fff)](https://docs.google.com/document/d/e/2PACX-1vQ9HZv98J8ROu6DwA4wkBkyWoFUudRgMbB2lCuysDly0rzsSG-XnPYMa3ZdlWFw4q9lyr2lwflYD7Vu/pub)
-[![ProgrammerDoc](https://img.shields.io/badge/Program%C3%A1torsk%C3%A1%20dokumentace-018EF5?logo=docusaurus&logoColor=fff)](https://docs.google.com/document/d/e/2PACX-1vRugoyD5ZTO4sVwjqYwlzqIBuur-Y_jEfh5hhBSP5ptIj6JYhR-5OXuR-N_6tAS1oQ7lNFnXxKzEffD/pub)
+[![ProductDoc](https://img.shields.io/badge/Produktov%C3%A1%20dokumentace-018EF5?logo=readme&logoColor=fff)](https://docs.google.com/document/d/1yJdy4dGE5AY-9TR-9sllnFhSlZ5Z06zQ297EhUsJG4k/edit?usp=sharing)
+[![ProgrammerDoc](https://img.shields.io/badge/Program%C3%A1torsk%C3%A1%20dokumentace-018EF5?logo=docusaurus&logoColor=fff)](https://docs.google.com/document/d/1zWkUXEwLYwHTZ9wihU7MgW25zl75uhZzPNAGlLQvo90/edit?usp=sharing)
 
 ![Commits](https://img.shields.io/github/commit-activity/t/oskarbukovsky/zwa?label=Po%C4%8Det%20commit%C5%AF)
-![Čas na projektu](https://img.shields.io/badge/%C4%8Cas%20na%20projektu-200+h-green?style=flat)
+![Čas na projektu](https://img.shields.io/badge/%C4%8Cas%20na%20projektu-350+h-green?style=flat)
 
 <!-- ![Calendar](https://ghchart.rshah.org/oskarbukovsky) -->
 
-## Used
+## Použité
 
 [![HTML](https://img.shields.io/badge/HTML-%23E34F26.svg?logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
 [![CSS](https://img.shields.io/badge/CSS-1572B6?logo=css3&logoColor=fff)](https://developer.mozilla.org/en-US/docs/Web/CSS)
@@ -27,7 +27,7 @@
 [![Visual Studio Code](https://custom-icon-badges.demolab.com/badge/Visual%20Studio%20Code-0078d7.svg?logo=vsc&logoColor=white)](https://code.visualstudio.com/)
 [![Windows](https://custom-icon-badges.demolab.com/badge/Windows-0078D6?logo=windows11&logoColor=white)](https://www.microsoft.com/windows)
 
-## Support
+## Podpora
 
 | Prohlížeč | Podpora  |
 | --------- | -------- |
@@ -38,8 +38,8 @@
 | Safari    | 🤷       |
 | Yandex    | 🤷       |
 
-> Testováno na aktuálních prohlížečích, ~130 chromium, ale chvíli testováno na verzi 85 přes BrowserStack a stránka vypadala funkčně, je možné že poběží i na nižších
+> Testováno na aktuálních prohlížečích, ~130 chromium, ale chvíli testováno na verzi 85 přes BrowserStack a stránka vypadala funkčně, je možné že poběží i na nižších (Platí zhruba do 80 commitu, dále nezkoušeno)
 
-## License
+## Licence
 
 Tento projekt je pod licencí [Don't Be a Jerk License](https://gitlab.fel.cvut.cz/bukovja4/zwa/-/blob/main/LICENSE.md)

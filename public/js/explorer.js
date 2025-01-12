@@ -45,6 +45,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             countSelectedFiles();
         });
     });
+
+    document.body.focus();
 });
 
 document.querySelector("#sorting > .name").addEventListener("click", (event) => {
@@ -257,26 +259,17 @@ document.addEventListener("keydown", async (event) => {
     }
 });
 
-/**
- * Checks if the element with the class "uploading" has the class "upload" and removes it if present.
- */
-window.addEventListener("mouseover", () => {
-    if (document.querySelector(".uploading").classList.contains("upload")) {
+// Handling of the files uploads area leave
+window.addEventListener("dragleave", (event) => {
+    if(event.target.id == "files") {
         document.querySelector(".uploading").classList.remove("upload");
     }
 });
 
 // Handling of the files uploads
-document.body.addEventListener("dragover", (event) => {
-    event.preventDefault();
-});
 document.body.addEventListener("dragenter", (event) => {
     event.preventDefault();
     document.querySelector(".uploading").classList.add("upload");
-});
-document.querySelector(".uploading").addEventListener("dragleave", (event) => {
-    event.preventDefault();
-    document.querySelector(".uploading").classList.remove("upload");
 });
 document.body.addEventListener("drop", (event) => {
     document.querySelector(".uploading").classList.remove("upload");
@@ -289,14 +282,10 @@ document.body.addEventListener("drop", (event) => {
     }
 });
 
-// Handling of the files uploads area
+// Fixes sometimmes buggy mouse events over the files uploads area
 document.addEventListener("click", () => {
     document.querySelector(".uploading").classList.remove("upload");
 });
-window.addEventListener("dragleave", () => {
-    document.querySelector(".uploading").classList.remove("upload");
-});
-
 
 // Propagate click to the main app and close all context menus onClick
 window.addEventListener("click", () => {
@@ -305,6 +294,7 @@ window.addEventListener("click", () => {
 });
 window.addEventListener("dragenter", () => {
     window.top.postMessage(["focus"]);
+    closeAllExplorerContextMenus();
 });
 
 // Deselect all files on another files click selection

@@ -349,7 +349,7 @@ desktop.addEventListener("drop", async (event) => {
     const files = event.dataTransfer.files;
     if (files.length) {
         fileUpload.files = files;
-        const desktopNode = await localDatabase.getColumn("vNodes", "type", "desktop");
+        const desktopNode = (await localDatabase.getColumn("vNodes", "type", "desktop"))[0];
         // handleFileUpload(files, parentUuid[0].uuid);
         handleFileUpload(files, desktopNode.uuid);
     }
@@ -664,9 +664,9 @@ function fileSearchResultsBuilder(response) {
     const searchResults = navbar.querySelector(".search-menu .search-results");
     searchResults.innerHTML = "";
     response.forEach(async (responseItem) => {
-        let node = (await localDatabase.getColumn("vNodes", "uuid", responseItem.uuid))[0];
+        const node = (await localDatabase.getColumn("vNodes", "uuid", responseItem.uuid))[0];
 
-        const result = createElement("div", new ClassList("search-result"),
+        const result = createElement("div", new ClassList("search-result"), new Data("uuid", node.uuid),
             new ElementEvent("mouseenter", (event) => fileSearchResultHover(event, node)),
             new ElementEvent("click", () => { appOpen(node) }));
         const icon = createElement("img", new Src(getIcon(node)), new Alt("search-result-item"), new AppendTo(result));
@@ -696,7 +696,7 @@ function fileSearchResultHover(event, node) {
     const open = createElement("div", new ClassList("open"), new AppendTo(actionsHolder), new ElementEvent("click", () => { appOpen(node) }));
     const openIcon = createElement("span", new TextContent("open_in_new"), new ClassList("material-symbols-rounded"), new AppendTo(open));
     const openText = createElement("span", new TextContent("Otevřít"), new AppendTo(open));
-    const remove = createElement("div", new ClassList("delete"), new AppendTo(actionsHolder));
+    const remove = createElement("div", new ClassList("delete"), new AppendTo(actionsHolder), new ElementEvent("click", () => { ElementEvents.fileDelete(null, node.uuid) }));
     const removeIcon = createElement("span", new TextContent("delete"), new ClassList("material-symbols-rounded"), new AppendTo(remove));
     const removeText = createElement("span", new TextContent("Smazat"), new AppendTo(remove));
 }
@@ -792,6 +792,12 @@ document.addEventListener("keydown", async (event) => {
                 view: window
             });
             desktop.querySelector(".icon-selected textarea")?.dispatchEvent(dblClickEvent);
+            break;
+        case "Delete":
+            desktop.querySelectorAll(".icon-selected figcaption").forEach(async (element) => {
+                const node = await localDatabase.getColumn("vNodes", "uuid", element.dataset.uuid);
+                ElementEvents.fileDelete(null, node[0].uuid);
+            });
             break;
         default:
             return;

@@ -252,6 +252,7 @@ body > .container {
 	height: calc((var(--files-size-row) * 32px) * 0.5);
 	width: auto;
 	padding-left: 6px;
+	flex-shrink: 0;
 }
 
 .file > .name > span {
