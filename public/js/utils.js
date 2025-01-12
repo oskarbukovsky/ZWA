@@ -566,7 +566,8 @@ function openDb() {
  * @param node - The `node` arguments is user to determine vNode user wants to see details
  * @returns The `getIconTooltipText` function is returning string of tooltip content
  */
-function getIconTooltipText(node) {
+async function getIconTooltipText(node) {
+    node = (await localDatabase.getColumn("vNodes", "uuid", node.uuid))[0];
     switch (node.type) {
         case "folder":
         case "images":
@@ -950,6 +951,9 @@ function createElement() {
             case Alt:
                 element.alt = parameter.alt;
                 break;
+            case AriaHidden:
+                element.ariaHidden = parameter.ariaHidden;
+                break;
             case ElementEvent:
                 element.addEventListener(parameter.type, parameter.handler);
                 break;
@@ -1039,9 +1043,9 @@ function closeScreenMenu() {
 function desktopIconTooltip(element, node) {
     let tooltipTimer, tooltipX, tooltipY;
 
-    element.addEventListener("mouseenter", () => {
+    element.addEventListener("mouseenter", async () => {
         tooltipTimer = new Date();
-        const tooltip = createElement("div", new ClassList("icon-tooltip", "no-select"), new AppendTo(element), new TextContent(getIconTooltipText(node)));
+        const tooltip = createElement("div", new ClassList("icon-tooltip", "no-select"), new AppendTo(element), new TextContent(await getIconTooltipText(node)));
         setTimeout(() => {
             if (tooltip && desktop.querySelectorAll(".context-menu").length == 0 && element.querySelectorAll("textarea:not(:read-only)").length == 0) {
                 tooltip.style.left = tooltipX + "px";
@@ -1421,7 +1425,7 @@ function addDesktopIcon(node) {
     const holder = createElement("figure", new ClassList("icon"));
     const icon = createElement("img", new Src(getIcon(node)), new Alt("desktop-icon"), new AppendTo(holder));
     const caption = createElement("figcaption", new Data("uuid", node.uuid), new AppendTo(holder));
-    const textarea = createElement("textarea", new Name("icon-name"), new Cols(11), new ReadOnly(true), new TextContent(node.name), new AppendTo(caption));
+    const textarea = createElement("textarea", new Name("icon-name"), new Cols(11), new ReadOnly(true), new TextContent(node.name), new AriaHidden(), new AppendTo(caption));
     desktop.appendChild(holder);
 
     desktopIconTooltip(holder, node);

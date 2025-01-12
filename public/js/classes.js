@@ -178,6 +178,19 @@ class Alt {
         this.alt = alt;
     }
 }
+
+/**
+ * Class containing behavior for AriaHidden handling on element creating.
+ */
+class AriaHidden {
+    /**
+     * Creates an instance of AriaHidden.
+     */
+    constructor(ariaHidden = true) {
+        this.ariaHidden = ariaHidden;
+    }
+}
+
 /**
  * Class containing behavior for data handling on element creating.
  */

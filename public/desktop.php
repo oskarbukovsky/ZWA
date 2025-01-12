@@ -62,7 +62,7 @@ if (!sessionIsValid()) {
                     Weather Data Source: <a href="https://sharpweather.com/weather_prague/30_days/">Prague 30 days
                         weather</a></div>
                 <script async src="https://static1.sharpweather.com/widgetjs/?id=id107cb35be4427"></script>
-                <iframe class="rcs-feed" src='https://widget.tagembed.com/2146452'></iframe>
+                <iframe class="rss-feed" title="rss-feed" src='https://widget.tagembed.com/2146452'></iframe>
                 <div class="controls">
                     <div class="user">
                         <div class="user-avatar">
@@ -82,7 +82,7 @@ if (!sessionIsValid()) {
             <div class="search-menu navbar-popup">
                 <div class="search-bar">
                     <input id="navbar-search-bar" type="search" placeholder="Sem zadejte hledaný výraz" pattern="\w{1,}"
-                        autocomplete="off" required>
+                        autocomplete="off" required aria-hidden="true">
                 </div>
                 <div class="search-content">
                     <div class="search-results">
@@ -111,7 +111,7 @@ if (!sessionIsValid()) {
                     <span class="material-symbols-rounded">
                         sunny
                     </span>
-                    <input type="range" min="0" max="100" step="1" value="100">
+                    <input type="range" min="0" max="100" step="1" value="100" aria-hidden="true">
                     <span class="material-symbols-rounded">
                         brightness_6
                     </span>
@@ -120,7 +120,7 @@ if (!sessionIsValid()) {
                     <span class="routine material-symbols-rounded fill">
                         routine
                     </span>
-                    <input type="range" min="0" max="100" step="1" value="0">
+                    <input type="range" min="0" max="100" step="1" value="0" aria-hidden="true">
                     <span class="bedtime material-symbols-rounded fill">
                         bedtime
                     </span>
@@ -180,7 +180,7 @@ if (!sessionIsValid()) {
     <div class="errors hidden no-select">
     </div>
     <div class="uploading">
-        <input type="file" id="fileUpload" name="fileUpload" class="hidden">
+        <input type="file" id="fileUpload" name="fileUpload" class="hidden" aria-hidden="true">
     </div>
     <div class="brightness"></div>
     <div class="blue-light-filter"></div>

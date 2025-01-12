@@ -32,7 +32,7 @@
 	color: #fff;
 	pointer-events: all;
 	user-select: none;
-	transition: opacity 250ms, transform 250ms;
+	transition: opacity 150ms, transform 150ms;
 	transition-timing-function: ease-in-out;
 	opacity: 1;
 	transform: none;
@@ -41,7 +41,7 @@
 
 @keyframes app-create {
 	0% {
-		transform: scale(0.1);
+		transform: scale(0.5);
 		opacity: 0;
 	}
 	100% {
@@ -52,7 +52,7 @@
 
 #windows > .windows-app.closing {
 	opacity: 0;
-	transform: scale(0);
+	transform: scale(0.5);
 }
 
 #windows > .windows-app.active {

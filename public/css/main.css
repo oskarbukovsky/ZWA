@@ -227,3 +227,7 @@ hr {
 	border-bottom: transparent;
 	width: auto;
 }
+
+label {
+	display: none;
+}
