@@ -12,10 +12,15 @@ window.addEventListener("click", () => {
 
 // Process error to next level
 window.addEventListener("load", () => {
+    const urlParams = new URLSearchParams(window.location.search);
     if (pageInIframe()) {
-        window.top.postMessage(["sessionTimeout"]);
+        if (urlParams.get("code") == "401") {
+            window.top.postMessage(["sessionTimeout"]);
+        }
+    } else {
+        setTimeout(() => {
+            window.location.assign("index.php?event=error");
+        }, 15000);
     }
-    setTimeout(() => {
-        window.location.assign("index.php?event=error");
-    }, 15000);
 });
+

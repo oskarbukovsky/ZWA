@@ -584,9 +584,10 @@ function getIconTooltipText(node) {
 /**
  * The function `getDestination` generates iframe url to load
  * @param node - The `node` arguments is user to determine vNode user wants to get url
+ * @param options - The `options` arguments is user to determine additional options for url generation
  * @returns The `getDestination` function is returning string representation of URL for iframe
  */
-function getDestination(node) {
+function getDestination(node, options = {}) {
     switch (node.type) {
         case "link":
             switch (node.data.data[0].split(":\/\/").shift()) {
@@ -620,8 +621,13 @@ function getDestination(node) {
             // + node.data.data[0].replace("vComputer://", "")
             return location.origin + "/~bukovja4/public/explorer.php?folder=" + node.uuid;
             break;
+        case "file":
+            if (options?.edit == true) {
+                return location.origin + "/~bukovja4/public/viewer.php?uuid=" + node.uuid + "&edit=true";
+            }
+            return location.origin + "/~bukovja4/public/viewer.php?uuid=" + node.uuid
         default:
-            return location.origin + "/~bukovja4/public/viewer.php?uuid=" + node.uuid + "&warning=js-unknown-destination";
+            return location.origin + "/~bukovja4/public/viewer.php?uuid=" + node.uuid + "&warning=js-unknown-type";
     }
     // return location.origin + "/~bukovja4/public/user-data/" + node.owner + node.data.data[0] + node.name;
 }
@@ -845,7 +851,7 @@ function dragApp(element) {
     function dragMove(position) {
         if (dragging) {
             if (waitForMove) {
-                cl("fullscreen removing");
+                // cl("fullscreen removing");
                 app.classList.remove("maximized");
                 waitForMove = false;
                 return;
@@ -1344,7 +1350,7 @@ function handleFileUpload(files, parentUuid) {
             ajax(data).then(response => {
                 if (response.status == "ok") {
                     const newNode = nodeFromAjax(response);
-                    addNotification({ "head": "Nahrání", "body": "Ok: " + newNode.uuid }, false, null, "info");
+                    addNotification({ "head": "Nahrání", "body": "Ok: " + newNode.uuid }, false, null, "info", true);
                     processVNodes([newNode]);
                     addDesktopIcon(newNode);
                 } else {
@@ -1354,6 +1360,8 @@ function handleFileUpload(files, parentUuid) {
         }
     });
 }
+
+// TODO: dodělat dokumentaci
 
 async function processExplorerIcons(vNodes) {
     let time1 = new Date();
@@ -1370,10 +1378,24 @@ async function processExplorerIcons(vNodes) {
     cl("|📗 Explorer processed in " + (new Date() - time1) + "ms");
 }
 
+async function explorerOpenApp(event, element = null) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (element) {
+        const node = await localDatabase.getColumn("vNodes", "uuid", element.dataset.uuid);
+        if (event.ctrlKey || node[0].type == "file" || node[0].type == "link") {
+            window.top.postMessage(["appOpen", node[0].uuid]);
+        } else {
+            location.assign(location.origin + "/~bukovja4/public/explorer.php?folder=" + node[0].uuid)
+        }
+    }
+}
+
 function addExplorerIcon(node) {
     const holder = createElement("div", new ClassList("file"), new Data("uuid", node.uuid), new ElementEvent("dblclick", () => {
-        cl("opening window ", node.uuid);
-        window.top.postMessage(["appOpen", node.uuid]);
+        // cl("opening window ", node.uuid);
+        // window.top.postMessage(["appOpen", node.uuid]);
+        explorerOpenApp(event, holder);
     }));
     const name = createElement("div", new ClassList("name"), new AppendTo(holder));
     const icon = createElement("img", new Src(getIcon(node)), new AppendTo(name));
@@ -1700,7 +1722,7 @@ class ElementEvents {
             ajax(data).then(response => {
                 if (response.status == "ok") {
                     const newNode = nodeFromAjax(response);
-                    addNotification({ "head": "Vytvoření", "body": "Ok: " + newNode.uuid }, false, null, "info");
+                    addNotification({ "head": "Vytvoření", "body": "Ok: " + newNode.uuid }, false, null, "info", true);
                     processVNodes([newNode]);
                     if (!location.href.includes("explorer")) {
                         addDesktopIcon(newNode);
@@ -1734,7 +1756,7 @@ class ElementEvents {
             ajax(data).then(response => {
                 if (response.status == "ok") {
                     const newNode = nodeFromAjax(response);
-                    addNotification({ "head": "Vytvoření", "body": "Ok: " + newNode.uuid }, false, null, "info");
+                    addNotification({ "head": "Vytvoření", "body": "Ok: " + newNode.uuid }, false, null, "info", true);
                     processVNodes([newNode]);
                     if (!location.href.includes("explorer")) {
                         addDesktopIcon(newNode);
@@ -1761,7 +1783,7 @@ class ElementEvents {
         cl("|📘 Modifying vNode with uuid: ", uuid);
         ajax({ "method": "modify", "fileUuid": uuid }).then(response => {
             if (response.status == "ok") {
-                addNotification({ "head": "Upravení", "body": "Ok: " + response.uuid }, false, null, "info");
+                addNotification({ "head": "Upravení", "body": "Ok: " + response.uuid }, false, null, "info", true);
             } else {
                 addNotification({ "head": "Upravení", "body": "Chyba: " + response.details }, false, null, "warning");
             }
@@ -1780,7 +1802,7 @@ class ElementEvents {
         cl("|📘 Deleting vNode with uuid: ", uuid);
         ajax({ "method": "delete", "fileUuid": uuid }).then(response => {
             if (response.status == "ok") {
-                addNotification({ "head": "Odstanění", "body": "Ok: " + response.uuid }, false, null, "info");
+                addNotification({ "head": "Odstanění", "body": "Ok: " + response.uuid }, false, null, "info", true);
 
                 if (window.location.pathname.split("/").pop().includes("desktop")) {
                     desktop.querySelector('.icon:has([data-uuid="' + uuid + '"])').remove();

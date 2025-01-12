@@ -73,7 +73,13 @@ function getData($tableName, $what, $where = [], $input = [], $etc = "")
         $sql .= " WHERE";
     }
     // echo $sql;
+    $first = true;
     foreach ($where as $value) {
+        if ($first) {
+            $first = false;
+        } else {
+            $sql .= ",";
+        }
         $sql .= " " . $value . "=:" . $value;
     }
     $query = $conn->prepare($sql);
@@ -92,13 +98,25 @@ function updateData($tableName, $what, $with, $where = [], $input = [])
 {
     global $conn;
     $sql = "UPDATE $tableName SET ";
+    $first = true;
     foreach ($what as $value) {
+        if ($first) {
+            $first = false;
+        } else {
+            $sql .= ",";
+        }
         $sql .= " " . $value . "=:" . $value;
     }
     if (count($where) > 0) {
         $sql .= " WHERE";
     }
+    $first = true;
     foreach ($where as $value) {
+        if ($first) {
+            $first = false;
+        } else {
+            $sql .= ",";
+        }
         $sql .= " " . $value . "=:" . $value;
     }
     $query = $conn->prepare($sql);
@@ -109,6 +127,7 @@ function updateData($tableName, $what, $with, $where = [], $input = [])
         $query->bindParam(":" . $value, $input[$key], PDO::PARAM_STR);
     }
     try {
+        // echo $sql;
         $query->execute();
     } catch (PDOException $e) {
         echo $e->getMessage();
@@ -306,7 +325,15 @@ function newUser($username, $password)
     $icon = "https://api.dicebear.com/9.x/identicon/svg?seed=" . htmlspecialchars($_POST["username"]) . "&rowColor=ffb300,fdd835,fb8c00,f4511e,e53935,d81b60,c0ca33,7cb342,FF4FE9,FFBD4F,4FFF65";
     $settings = '{"CssNavbarHeigh": "43px", "CssAppControlsSize": "13px", "CssAppControlsExtra": "9px", "CssNavbarTransparency": "0.8"}';
     $passwordHash = password_hash(htmlspecialchars($password), PASSWORD_DEFAULT);
-    $role = 000;
+    
+    $adminUsers = getData("users", "role", ["role"], [100]);
+    $adminUsers->fetchAll();
+    if ($adminUsers->rowCount() > 1) {
+        $role = 000;
+    } else {
+        $role = 100;
+    }
+
 
     $query->execute(array($userUuid, $username, $icon, $settings, $passwordHash, $role));
     createDefaultFiles($userUuid);
@@ -324,12 +351,12 @@ function createDefaultFiles($ownerUuid)
     $timestamp = floor(microtime(true) * 1000);
 
     $query = $conn->prepare($sql);
-    $query->execute(array($ownerUuid, "root", null, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":false}', "Základní složka", "", 0, '{"data":[]}', null));
+    $query->execute(array($ownerUuid, "root", null, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":false}', "Základní složka", "", filesize(dirname(__FILE__) . "/user-data/defaults/sample.pdf") + filesize(dirname(__FILE__) . "/user-data/defaults/Nový textový dokument.txt"), '{"data":[]}', null));
     mkdir(dirname(__FILE__) . "/user-data/" . $ownerUuid . "/");
 
     $query = $conn->prepare($sql);
     $desktopUuid = newUuid();
-    $query->execute(array($desktopUuid, "desktop", $ownerUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":false}', "Plocha", "Obsahuje soubory a složky na ploše", 0, '{"data":["vComputer://' . $ownerUuid . '/"]}', null));
+    $query->execute(array($desktopUuid, "desktop", $ownerUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":false}', "Plocha", "Obsahuje soubory a složky na ploše", filesize(dirname(__FILE__) . "/user-data/defaults/sample.pdf") + filesize(dirname(__FILE__) . "/user-data/defaults/Nový textový dokument.txt"), '{"data":["vComputer://' . $ownerUuid . '/"]}', null));
     mkdir(dirname(__FILE__) . "/user-data/" . $ownerUuid . "/" . $desktopUuid . "/");
 
     $query = $conn->prepare($sql);
@@ -346,7 +373,7 @@ function createDefaultFiles($ownerUuid)
     $query->execute(array(newUuid(), "link", $desktopUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":false}', "Tento Počítač", "Umístění: Tento Počítač", 0, '{"data":["vComputer://"]}', null));
 
     $query = $conn->prepare($sql);
-    $query->execute(array(newUuid(), "link", $desktopUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":false}', "Administrace", "", 0, '{"data":["admin://"]}', null));
+    $query->execute(array(newUuid(), "link", $desktopUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":false}', "Administrace", "Doktupné pouze pro administrátory", 0, '{"data":["admin://"]}', null));
 
     $query = $conn->prepare($sql);
     $query->execute(array(newUuid(), "link", $desktopUuid, $timestamp, $timestamp, $timestamp, $ownerUuid, '{"canDelete":true}', "Minecraft", "Online verze hry minecraft", 0, '{"data":["games://minecraft"]}', null));

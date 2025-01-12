@@ -14,7 +14,7 @@ async function fileRead(uuid) {
     cl("|📘 Reading vNode with uuid: ", uuid);
     const response = await ajax({ "method": "read", "fileUuid": uuid });
     if (response.status == "ok") {
-        addNotification({ "head": "Čtení", "body": "Ok: " + response.uuid }, false, null, "info");
+        addNotification({ "head": "Čtení", "body": "Ok: " + response.uuid }, false, null, "info", true);
         await localDatabase.update("vNodes", "uuid", uuid, ["timeRead"], [response.timestamp]);
         return true;
     } else {
@@ -349,8 +349,9 @@ desktop.addEventListener("drop", async (event) => {
     const files = event.dataTransfer.files;
     if (files.length) {
         fileUpload.files = files;
-        const desktopNode = localDatabase.getColumn("vNodes", "type", "desktop");
-        handleFileUpload(files, parentUuid[0].uuid);
+        const desktopNode = await localDatabase.getColumn("vNodes", "type", "desktop");
+        // handleFileUpload(files, parentUuid[0].uuid);
+        handleFileUpload(files, desktopNode.uuid);
     }
 });
 
@@ -400,7 +401,22 @@ function desktopIconEditName(element) {
         if (event.key == "Enter") {
             event.preventDefault();
             stopEdit(event);
+            event.target.parentElement.removeEventListener("focusout", focusOut);
+        } else if (event.key == "Escape") {
+            stopEdit(event, false, previousValue);
+            event.target.parentElement.removeEventListener("focusout", focusOut);
         }
+        // this.querySelector("textarea").removeEventListener("keydown", enterToSave);
+    }
+
+    /**
+    * Function to handle the focus out event to save the changes.
+    * @param {Event} event - The event object triggered by the key press.
+    * @returns None
+    */
+    function focusOut(event) {
+        event.target.readOnly = true;
+        stopEdit(event);
     }
 
     /**
@@ -408,13 +424,29 @@ function desktopIconEditName(element) {
      * @param {Event} event - The event object triggered by the action.
      * @returns None
      */
-    function stopEdit(event) {
+    async function stopEdit(event, save = true, previousValue = null) {
         event.target.readOnly = true;
         textDeSelect();
-        try {
-            event.target.removeEventListener("keydown", enterToSave);
-        } catch (e) {
-            cl("error: ", e);
+        event.target.parentElement.removeEventListener("keydown", enterToSave);
+        if (save) {
+            try {
+                // TODO: rename file
+                cl("|📘 Renaming to: ", event.target.value);
+                const response = await ajax({ "method": "rename", "fileUuid": event.target.parentElement.dataset.uuid, "newName": event.target.value });
+                if (response.status == "ok") {
+                    addNotification({ "head": "Přejmenování", "body": "Ok: " + response.uuid }, false, null, "info", true);
+                    await localDatabase.update("vNodes", "uuid", event.target.parentElement.dataset.uuid, ["timeEdit", "name"], [response.timestamp, event.target.value]);
+                } else {
+                    addNotification({ "head": "Přejmenování", "body": "Chyba: " + response.details }, false, null, "warning");
+                    if (response.details == "sessionTimeout") {
+                        window.postMessage(["sessionTimeout"]);
+                    }
+                }
+            } catch (e) {
+                cl("error: ", e);
+            }
+        } else {
+            event.target.value = previousValue;
         }
     }
 
@@ -425,27 +457,36 @@ function desktopIconEditName(element) {
      * @param {Event} event - The double click event object.
      * @returns None
      */
+    let previousValue = null;
     element.addEventListener("dblclick", (event) => {
-        closeAllDesktopContextMenus();
-        let element = event.toElement;
+        previousValue = element.querySelector("textarea").value;
+        desktopIconRename(null, event);
         element.addEventListener("keydown", enterToSave);
-        if (element.readOnly) {
-            textSelect(element, 0, element.value.lastIndexOf("."))
-            element.readOnly = !element.readOnly
-        }
-        event.stopPropagation();
     });
     /**
      * Event listener for the "focusout" event that calls the stopEdit function.
      * @param {Event} event - The event object triggered by the "usout" event.
      * @returns None
      */
-    element.addEventListener("focusout", (event) => {
-        // cl("srcElement deprecated; Event: ", event)
-        // event.target.readOnly = true;
-        // textDeSelect()
-        stopEdit(event);
-    });
+    element.addEventListener("focusout", focusOut);
+}
+
+/**
+ * Allows the user to rename a desktop icon by double-clicking on it.
+ * @param {Element} element - The desktop icon element to rename.
+ * @param {Event} event - The event object triggered by the action.
+ * @returns None
+ */
+function desktopIconRename(element, event = null) {
+    element ??= event.toElement;
+    closeAllDesktopContextMenus();
+    if (element.readOnly) {
+        textSelect(element, 0, element.value.lastIndexOf("."))
+        element.readOnly = !element.readOnly
+    }
+    if (event) {
+        event.stopPropagation();
+    }
 }
 
 /**
@@ -551,13 +592,13 @@ function desktopIconContextMenu(element, node) {
         const open = createElement("span", new TextContent("Otevřít"), new AppendTo(container), new ElementEvent("click", () => { appOpen(node) }));
 
         if (node.type == "file" && node.name.split(".").pop() == "txt") {
-            const edit = createElement("span", new TextContent("Upravit"), new AppendTo(container));
+            const edit = createElement("span", new TextContent("Upravit"), new AppendTo(container), new ElementEvent("click", () => { appOpen(node, { edit: true }) }));
         }
 
         if (node.type == "file") {
             const print = createElement("span", new TextContent("Tisknout"), new AppendTo(container), new ElementEvent("click", () => {
                 const iframe = createElement("iframe", new ClassList("hidden"), new Src(getDestination(node)), new AppendTo(document.body), new ElementEvent("afterprint", () => self.close));
-                cl("Printing: ", iframe);
+                // cl("Printing: ", iframe);
                 iframe.contentWindow.print();
                 setTimeout(() => {
                     iframe.remove();
@@ -578,7 +619,14 @@ function desktopIconContextMenu(element, node) {
         if (node.permissions.canDelete) {
             const remove = createElement("span", new TextContent("Odstranit"), new AppendTo(container), new ElementEvent("click", ElementEvents.fileDelete));
         }
-        const rename = createElement("span", new TextContent("Přejmenovat"), new AppendTo(container));
+        const rename = createElement("span", new TextContent("Přejmenovat"), new AppendTo(container), new ElementEvent("click", (event) => {
+            let dblClickEvent = new MouseEvent('dblclick', {
+                bubbles: true,
+                cancelable: true,
+                view: window
+            });
+            desktop.querySelector('[data-uuid="' + node.uuid + '"] textarea').dispatchEvent(dblClickEvent);
+        }));
 
         const hr3 = createElement("hr", new AppendTo(container));
 
@@ -603,7 +651,7 @@ const fileSearchInputHandler = debounce((query) => {
         cl("|📗 Sending data:", data);
         ajax(data).then(response => {
             if (response.status == "ok") {
-                addNotification({ "head": "Hledání", "body": "Ok: \"" + query + "\"" }, false, null, "info");
+                addNotification({ "head": "Hledání", "body": "Ok: \"" + query + "\"" }, false, null, "info", true);
                 fileSearchResultsBuilder(response.results);
             } else {
                 addNotification({ "head": "Hledání", "body": "Chyba: " + response.details }, false, null, "warning");
@@ -681,10 +729,21 @@ document.addEventListener("keydown", async (event) => {
         });
         return;
     }
+    // cl(event.key);
     switch (event.key) {
         case "Escape":
             closeAllDesktopContextMenus();
             deselectDesktopIcons();
+            // TODO: aktuální
+            // desktop.querySelectorAll(".icon textarea:not([readonly])").forEach((element) => {
+            //     let focusoutEvent = new MouseEvent('focusout', {
+            //         bubbles: true,
+            //         cancelable: true,
+            //         view: window
+            //     });
+            //     element?.dispatchEvent(focusoutEvent);
+            //     element.readOnly = true;
+            // });
             break;
         case "Enter":
             desktop.querySelectorAll(".icon-selected > figcaption").forEach(async (element) => {
@@ -694,7 +753,13 @@ document.addEventListener("keydown", async (event) => {
             break;
         case "ArrowUp":
         case "ArrowLeft":
-            const up = document.querySelector(".icon:has(+ .icon-selected)");
+            let up = null;
+            if (desktop.querySelectorAll(".icon-selected").length == 0) {
+                up = desktop.querySelector(".icon");
+            }
+            else {
+                up = desktop.querySelector(".icon:has(+ .icon-selected)");
+            }
             if (up) {
                 if (!event.shiftKey) {
                     deselectDesktopIcons();
@@ -704,14 +769,29 @@ document.addEventListener("keydown", async (event) => {
             break;
         case "ArrowDown":
         case "ArrowRight":
+            let down = null;
+            if (desktop.querySelectorAll(".icon-selected").length == 0) {
+                down = desktop.querySelector(".icon:last-child");
+            }
+            else {
+                down = desktop.querySelector(".icon-selected:not(:has(~ .icon-selected)) + *");
+            }
             // const down = desktop.querySelector(".icon-selected + *")
-            const down = desktop.querySelector(".icon-selected:not(:has(~ .icon-selected)) + *");
+            // const down = desktop.querySelector(".icon-selected:not(:has(~ .icon-selected)) + *");
             if (down) {
                 if (!event.shiftKey) {
                     deselectDesktopIcons();
                 }
                 down.classList.add("icon-selected");
             }
+            break;
+        case "F2":
+            let dblClickEvent = new MouseEvent('dblclick', {
+                bubbles: true,
+                cancelable: true,
+                view: window
+            });
+            desktop.querySelector(".icon-selected textarea")?.dispatchEvent(dblClickEvent);
             break;
         default:
             return;

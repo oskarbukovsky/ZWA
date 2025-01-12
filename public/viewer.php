@@ -16,17 +16,16 @@ if (isset($_GET["method"]) && ($_GET["method"] == "sharing")) {
         die();
     }
 
-    foreach ($results as $result) {
-        if ($result["validUntil"] < floor(microtime(true) * 1000)) {
-            deleteData("vSessions", ["vSession"], [$_GET["uuid"]]);
-            header("Location: error.php?code=401");
-            die();
-        }
+    $result = $results[0];
+    if ($result["validUntil"] < floor(microtime(true) * 1000)) {
+        deleteData("vSessions", ["vSession"], [$_GET["uuid"]]);
+        header("Location: error.php?code=401");
+        die();
+    }
 
-        if (!printFile($result["file"])) {
-            header("Location: error.php?code=401");
-            die();
-        }
+    if (!printFile($result["file"])) {
+        header("Location: error.php?code=401");
+        die();
     }
 } else {
     if (!sessionIsValid()) {
@@ -39,8 +38,15 @@ if (isset($_GET["method"]) && ($_GET["method"] == "sharing")) {
         die();
     }
 
-    if (!printFile($_GET["uuid"])){
-        header("Location: error.php?code=403");
-        die();
+    if (isset($_GET["edit"]) && ($_GET["edit"] == "true")) {
+        if (!editFile($_GET["uuid"])) {
+            header("Location: error.php?code=401");
+            die();
+        }
+    } else {
+        if (!printFile($_GET["uuid"])) {
+            header("Location: error.php?code=401");
+            die();
+        }
     }
 }

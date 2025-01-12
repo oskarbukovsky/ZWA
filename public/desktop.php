@@ -62,6 +62,7 @@ if (!sessionIsValid()) {
                     Weather Data Source: <a href="https://sharpweather.com/weather_prague/30_days/">Prague 30 days
                         weather</a></div>
                 <script async src="https://static1.sharpweather.com/widgetjs/?id=id107cb35be4427"></script>
+                <iframe class="rcs-feed" src='https://widget.tagembed.com/2146452'></iframe>
                 <div class="controls">
                     <div class="user">
                         <div class="user-avatar">

@@ -43,19 +43,26 @@ if (sessionIsValid()) {
         <form action="auth.php" method="post" id="loginForm">
             <input type="text" name="method" value="login" class="hidden">
             <div class="input">
-                <input id="loginUsername" type="text" name="username" placeholder="Jméno" pattern="[a-zA-Z0-9]{5,16}"
-                    autocomplete="username" title="Jméno musí mít 5-16 znaků, a smí být složeno pouze z a-z, A-Z, 0-9" required <?php
+                <label for="loginUsername">
+                    <input id="loginUsername" type="text" name="username" placeholder="Jméno" pattern="[a-zA-Z0-9]{5,16}"
+                    autocomplete="username" title="Jméno musí mít 5-16 znaků, a smí být složeno pouze z a-z, A-Z, 0-9"
+                    required
+                    <?php
                     if (isset($_COOKIE["Prefill-username"]) && isset($_GET["type"]) && $_GET["type"] == "login") {
                         echo "value=\"" . htmlspecialchars($_COOKIE["Prefill-username"]) . "\"";
                     }
                     ?>>
+                </label>
             </div>
             <div class="input">
-                <input id="loginPassword" type="password" name="password" placeholder="Heslo"
-                    autocomplete="current-password" pattern=".{6,}" title="Heslo musí obsahovat 6 a více znaků" required>
+                <label for="loginPassword">
+                    <input id="loginPassword" type="password" name="password" placeholder="Heslo"
+                    autocomplete="current-password" pattern=".{6,}" title="Heslo musí obsahovat 6 a více znaků"
+                    required>
+                </label>
             </div>
-            <label class="loginButton">
-                <input type="submit" value="Submit">
+            <label class="loginButton" for="loginSubmit">
+                <input id="loginSubmit" type="submit" value="Submit">
                 <svg width="24" height="24" viewBox="0 0 24 24">
                     <path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z"></path>
                 </svg>
@@ -64,24 +71,31 @@ if (sessionIsValid()) {
         <form action="auth.php" method="post" id="registerForm" autocomplete="off">
             <input type="text" name="method" value="register" class="hidden">
             <div class="input">
-                <input id="registerUsername" type="text" name="username" placeholder="Jméno" autocomplete="username"
+                <label for="registerUsername">
+                    <input id="registerUsername" type="text" name="username" placeholder="Jméno" autocomplete="username"
                     pattern="[a-zA-Z0-9]{5,16}"
                     title="Jméno musí mít 5-16 znaků, a smí být složeno pouze z a-z, A-Z, 0-9" required <?php
                     if (isset($_COOKIE["Prefill-username"]) && isset($_GET["type"]) && $_GET["type"] == "register") {
                         echo "value=" . htmlspecialchars($_COOKIE["Prefill-username"]);
                     }
                     ?>>
+                </label>
             </div>
             <div class="input">
-                <input id="registerPassword" type="password" name="password" placeholder="Heslo"
-                    autocomplete="new-password" pattern=".{6,}" title="Heslo musí obsahovat 6 a více znaků" required>
+                <label for="registerPassword">
+                    <input id="registerPassword" type="password" name="password" placeholder="Heslo"
+                        autocomplete="new-password" pattern=".{6,}" title="Heslo musí obsahovat 6 a více znaků"
+                        required>
+                </label>
             </div>
             <div class="input">
-                <input id="registerPasswordAgain" type="password" name="passwordAgain" placeholder="Heslo znovu"
+                <label for="registerPasswordAgain">
+                    <input id="registerPasswordAgain" type="password" name="passwordAgain" placeholder="Heslo znovu"
                     autocomplete="new-password" pattern=".{6,}" title="Heslo musí obsahovat 6 a více znaků" required>
+                </label>
             </div>
-            <label class="loginButton">
-                <input type="submit" value="Submit">
+            <label class="loginButton" for="registerSubmit">
+                <input id="registerSubmit" type="submit" value="Submit">
                 <svg width="24" height="24" viewBox="0 0 24 24">
                     <path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z"></path>
                 </svg>

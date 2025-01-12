@@ -221,10 +221,11 @@ document.addEventListener("keydown", async (event) => {
             countSelectedFiles();
             break;
         case "Enter":
-            files.querySelectorAll(".selected").forEach((element) => {
+            files.querySelectorAll(".selected").forEach(async (element) => {
+                // cl("##########: " + element.dataset.uuid);
                 // const node = await localDatabase.getColumn("vNodes", "uuid", element.dataset.uuid);
-                // appOpen(node[0]);
-                window.top.postMessage(["appOpen", "66285580-f084-43fd-b3aa-308399055455"]);
+                // window.top.postMessage(["appOpen", node[0]]);
+                explorerOpenApp(event, element);
             });
             break;
         case "ArrowUp":
@@ -257,15 +258,6 @@ document.addEventListener("keydown", async (event) => {
 });
 
 /**
- * Adds a double-click event listener to each element to post a message to the parent window.
- */
-files.querySelectorAll(".file").forEach((element) => {
-    element.addEventListener("dblclick", (event) => {
-        window.top.postMessage(["appOpen", "66285580-f084-43fd-b3aa-308399055455"]);
-    });
-});
-
-/**
  * Checks if the element with the class "uploading" has the class "upload" and removes it if present.
  */
 window.addEventListener("mouseover", () => {
@@ -273,7 +265,6 @@ window.addEventListener("mouseover", () => {
         document.querySelector(".uploading").classList.remove("upload");
     }
 });
-
 
 // Handling of the files uploads
 document.body.addEventListener("dragover", (event) => {

@@ -143,8 +143,9 @@ async function processUserIdentifier() {
  * Reads the vNode, creates the application window with its header, controls, and content,
  * and sets up the necessary event listeners and UI elements.
  * @param {vNode} node - The node object containing information about the application to open.
+ * @param {Object} options - The options object to pass to the application window.
  */
-async function appOpen(node) {
+async function appOpen(node, options = {}) {
     const status = await fileRead(node.uuid);
     if (!status) {
         return;
@@ -175,7 +176,11 @@ async function appOpen(node) {
     const v1 = createElement("div", new ClassList("app-v1"), new AppendTo(header));
     const iconHolder = createElement("div", new ClassList("app-icon"), new AppendTo(v1));
     const icon = createElement("img", new Src(getIcon(node)), new AppendTo(iconHolder));
-    const title = createElement("div", new TextContent(node.name), new ClassList("app-title"), new AppendTo(v1));
+    let appTitle = node.name;
+    if (options?.edit == true) {
+        appTitle += " - Editor";
+    }
+    const title = createElement("div", new TextContent(appTitle), new ClassList("app-title"), new AppendTo(v1));
     const controls = createElement("div", new ClassList("app-controls"), new AppendTo(header), new ElementEvent("mousedown", ElementEvents.NoPropagation));
     const minimize = createElement("div", new ClassList("minimize"), new AppendTo(controls));
     const maximize = createElement("div", new ClassList("maximize"), new AppendTo(controls));
@@ -198,7 +203,7 @@ async function appOpen(node) {
     if (!node.name.includes(".pdf")) {
         sandBox = new SandBox("allow-downloads", "allow-forms", "allow-modals", "allow-orientation-lock", "allow-pointer-lock", "allow-popups", "allow-popups-to-escape-sandbox", "allow-presentation", "allow-same-origin", "allow-scripts", "allow-storage-access-by-user-activation", "allow-top-navigation", "allow-top-navigation-by-user-activation", "allow-top-navigation-to-custom-protocols")
     }
-    const iframe = createElement("iframe", new Src(getDestination(node)), sandBox,
+    const iframe = createElement("iframe", new Src(getDestination(node, options)), sandBox,
         new ElementEvent("load", appIframeLoaded), new ElementEvent("mouseover", ElementEvents.appIframeMouseOver), new ElementEvent("mouseout", ElementEvents.appIframeMouseOut),
         new AppendTo(content), new ElementEvent("dragenter", (event) => {
             cl(999);

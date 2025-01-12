@@ -8,11 +8,11 @@
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	box-shadow: 0px 3px 2px 3px
+	box-shadow: 0 3px 2px 3px
 		rgb(196 212 255 / calc(35% * (var(--navbar-transparency) * 3)));
 }
 #navbar > div {
-	margin: 0px;
+	margin: 0;
 	width: var(--navbar-height);
 	height: var(--navbar-height);
 	background: linear-gradient(
@@ -336,12 +336,12 @@ input:invalid {
 	bottom: calc(var(--navbar-height) - 1px);
 	left: 11px;
 	width: 730px;
-	min-height: 0px;
-	height: 0px;
+	min-height: 0;
+	height: 0;
 }
 #navbar .navbar-search > .search-menu.open {
 	bottom: calc(var(--navbar-height) + 11px);
-	min-height: 575px;
+	min-height: 515px;
 	height: 67vh;
 	padding: 24px;
 }
@@ -349,15 +349,15 @@ input:invalid {
 	bottom: calc(var(--navbar-height) - 1px);
 	left: 11px;
 	width: 640px;
-	min-height: 0px;
-	height: 0px;
+	min-height: 0;
+	height: 0;
 	display: flex;
 	flex-flow: column;
 	justify-content: space-between;
 }
 #navbar .navbar-menu > .main-menu.open {
 	bottom: calc(var(--navbar-height) + 11px);
-	min-height: 600px;
+	min-height: 515px;
 	height: 67vh;
 }
 #navbar .main-menu > .controls {
@@ -376,7 +376,7 @@ input:invalid {
 	gap: 12px;
 	font-size: 0.7rem;
 	font-weight: 300;
-	text-shadow: 0px 0px 3px rgba(0, 0, 0, 0.4);
+	text-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
 	padding: 5px 12px 5px 8px;
 	border-radius: 5px;
 }
@@ -413,10 +413,10 @@ input:invalid {
 }
 #navbar .navbar-screen .screen-menu {
 	bottom: calc(var(--navbar-height) - 1px);
-	right: -103px;
+	right: -90px;
 	min-width: 360px;
-	min-height: 0px;
-	height: 0px;
+	min-height: 0;
+	height: 0;
 	display: flex;
 	flex-flow: column;
 	pointer-events: none;
@@ -543,7 +543,7 @@ input:invalid {
 }
 
 #navbar > .navbar-time {
-	width: 99px;
+	width: 85px;
 	background: rgba(0, 255, 0, var(--navbar-dev));
 	align-content: center;
 }
@@ -671,7 +671,7 @@ input:invalid {
 	gap: 4px;
 	align-items: center;
 	color: #fff;
-	padding-right: 4px;
+	/* padding-right: 4px; */
 	width: fit-content;
 }
 
@@ -693,6 +693,7 @@ input:invalid {
 
 #notifications {
 	font-size: 1.25rem;
+	flex-shrink: 0;
 }
 
 #notifications.fill {
@@ -829,7 +830,7 @@ div.notification.hide-extra {
 	}
 	100% {
 		opacity: 0;
-		right: 0px;
+		right: 0;
 		left: 100%;
 	}
 }
@@ -949,7 +950,7 @@ div.notification.hide-extra {
 	font-weight: 600;
 }
 #navbar .calendar-body {
-	padding: 0px 0px 10px 0px;
+	padding: 0 0 10px 0;
 }
 #navbar .calendar-body ul {
 	list-style: none;
@@ -1045,4 +1046,10 @@ div.notification.hide-extra {
 
 #navbar > .navbar-minimize:active::after {
 	background-color: rgba(46, 70, 107, 0.9);
+}
+
+#navbar .rcs-feed {
+	border: none;
+	width: 100%;
+	height: 100%;
 }

@@ -66,8 +66,146 @@ function printFile($uuid)
         readfile($file);
     } catch (Exception $e) {
         echo $e->getMessage();
+        return false;
     }
     return true;
+}
+
+function editFile($uuid)
+{
+    $query = getData("users", "role", ["uuid"], [$_SESSION["userUuid"]]);
+    $user = $query->fetchAll();
+
+    if (count($user) != 1) {
+        return false;
+    }
+
+    $query = getData("vNodes", "parent,name,parent", ["uuid"], [$uuid]);
+    $results = $query->fetchAll();
+
+    foreach ($results as $result) {
+        // $file = "user-data/" . $result["owner"] . json_decode($result["data"])->data[0] . $result["name"];
+        $file = getParentDir($result["parent"]) . $result["name"];
+    }
+
+    try {
+        if (!isset($file) || !file_exists($file)) {
+            // echo "file didnt exist";
+            // br();
+            // echo $file;
+            header("Location: error.php?code=404");
+            die();
+        }
+
+        $finfo = new finfo(FILEINFO_MIME);
+        $fileContentType = finfo_file($finfo, $file);
+        // TODO: check: mime_content_type($file);
+        finfo_close($finfo);
+
+        $fileContent = file_get_contents($file);
+        if (!str_contains($fileContentType, "text/plain")) {
+            return printFile($uuid);
+        }
+        echo <<<HTML
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                
+                <link rel="stylesheet" type="text/css" href="css/main.css">
+                <link rel="stylesheet" type="text/css" href="css/viewer/viewer.css">
+                
+                <link rel="icon" href="media/favicon.png" type="image/gif" sizes="256x256">
+                <meta name="author" content="Jan Oskar Bukovský">
+                <meta name="description" content="ZWA project">
+                <meta name="Content-Type" content="text/html">
+                
+                <script src="js/utils.js"></script>
+                <script src="js/viewer.js"></script>
+                <meta name="color-scheme" content="light dark">
+            </head>
+            <body> 
+                <textarea id="editor">$fileContent</textarea>
+            </body>
+        </html>
+        HTML;
+    } catch (Exception $e) {
+        echo $e->getMessage();
+        return false;
+    }
+    return true;
+}
+
+function renameFile($uuid, $newName)
+{
+    $timestamp = floor(microtime(true) * 1000);
+
+    $query = getData("vNodes", "*", ["uuid"], [$uuid]);
+    $dataBackup = $query->fetchAll();
+    if (count($dataBackup) != 1) {
+        return null;
+    }
+
+    $query = getData("vNodes", "uuid,parent", ["name"], [$dataBackup[0]["parent"], $newName]);
+    $alreadyExists = $query->fetchAll();
+    if (count($alreadyExists) == 1) {
+        return null;
+    }
+
+    function sqlPartFunc($uuid, $timestamp, $newName)
+    {
+        updateData("vNodes", ["timeEdit", "name"], [$timestamp, $newName], ["uuid"], [$uuid]);
+        $query = getData("vNodes", "timeEdit", ["uuid"], [$uuid]);
+        $data = $query->fetchAll();
+        if (count($data) != 1) {
+            return false;
+        }
+        if ($data[0]["timeEdit"] != $timestamp) {
+            return false;
+        }
+        return true;
+    }
+
+    function ioPartFunc($uuid, $timestamp, $newName, $dataBackup)
+    {
+        if (($dataBackup[0]["type"] == "file")) {
+            $result = rename(getParentDir($dataBackup[0]["parent"]) . $dataBackup[0]["name"], getParentDir($dataBackup[0]["parent"]) . $newName);
+            return $result;
+        } else {
+            return true;
+        }
+    }
+
+    $sqlPart = sqlPartFunc($uuid, $timestamp, $newName);
+    $ioPart = ioPartFunc($uuid, $timestamp, $newName, $dataBackup);
+
+    try {
+        if (!($sqlPart && $ioPart)) {
+            // TODO: handle (partial) fails
+            if (!$sqlPart) {
+                updateData("vNodes", ["timeEdit", "name"], [$dataBackup[0]["timeEdit"], $dataBackup[0]["name"]], ["uuid"], [$uuid]);
+            }
+            if (!$ioPart) {
+                // unlink($parentDir . $_FILES["fileUpload"]["name"]);
+                if (($dataBackup[0]["type"] == "file") || ($dataBackup[0]["type"] == "folder")) {
+                } else {
+                }
+            }
+            return null;
+        }
+    } catch (Exception $e) {
+        echo $e->getMessage();
+    }
+
+    return $timestamp;
+}
+
+function modifyFile($uuid)
+{
+    $timestamp = floor(microtime(true) * 1000);
+
+    return $timestamp;
 }
 
 function uploadFile($parentUuid)
@@ -104,6 +242,12 @@ function uploadFile($parentUuid)
         $ioPart = move_uploaded_file($_FILES["fileUpload"]["tmp_name"], $parentDir . $_FILES["fileUpload"]["name"]);
         if (!($sqlPart && $ioPart)) {
             // TODO: handle (partial) fails
+            if (!$sqlPart) {
+                unlink($parentDir . $_FILES["fileUpload"]["name"]);
+            }
+            if (!$ioPart) {
+                deleteData("vNodes", ["uuid"], [$newUuid]);
+            }
             return null;
         }
         return [getDataForJson("vNodes", "uuid,type,parent,timeCreate,timeEdit,timeRead,owner,permissions,name,description,size,data,icon", ["uuid"], [$newUuid])];
@@ -138,9 +282,15 @@ function createFile($type, $parentUuid)
 
         $query = $conn->prepare($sql);
         if ($type == "file") {
-            $sqlPart = $query->execute(array($newUuid, "file", $parentUuid, $timestamp, $timestamp, $timestamp, $_SESSION["userUuid"], '{"canDelete":true}', $newUuid . ".txt", "Typ: Textový dokument", 0, '{"data":["' . $parentUuid . '"]}', null));
+            $sqlPart = $query->execute(array($newUuid, "file", $parentUuid, $timestamp, $timestamp, $timestamp, $_SESSION["userUuid"], '{"canDelete":true}', $newUuid . ".txt", "Typ: Textový dokument", 0, '{"data":["vComputer://' . $parentUuid . '"]}', null));
             $ioPart = file_put_contents($parentDir . $newUuid . ".txt", "\xEF\xBB\xBF");
             if (!($sqlPart && $ioPart)) {
+                if (!$sqlPart) {
+
+                }
+                if (!$ioPart) {
+
+                }
                 // TODO: handle (partial) fails
                 return null;
             }
@@ -148,6 +298,12 @@ function createFile($type, $parentUuid)
             $sqlPart = $query->execute(array($newUuid, "folder", $parentUuid, $timestamp, $timestamp, $timestamp, $_SESSION["userUuid"], '{"canDelete":true}', $newUuid, "Složka", 0, '{"data":["vComputer://' . $parentUuid . '"]}', null));
             $ioPart = mkdir($parentDir . $newUuid);
             if (!($sqlPart && $ioPart)) {
+                if (!$sqlPart) {
+                    removeDir($parentDir . $newUuid);
+                }
+                if (!$ioPart) {
+                    deleteData("vNodes", ["uuid"], [$newUuid]);
+                }
                 // TODO: handle (partial) fails
                 return null;
             }
@@ -164,23 +320,23 @@ function getParentDir($uuid)
 {
     $parentDir = dirname(__FILE__) . "/user-data/";
 
-    $query = getData("vNodes", "uuid, data, parent", ["uuid"], [$uuid]);
-    $results = $query->fetchAll();
+    $tmpUuid = $uuid;
+    $uuidList = [];
+    do {
+        $sql = getData("vNodes", "uuid, parent", ["uuid"], [$tmpUuid]);
+        $data = $sql->fetchAll();
+        if (count($data) != 1) {
+            break;
+        }
+        array_unshift($uuidList, $data[0]["uuid"]);
+        $tmpUuid = $data[0]["parent"];
+    } while ($data[0]["parent"] != "null");
 
-    $json = json_decode($results[0]["data"]);
-    if (count($json->data) < 1) {
-        return $parentDir . $uuid . "/";
-    } else {
-        return $parentDir . str_replace("vComputer://", "", $json->data[0]) . $uuid . "/";
+    foreach ($uuidList as $tmpUuid) {
+        $parentDir .= $tmpUuid . "/";
     }
 
-}
-
-function modifyFile($uuid)
-{
-    $timestamp = floor(microtime(true) * 1000);
-
-    return $timestamp;
+    return $parentDir;
 }
 
 function deleteFile($uuid)
@@ -238,7 +394,7 @@ function readFileMetadata($uuid)
 {
     $timestamp = floor(microtime(true) * 1000);
 
-    updateData("vNodes", ["timeRead"], [$uuid], ["uuid"], [$uuid]);
+    updateData("vNodes", ["timeRead"], [$timestamp], ["uuid"], [$uuid]);
     $query = getData("vNodes", "timeRead", ["uuid"], [$uuid]);
     $data = $query->fetchAll();
     if (count($data) != 1) {

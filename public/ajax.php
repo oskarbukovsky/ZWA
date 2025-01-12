@@ -25,6 +25,8 @@ switch ($_POST["method"]) {
         handleUpload();
     case "create":
         handleCreate();
+    case "rename":
+        handleRename();
     case "modify":
         handleModify();
     case "delete":
@@ -71,6 +73,21 @@ function handleCreate()
         returnJSONResponse(["status" => "ok", "details" => "entryCreated", "item" => $status]);
     } else {
         returnJSONResponse(["status" => "error", "details" => "unableToCreate"]);
+    }
+}
+
+function handleRename() {
+    if (!isset($_POST["fileUuid"])) {
+        returnJSONResponse(["status" => "error", "details" => "missingFileUuid"]);
+    }
+    if (!isset($_POST["newName"])) {
+        returnJSONResponse(["status" => "error", "details" => "missingNewName"]);
+    }
+    $status = renameFile($_POST["fileUuid"], $_POST["newName"]);
+    if ($status !== null) {
+        returnJSONResponse(["status" => "ok", "details" => "entryRenamed", "uuid" => $_POST["fileUuid"], "timestamp" => $status]);
+    } else {
+        returnJSONResponse(["status" => "error", "details" => "unableToRename", "uuid" => $_POST["fileUuid"]]);
     }
 }
 

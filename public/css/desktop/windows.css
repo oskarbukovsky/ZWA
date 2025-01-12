@@ -67,7 +67,7 @@
 
 #windows .windows-app > .app-header {
 	width: 100%;
-	height: min(fit-content, calc(10px + var(--app-controls-size)));
+	height: calc(20px + var(--app-controls-size));
 	background-color: rgb(32, 32, 32);
 	display: flex;
 	justify-content: space-between;
@@ -157,13 +157,13 @@
 }
 
 #windows .app-icon > img:before {
-    background-image: url(../../media/file-icons/unknown.webp);
+	background-image: url(../../media/file-icons/unknown.webp);
 	width: 100%;
 	height: 100%;
 	object-fit: contain;
-    content: " ";
-    display: block;
-    background-size: cover;
+	content: " ";
+	display: block;
+	background-size: cover;
 }
 
 #windows .app-v1 > .app-icon {
@@ -303,10 +303,6 @@ body:has(.select-box) > #windows > .windows-app > .app-content:after,
 	/* background-color: rgba(255, 0, 0, 0.1); */
 	border-radius: 0 0 6px 6px;
 	pointer-events: all;
-}
-
-#windows:has(.resizing) > .windows-app > .app-content:after {
-	/* background-color: rgba(128, 255, 128, 0.2); */
 }
 
 #windows .windows-app.maximized {
