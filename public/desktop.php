@@ -111,7 +111,7 @@ if (!sessionIsValid()) {
                     <span class="material-symbols-rounded">
                         sunny
                     </span>
-                    <input type="range" min="0" max="100" step="1" value="100" aria-hidden="true">
+                    <input type="range" min="0" max="100" step="1" value="100">
                     <span class="material-symbols-rounded">
                         brightness_6
                     </span>
@@ -120,7 +120,7 @@ if (!sessionIsValid()) {
                     <span class="routine material-symbols-rounded fill">
                         routine
                     </span>
-                    <input type="range" min="0" max="100" step="1" value="0" aria-hidden="true">
+                    <input type="range" min="0" max="100" step="1" value="0">
                     <span class="bedtime material-symbols-rounded fill">
                         bedtime
                     </span>

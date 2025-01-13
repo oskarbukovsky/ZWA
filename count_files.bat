@@ -1,4 +1,4 @@
 @echo off
-call cloc . --fullpath --match-d='/(public)/' --not-match-d='/(docs)/'
+call cloc ./public --exclude-dir=docs --include-lang=JavaScript,CSS,PHP --md
 pause
 exit

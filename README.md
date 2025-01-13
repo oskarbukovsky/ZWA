@@ -40,6 +40,18 @@
 
 > Testováno na aktuálních prohlížečích, ~130 chromium, ale chvíli testováno na verzi 85 přes BrowserStack a stránka vypadala funkčně, je možné že poběží i na nižších (Platí zhruba do 80 commitu, dále nezkoušeno)
 
+## Kód
+
+Language|files|blank|comment|code
+:-------|-------:|-------:|-------:|-------:
+JavaScript|10|370|1128|2688
+CSS|16|265|110|2528
+PHP|15|246|53|1731
+--------|--------|--------|--------|--------
+SUM:|41|881|1291|6947
+
+> [cloc](https://github.com/AlDanial/cloc) výsledek
+
 ## Licence
 
 Tento projekt je pod licencí [Don't Be a Jerk License](https://gitlab.fel.cvut.cz/bukovja4/zwa/-/blob/main/LICENSE.md)

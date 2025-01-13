@@ -10,7 +10,7 @@
  * A flag to enable or disable debug mode.
  * @constant {boolean}
  */
-const DEBUG = true;
+const DEBUG = false;
 
 // Remove usual way of showing context menu on right click
 // TODO: remove
