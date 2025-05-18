@@ -1,0 +1,209 @@
+@font-face {
+	font-family: segoe ui variable static display;
+	font-style: normal;
+	font-weight: 400;
+	src: local("Segoe UI Variable Static Display"),
+		url(./fonts/SegoeUIVariableStaticDisplay.ttf) format("woff");
+	font-display: swap;
+}
+@font-face {
+	font-family: segoe ui variable static display;
+	font-style: normal;
+	font-weight: 300;
+	src: local("Segoe UI Variable Static Display"),
+		url(./fonts/SegoeUIVariableStaticDisplayLight.ttf) format("woff");
+	font-display: swap;
+}
+@font-face {
+	font-family: segoe ui variable static display;
+	font-style: normal;
+	font-weight: 350;
+	src: local("Segoe UI Variable Static Display"),
+		url(./fonts/SegoeUIVariableStaticDisplaySemilight.ttf) format("woff");
+	font-display: swap;
+}
+@font-face {
+	font-family: segoe ui variable static display;
+	font-style: normal;
+	font-weight: 600;
+	src: local("Segoe UI Variable Static Display"),
+		url(./fonts/SegoeUIVariableStaticDisplaySemibold.ttf) format("woff");
+	font-display: swap;
+}
+@font-face {
+	font-family: segoe ui variable static display;
+	font-style: normal;
+	font-weight: 700;
+	src: local("Segoe UI Variable Static Display"),
+		url(./fonts/SegoeUIVariableStaticDisplayBold.ttf) format("woff");
+	font-display: swap;
+}
+@font-face {
+	font-family: segoe ui variable static small;
+	font-style: normal;
+	font-weight: 400;
+	src: local("Segoe UI Variable Static Small"),
+		url(./fonts/SegoeUIVariableStaticSmall.ttf) format("woff");
+	font-display: swap;
+}
+@font-face {
+	font-family: segoe ui variable static text;
+	font-style: normal;
+	font-weight: 400;
+	src: local("Segoe UI Variable Static Text"),
+		url(./fonts/SegoeUIVariableStaticText.ttf) format("woff");
+	font-display: swap;
+}
+@font-face {
+	font-family: segoe ui variable static small;
+	font-style: normal;
+	font-weight: 300;
+	src: local("Segoe UI Variable Static Small"),
+		url(./fonts/SegoeUIVariableStaticSmallLight.ttf) format("woff");
+	font-display: swap;
+}
+@font-face {
+	font-family: segoe ui variable static text;
+	font-style: normal;
+	font-weight: 300;
+	src: local("Segoe UI Variable Static Text"),
+		url(./fonts/SegoeUIVariableStaticTextLight.ttf) format("woff");
+	font-display: swap;
+}
+@font-face {
+	font-family: segoe ui variable static small;
+	font-style: normal;
+	font-weight: 350;
+	src: local("Segoe UI Variable Static Small"),
+		url(./fonts/SegoeUIVariableStaticSmallSemilight.ttf) format("woff");
+	font-display: swap;
+}
+@font-face {
+	font-family: "segoe ui variable static semilight text";
+	font-style: normal;
+	font-weight: 350;
+	src: local("Segoe UI Variable Static Text"),
+		url(./fonts/SegoeUIVariableStaticTextSemilight.ttf) format("woff");
+	font-display: swap;
+}
+@font-face {
+	font-family: segoe ui variable static small;
+	font-style: normal;
+	font-weight: 600;
+	src: local("Segoe UI Variable Static Small"),
+		url(./fonts/SegoeUIVariableStaticSmallSemibold.ttf) format("woff");
+	font-display: swap;
+}
+@font-face {
+	font-family: segoe ui variable static text;
+	font-style: normal;
+	font-weight: 600;
+	src: local("Segoe UI Variable Static Text"),
+		url(./fonts/SegoeUIVariableStaticTextSemibold.ttf) format("woff");
+	font-display: swap;
+}
+@font-face {
+	font-family: segoe ui variable static small;
+	font-style: normal;
+	font-weight: 700;
+	src: local("Segoe UI Variable Static Small"),
+		url(./fonts/SegoeUIVariableStaticSmallBold.ttf) format("woff");
+	font-display: swap;
+}
+@font-face {
+	font-family: segoe ui variable static text;
+	font-style: normal;
+	font-weight: 700;
+	src: local("Segoe UI Variable Static Text"),
+		url(./fonts/SegoeUIVariableStaticTextBold.ttf) format("woff");
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Material Symbols Rounded";
+	font-style: normal;
+	font-weight: 200;
+	src: url(./fonts/materials-symbols-rounded.woff2) format("woff2");
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Material Symbols Rounded Notifications Fill";
+	font-style: normal;
+	font-weight: 100 200;
+	src: url(./fonts/materials-symbols-rounded-notifications-fill.woff2)
+		format("woff2");
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Material Symbols Rounded BedTime Fill";
+	font-style: normal;
+	font-weight: 100 200;
+	src: url(./fonts/materials-symbols-rounded-bedtime-fill.woff2)
+		format("woff2");
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Material Symbols Rounded Routine Fill";
+	font-style: normal;
+	font-weight: 100 200;
+	src: url(./fonts/materials-symbols-rounded-routine-fill.woff2)
+		format("woff2");
+	font-display: swap;
+}
+
+.material-symbols-rounded {
+	font-family: "Material Symbols Rounded";
+	font-weight: normal;
+	font-style: normal;
+	font-size: 24px;
+	line-height: 1;
+	letter-spacing: normal;
+	text-transform: none;
+	display: inline-block;
+	white-space: nowrap;
+	word-wrap: normal;
+	direction: ltr;
+	-webkit-font-feature-settings: "liga";
+	font-feature-settings: "liga";
+	-webkit-font-smoothing: antialiased;
+	font-display: swap;
+}
+
+.material-symbols-rounded-after:after {
+	font-family: "Material Symbols Rounded";
+	font-weight: normal;
+	font-style: normal;
+	font-size: 24px;
+	line-height: 1;
+	letter-spacing: normal;
+	text-transform: none;
+	display: inline-block;
+	white-space: nowrap;
+	word-wrap: normal;
+	direction: ltr;
+	-webkit-font-feature-settings: "liga";
+	font-feature-settings: "liga";
+	-webkit-font-smoothing: antialiased;
+	font-display: swap;
+}
+
+#notifications.material-symbols-rounded.fill {
+	font-family: "Material Symbols Rounded Notifications Fill";
+	font-variation-settings: "FILL" 1;
+	font-display: swap;
+}
+
+.navbar-screen .bedtime.material-symbols-rounded.fill {
+	font-family: "Material Symbols Rounded BedTime Fill";
+	font-variation-settings: "FILL" 1;
+	font-display: swap;
+}
+
+.navbar-screen .routine.material-symbols-rounded.fill {
+	font-family: "Material Symbols Rounded Routine Fill";
+	font-variation-settings: "FILL" 1;
+	font-display: swap;
+}

@@ -1,0 +1,6 @@
+**/user-data/*
+!**/user-data/defaults
+
+**/NetOs Installer/Data/*
+*.ffs_db
+*.ffs_lock

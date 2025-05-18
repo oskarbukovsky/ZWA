@@ -1,0 +1,418 @@
+#windows {
+	pointer-events: none;
+}
+
+#windows > .windows-app {
+	position: absolute;
+	top: 50px;
+	left: 250px;
+	min-width: 400px;
+	min-height: calc(
+		300px + 1px +
+			max(
+				calc(var(--app-controls-size) + 2 * var(--app-controls-extra)),
+				calc(
+					12px + var(--app-controls-size) + var(--app-controls-extra)
+				)
+			)
+	);
+	height: calc(
+		300px + 1px +
+			max(
+				calc(var(--app-controls-size) + 2 * var(--app-controls-extra)),
+				calc(
+					12px + var(--app-controls-size) + var(--app-controls-extra)
+				)
+			)
+	);
+	background-color: rgb(25, 25, 25);
+	border: 1px solid rgb(55, 55, 55);
+	border-radius: 6px;
+	box-shadow: 1px 1px 4px -1px rgb(0 12 26 / 50%);
+	color: #fff;
+	pointer-events: all;
+	user-select: none;
+	transition: opacity 150ms, transform 150ms;
+	transition-timing-function: ease-in-out;
+	opacity: 1;
+	transform: none;
+	animation: app-create 100ms ease-in-out;
+}
+
+@keyframes app-create {
+	0% {
+		transform: scale(0.5);
+		opacity: 0;
+	}
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+#windows > .windows-app.closing {
+	opacity: 0;
+	transform: scale(0.5);
+}
+
+#windows > .windows-app.active {
+	border: 1px solid rgb(0, 99, 177);
+}
+
+#windows .windows-app .app-padding {
+	width: 100%;
+	height: 23px;
+	background-color: rgb(28, 28, 28);
+}
+
+#windows .windows-app > .app-header {
+	width: 100%;
+	height: calc(20px + var(--app-controls-size));
+	background-color: rgb(32, 32, 32);
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	flex-flow: row;
+	border-radius: 6px 6px 0 0;
+}
+
+#windows .windows-app > .app-content {
+	width: 100%;
+	min-height: 300px;
+	height: 100%;
+	height: calc(
+		100% -
+			max(
+				calc(
+					var(--app-controls-size) + 2 *
+						max(
+							var(--app-controls-extra),
+							calc(-1 * var(--app-controls-extra))
+						)
+				),
+				calc(
+					12px + var(--app-controls-size) + var(--app-controls-extra)
+				)
+			)
+	);
+}
+
+#windows .windows-app > .app-content:before {
+	content: "Načítání...";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 2.5em;
+	/* color: #fff; */
+	animation: loading-text-animation 4s linear infinite;
+}
+
+@keyframes loading-text-animation {
+	0% {
+		color: #6e6e6e;
+	}
+	10% {
+		color: #6e6e6e;
+	}
+	30% {
+		color: white;
+	}
+	50% {
+		color: #6e6e6e;
+	}
+	60% {
+		color: #6e6e6e;
+	}
+	80% {
+		color: white;
+	}
+	100% {
+		color: #6e6e6e;
+	}
+}
+
+#windows .app-v1 {
+	display: flex;
+	flex-flow: row;
+	align-self: center;
+	align-items: center;
+	gap: 4px;
+	padding: 2px 0 0 2px;
+	min-width: 0;
+}
+
+#windows .app-v1 > .app-icon,
+#windows .app-icon > img {
+	width: calc(
+		10px + var(--app-controls-size) + var(--app-controls-extra) - 4px
+	);
+	height: calc(
+		10px + var(--app-controls-size) + var(--app-controls-extra) - 4px
+	);
+	-webkit-user-drag: none;
+	transform: scale(0.8);
+	/* background-color: green; */
+	/* margin: 2px; */
+}
+
+#windows .app-icon > img:before {
+	background-image: url(../../media/file-icons/unknown.webp);
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	content: " ";
+	display: block;
+	background-size: cover;
+}
+
+#windows .app-v1 > .app-icon {
+	margin: 2px;
+}
+
+#windows .app-v1 > .app-title {
+	font-family: "Segoe UI Variable Static Text", sans-serif;
+	font-size: 0.675rem;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	min-width: 0;
+}
+
+#windows .app-header > .app-controls {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	flex-flow: row;
+	margin-right: -1px;
+}
+
+#windows .app-header > .app-controls div {
+	display: block;
+	position: relative;
+}
+
+#windows .app-controls > div {
+	padding: max(
+			var(--app-controls-extra),
+			calc(-1 * var(--app-controls-extra))
+		)
+		calc(
+			10px +
+				max(
+					var(--app-controls-extra),
+					calc(-1 * var(--app-controls-extra))
+				)
+		);
+	fill: red;
+}
+
+#windows .app-controls > .minimize {
+	content: url(../../media/ui/app-minimize.svg);
+	width: auto;
+	height: var(--app-controls-size);
+}
+#windows .app-controls > .maximize {
+	content: url(../../media/ui/app-maximize.svg);
+	width: auto;
+	height: var(--app-controls-size);
+}
+
+#windows .maximized .app-controls > .maximize {
+	content: url(../../media/ui/app-restore.svg);
+	width: auto;
+	height: var(--app-controls-size);
+}
+
+#windows .app-controls > .close {
+	content: url(../../media/ui/app-close.svg);
+	width: auto;
+	height: var(--app-controls-size);
+}
+
+#windows .active .app-header > .app-controls > .minimize:hover,
+#windows .active .app-header > .app-controls > .maximize:hover {
+	background-color: rgb(15, 26, 40);
+}
+
+#windows .app-header > .app-controls > .minimize:hover,
+#windows .app-header > .app-controls > .maximize:hover {
+	background-color: #2d2d2d;
+}
+
+#windows .app-header > .app-controls > .close {
+	border-radius: 0 5px 0 0;
+}
+
+#windows .app-header > .app-controls > .close:hover {
+	background-color: rgb(196, 43, 28);
+}
+
+#windows .windows-app.active > .app-header {
+	background-color: rgba(0, 12, 26, 0.7);
+}
+
+#windows iframe {
+	position: relative;
+	width: 100%;
+	min-height: 300px;
+	height: 100%;
+	border: none;
+	border-radius: 0 0 6px 6px;
+	/* TODO: add on successfull load background-color: rgb(25 25 25); */
+}
+
+#windows .detect {
+	position: absolute;
+	top: 0;
+	width: 100%;
+	min-height: 300px;
+	height: calc(100% - 1px);
+	border: none;
+	border-radius: 0 0 6px 6px;
+	background-color: transparent;
+	/* pointer-events: all; */
+}
+
+/* #windows:has(.resizing) > .windows-app > iframe {
+	pointer-events: none;
+} */
+#windows > .windows-app > .app-content:after {
+	position: absolute;
+	background-color: transparent;
+	top: 0;
+	left: 0;
+	content: "";
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+}
+
+body:has(.select-box) > #windows > .windows-app > .app-content:after,
+#windows:has(.resizing) > .windows-app > .app-content:after,
+#windows:has(.dragging) > .windows-app > .app-content:after {
+	position: absolute;
+	top: calc(12px + var(--app-controls-size) + var(--app-controls-extra));
+	left: 0;
+	content: "";
+	width: 100%;
+	height: calc(
+		100% - calc(12px + var(--app-controls-size) + var(--app-controls-extra))
+	);
+	background-color: transparent;
+	/* background-color: rgba(255, 0, 0, 0.1); */
+	border-radius: 0 0 6px 6px;
+	pointer-events: all;
+}
+
+#windows .windows-app.maximized {
+	top: -1px !important;
+	left: 0 !important;
+	min-width: 100vw !important;
+	min-height: calc(100vh - var(--navbar-height)) !important;
+	height: calc(100vh - var(--navbar-height)) !important;
+	border-radius: 0 !important;
+	border: 0 !important;
+}
+#windows .windows-app.maximized > .app-content {
+	height: calc(
+		100vh + 2px - var(--navbar-height) -
+			max(
+				calc(
+					var(--app-controls-size) + 2 *
+						max(
+							var(--app-controls-extra),
+							calc(-1 * var(--app-controls-extra))
+						)
+				),
+				calc(
+					12px + var(--app-controls-size) + var(--app-controls-extra)
+				)
+			)
+	) !important;
+}
+
+#windows .windows-app.maximized iframe {
+	border-radius: 0 0 0 0 !important;
+}
+
+#windows .windows-app.minimized {
+	filter: opacity(0);
+	display: none !important;
+}
+
+#windows .windows-app > .resizable {
+	position: absolute;
+	background-color: transparent;
+	pointer-events: all;
+	/* background-color: rgba(255, 0, 0, 0.4); */
+}
+
+#windows:has(.maximized) > .windows-app > .resizable {
+	pointer-events: none;
+	/* background-color: aqua; */
+}
+
+#windows .resizable.ne-grip {
+	top: -3px;
+	right: -3px;
+	height: 8px;
+	width: 8px;
+	cursor: ne-resize;
+}
+
+#windows .resizable.se-grip {
+	bottom: -2px;
+	right: -3px;
+	height: 8px;
+	width: 8px;
+	cursor: se-resize;
+}
+
+#windows .resizable.nw-grip {
+	top: -3px;
+	left: -3px;
+	height: 8px;
+	width: 8px;
+	cursor: nw-resize;
+}
+
+#windows .resizable.sw-grip {
+	bottom: -2px;
+	left: -3px;
+	height: 8px;
+	width: 8px;
+	cursor: sw-resize;
+}
+
+#windows .resizable.n-grip {
+	top: -4px;
+	left: 0;
+	height: 5px;
+	width: 100%;
+	cursor: n-resize;
+}
+
+#windows .resizable.e-grip {
+	right: -4px;
+	top: 0;
+	height: 100%;
+	width: 5px;
+	cursor: e-resize;
+}
+
+#windows .resizable.s-grip {
+	bottom: -4px;
+	left: 0;
+	width: 100%;
+	height: 5px;
+	cursor: s-resize;
+}
+
+#windows .resizable.w-grip {
+	left: -4px;
+	top: 0;
+	height: 100%;
+	width: 5px;
+	cursor: w-resize;
+}

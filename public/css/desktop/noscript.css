@@ -1,0 +1,9 @@
+.errors.hidden {
+	display: block !important;
+}
+.errors.hidden::before {
+	content: "Chyba";
+}
+.errors.hidden::after {
+	content: "Pro funkčnost stránky je potřeba mít povolený JavaScript";
+}

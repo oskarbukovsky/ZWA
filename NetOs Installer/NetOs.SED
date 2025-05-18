@@ -1,0 +1,47 @@
+[Version]
+Class=IEXPRESS
+SEDVersion=3
+[Options]
+PackagePurpose=InstallApp
+ShowInstallProgramWindow=1
+HideExtractAnimation=1
+UseLongFileName=1
+InsideCompressed=0
+CAB_FixedSize=0
+CAB_ResvCodeSigning=0
+RebootMode=N
+InstallPrompt=%InstallPrompt%
+DisplayLicense=%DisplayLicense%
+FinishMessage=%FinishMessage%
+TargetName=%TargetName%
+FriendlyName=%FriendlyName%
+AppLaunched=%AppLaunched%
+PostInstallCmd=%PostInstallCmd%
+AdminQuietInstCmd=%AdminQuietInstCmd%
+UserQuietInstCmd=%UserQuietInstCmd%
+SourceFiles=SourceFiles
+[Strings]
+InstallPrompt=
+DisplayLicense=
+FinishMessage=
+TargetName=C:\Users\Oskar\OneDrive\Dokumenty\CVUT\S01\ZWA\Semestralka\root\NetOs Installer\NetOs1.exe
+FriendlyName=NetOs
+AppLaunched=cmd.exe /K "run.bat"
+PostInstallCmd=<None>
+AdminQuietInstCmd=
+UserQuietInstCmd=
+FILE0="Config.ini"
+FILE1="favicon.ico"
+FILE2="ProtonShell.exe"
+FILE3="WebView2Loader.dll"
+FILE4="MicrosoftEdgeWebview2Setup.exe"
+FILE5="run.bat"
+[SourceFiles]
+SourceFiles0=C:\Users\Oskar\OneDrive\Dokumenty\CVUT\S01\ZWA\Semestralka\root\NetOs Installer\
+[SourceFiles0]
+%FILE0%=
+%FILE1%=
+%FILE2%=
+%FILE3%=
+%FILE4%=
+%FILE5%=

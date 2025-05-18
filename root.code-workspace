@@ -1,0 +1,18 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "SSH FS - zwa-cvut",
+			"uri": "ssh://zwa-cvut/home/bukovja4/www"
+		}
+	],
+	"settings": {
+		"docwriter.progress.trackFunctions": false,
+		"docwriter.progress.trackMethods": false,
+		"docwriter.progress.trackClasses": true,
+		"docwriter.style": "Auto-detect",
+		"liveServer.settings.multiRootWorkspaceName": "root"
+	}
+}

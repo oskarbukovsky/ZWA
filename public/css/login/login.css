@@ -1,0 +1,235 @@
+:root {
+	--image-of-the-day: url(../../media/login/black.webp);
+}
+
+::-ms-reveal {
+    display: none;
+}
+
+/* background-image: url("../media/last.webp"); */
+body {
+	margin: 0;
+	width: 100vw;
+	height: 100vh;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	position: relative;
+	align-content: center;
+	overflow: hidden;
+	/* filter: blur(8px); */
+}
+
+body:before {
+	content: "";
+	position: absolute;
+	top: -10px;
+	left: -10px;
+	z-index: -1;
+
+	display: block;
+	background-image: var(--image-of-the-day);
+	width: calc(100vw + 20px);
+	height: calc(100vh + 20px);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	/* filter: blur(4px); */
+}
+
+#loginAnimation {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 115vw;
+	height: 115vh;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-flow: column;
+	object-fit: cover;
+	filter: blur(4px);
+}
+
+#authForms {
+	max-width: max-content;
+	height: 366px;
+	margin: auto;
+	display: flex;
+	flex-flow: column;
+	gap: 24px;
+	align-items: center;
+	justify-content: space-between;
+	padding: calc(min(64px, 10vh));
+	border-radius: 32px;
+	background-color: rgba(16, 32, 128, 0.1);
+	backdrop-filter: blur(4px);
+	box-shadow: 0 0 24px 16px rgb(0 12 26 / 40%);
+}
+
+form {
+	display: flex;
+	flex-flow: column;
+	gap: 8px;
+	position: relative;
+}
+
+#loginAnimation.hidden {
+	display: none;
+}
+
+.user-icon {
+	border-radius: 50%;
+	padding: 24px;
+	background-color: rgba(255, 255, 255, 0.2);
+	box-shadow: 0 8px 32px 0 hsla(236, 0%, 33%, 0.6);
+	backdrop-filter: blur(2px);
+	width: 128px;
+	height: 128px;
+}
+
+.user-icon > img {
+	-webkit-user-drag: none;
+}
+
+div.input {
+	background: rgba(255, 255, 255, 0.25);
+}
+
+div.input input {
+	font-size: 0.85rem !important;
+}
+
+input[type="text"],
+input[type="password"] {
+	/* background: rgba(255, 255, 255, 0.3); */
+	box-shadow: 0 8px 32px 0 hsla(236, 0%, 33%, 0.37);
+	/* backdrop-filter: blur(2px); */
+	border-radius: 10px;
+	border: 1px solid rgba(255, 255, 255, 0.18);
+	border-radius: 2px;
+	padding: 4px 8px;
+	outline: none;
+	/* -webkit-background-clip: text; */
+	background-clip: text;
+	-webkit-text-fill-color: hsl(0, 0%, 90%);
+	text-shadow: 0 0 10px rgb(0 0 0 / 90%);
+	text-size-adjust: none;
+	font-family: "Segoe UI Variable Static Text", sans-serif;
+	transition-property: border-bottom;
+	transition-duration: 15ms;
+	transition-delay: 20ms;
+	caret-color: hsla(0, 0%, 90%, 0.9);
+	border-bottom: 2px solid rgba(146, 165, 241, 0.8);
+	transition: border-bottom 100ms ease-in-out;
+}
+
+/* input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+	transition: all 1s;
+} */
+
+input[type="text"]::placeholder,
+input[type="password"]::placeholder {
+	color: rgb(200, 200, 200);
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+	border-bottom: 2px solid rgba(39, 107, 191, 0.8);
+}
+
+.registerButton,
+.loginButton {
+	position: absolute;
+	right: 4px;
+	bottom: 0;
+	cursor: pointer;
+}
+
+.registerButton,
+.loginButton {
+	fill: rgba(255, 255, 255, 0.65);
+}
+
+.registerButton,
+.loginButton:hover {
+	fill: rgba(255, 255, 255, 0.9);
+}
+
+input[type="submit"] {
+	display: none;
+}
+
+.hidden {
+	display: none !important;
+}
+
+#authForms:has(#toggle-login-register:checked) > #loginForm {
+	display: none;
+}
+
+#authForms:not(:has(#toggle-login-register:checked)) > #registerForm {
+	display: none;
+}
+
+#toggle-login-register {
+	display: none;
+}
+
+label[for="toggle-login-register"] {
+	color: hsla(0, 0%, 95%, 0.925);
+}
+
+#authForms:has(#toggle-login-register:checked)
+	label[for="toggle-login-register"]:before {
+	content: "Již máš účet ?";
+}
+
+#authForms:not(:has(#toggle-login-register:checked))
+	label[for="toggle-login-register"]:before {
+	content: "Ještě nemáš účet ?";
+}
+
+input,
+label,
+.user-icon {
+	user-select: none;
+}
+
+/* input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+	transition: background-color 5000000s ease-in-out 0s;
+} */
+
+/* input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset;
+} */
+
+/* input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+} */
+
+/* input:-webkit-autofill {
+    -webkit-box-shadow:0 0 0 50px rgba(0,0,0,0) inset; 
+    -webkit-text-fill-color: transparent;
+} */
+
+/* input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 50px rgba(0,0,0,0);
+    -webkit-text-fill-color: transparent;
+}  */

@@ -1,0 +1,196 @@
+@import url(./desktop.css);
+@import url(./navbar.css);
+@import url(./media.css);
+@import url(./windows.css);
+
+body,
+:not(:root):fullscreen::backdrop {
+	width: 100vw;
+	height: 100vh;
+	background: linear-gradient(rgb(35, 15, 214), transparent),
+		linear-gradient(to top left, rgb(123, 1, 128), transparent),
+		linear-gradient(to top right, rgb(28, 177, 65), transparent),
+		linear-gradient(
+			320deg,
+			hsl(240deg 100% 20%) 0%,
+			hsl(234deg 97% 26%) 26%,
+			hsl(229deg 95% 32%) 43%,
+			hsl(226deg 96% 38%) 58%,
+			hsl(223deg 97% 44%) 76%,
+			hsl(221deg 100% 50%) 100%
+		);
+	background-blend-mode: screen;
+	background-image: url(../../media/ui/wallpapers/win-11.jpg);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	overflow: hidden;
+	font-family: "Segoe UI Variable Static Text", sans-serif;
+}
+
+label {
+	display: none;
+}
+
+/* * {
+	background: transparent;
+	background-color: transparent;
+} */
+
+#desktop {
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-content: flex-start;
+	align-items: flex-start;
+	gap: 5px 1px;
+}
+
+#desktop > .icon {
+	flex: 0 1 auto;
+	align-self: flex-start;
+	width: 75px;
+	height: 93px;
+	margin: 4px 2px;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-flow: column;
+	border-radius: 3px;
+}
+
+.icon .icon-tooltip {
+	position: absolute;
+	background-color: rgba(249, 249, 249, 1);
+	color: #000;
+	white-space: pre;
+	border-radius: 3px;
+	box-shadow: 3px 3px 5px 0px rgba(0, 12, 26, 0.2);
+	padding: 2px 6px;
+	pointer-events: none;
+	transition: opacity 225ms ease-in-out;
+	opacity: 0;
+	font-size: 0.7rem;
+	z-index: 10;
+}
+
+.icon .icon-tooltip.active {
+	opacity: 1;
+}
+
+#desktop > .icon:hover {
+	background-color: rgba(236, 236, 236, 0.196);
+}
+
+#desktop .icon:has(.context-menu:hover):hover,
+#desktop > .icon-selected {
+	background-color: #ececec56;
+}
+
+#desktop > .icon img {
+	width: 48px;
+	height: 48px;
+	min-height: 48px;
+	max-height: 48px;
+	margin-top: 3px;
+	-webkit-user-drag: none;
+	-moz-user-select: none;
+	user-select: none;
+}
+
+#desktop > .icon img:before {
+	background-image: url(../../media/file-icons/unknown.webp);
+	position: relative;
+	width: 48px;
+	height: 48px;
+	content: " ";
+	display: block;
+	background-size: cover;
+}
+
+#desktop figcaption {
+	width: 100%;
+	inline-size: 71px;
+	height: min-content;
+	padding: 0 2px;
+	position: relative;
+	margin-top: 4px;
+	z-index: 1;
+}
+
+#desktop textarea {
+	width: max-content;
+	max-width: 100%;
+	resize: none;
+	outline: none;
+	text-align: center;
+	overflow-wrap: break-word;
+	text-overflow: clip;
+	white-space: normal;
+	overflow: hidden;
+	border: 0;
+	margin: -2px;
+	padding: 2px 4px 4px 4px;
+	font-size: 0.6rem;
+	color: #000;
+	field-sizing: content;
+	box-sizing: border-box;
+	margin-left: auto;
+	margin-right: auto;
+	/* display: block; */
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	height: 2lh;
+	scrollbar-width: none; /* Firefox */
+}
+
+#desktop textarea:read-only::selection {
+	background: transparent;
+}
+
+#desktop > figure > img {
+	user-select: none;
+}
+
+#desktop textarea::-webkit-scrollbar {
+	display: none; /* Chrome, Safari, Edge */
+}
+
+#desktop textarea:read-only {
+	text-shadow: 2px 1px 3px rgb(0, 0, 0);
+	background-color: transparent;
+	color: rgba(255, 255, 255, 0.9);
+}
+
+#desktop textarea:not(:read-only),
+#desktop > figure.icon-selected:focus-within textarea {
+	display: block;
+	height: fit-content;
+}
+
+#desktop > .select-box {
+	position: absolute;
+	border: 1px solid rgba(0, 120, 215, 0.7);
+	background-color: hsla(218, 100%, 30%, 0.3);
+	z-index: 11;
+}
+
+#logoutAnimation {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 115vw;
+	height: 115vh;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-flow: column;
+	object-fit: cover;
+	filter: blur(4px);
+	z-index: 11000;
+}

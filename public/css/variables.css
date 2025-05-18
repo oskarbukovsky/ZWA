@@ -1,0 +1,23 @@
+:root {
+	--navbar-transparency: 0.8;
+	--navbar-height: 43px;
+	--navbar-dev: 0;
+	/* --navbar-dev: 0.2; */
+
+	--app-controls-size: 13px;
+	--app-controls-extra: 9px;
+
+	--explorer-side-size: 0px;
+	/* --explorer-side-size: 176px; */
+	--font-size: 18px;
+
+	--sorting-size-name: 45%;
+	--sorting-size-change: 25%;
+	--sorting-size-type: 20%;
+	--sorting-size-size: 10%;
+
+	--files-size-row: 1;
+
+	--brightness: 0%;
+	--blue-filter: 0%;
+}
